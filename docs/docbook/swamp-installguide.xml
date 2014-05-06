@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" 
+	"docbookx.dtd">
+
+<article id="swamp-installguide" lang="en">
+	<title>SWAMP - Installguide</title>
+	<subtitle>How to get the SWAMP running</subtitle>
+	
+		
+	<section>
+		<title>System requirements</title>
+		<para>
+			The following tools are needed and not included in the SWAMP distribution: 
+			<itemizedlist>
+				<listitem><para>Java >= 1.4.2 SDK (<ulink url="http://java.sun.com">http://java.sun.com</ulink>)</para></listitem>
+				<listitem><para>Apache Tomcat Servlet container (<ulink url="http://jakarta.apache.org/tomcat">http://jakarta.apache.org/tomcat</ulink> >= 5.0.30, 
+				see the tomcat chapter for running on older versions)</para>
+				<para>
+				Especially the RSS authentication part is currently set up to run with tomcat 5.5.
+				</para>
+				</listitem>
+				<listitem><para>Graphviz Tool for generating workflow graphs (<ulink url="http://graphviz.org">http://graphviz.org</ulink>)</para></listitem>
+				<listitem><para>MySQL Database backend (<ulink url="http://mysql.org">http://mysql.org</ulink>, tested with version >= 4.0.18, 
+				don't use version 4.1.12, as it seems to have a <ulink url="http://bugs.mysql.com/bug.php?id=11084">bug</ulink>)</para></listitem>
+			</itemizedlist>
+			
+			SWAMP is running on both Linux and Windows. It is also possible to deploy 
+			on another servlet container than 
+			Apache Tomcat, but this has not been tested yet.
+		</para>
+			
+	</section>
+		
+		
+	<section>
+		<title>Install with SUSE RPM</title>
+		<para>
+			Easy! ;-)
+			Just download the latest SWAMP RPM from 
+			<ulink url="http://sourceforge.net/project/showfiles.php?group_id=68771">here</ulink>
+			for your distribution and install with 
+			<screen><![CDATA[yast -i swamp-*.rpm]]></screen>
+			YaST will solve the dependencies and install all needed packages for you. 
+			All needed files are installed now and you can proceed with setting up the database backend.
+		</para>
+			
+		<section>
+			<title>Installation on SLES 10</title>
+			<para>
+			<itemizedlist>
+				<listitem><para>Install the SLES 10 RPM</para></listitem>
+				<listitem><para>install graphiz RPM from opensuse: 
+				  wget http://download.opensuse.org/distribution/SL-10.1/inst-source/suse/i586/graphviz-2.6-22.i586.rpm; 
+				  rpm -ivh graphviz-2.6-22.i586.rpm;
+				  </para>
+				</listitem>
+				<listitem><para>An Apparmor profile is available 
+				  <ulink url="https://swamp.svn.sourceforge.net/svnroot/swamp/trunk/swamp/conf/apparmor/usr.share.tomcat5.bin.catalina.sh">here</ulink>
+				</para>
+				</listitem>
+			</itemizedlist>
+			</para>
+				
+		</section>
+			
+			
+			
+			
+	</section>
+		
+		
+		
+	<section>
+		<title>Download the SWAMP source-code</title>	
+		<para>
+		To obtain the sources, either check them out via the subversion command: 
+		<screen><![CDATA[svn co https://swamp.svn.sourceforge.net/svnroot/swamp/trunk/swamp swamp]]></screen> 
+		or download the latest source tarball from 
+		<ulink url="http://sourceforge.net/project/showfiles.php?group_id=68771">http://sourceforge.net/project/showfiles.php?group_id=68771</ulink> 
+		and untar the archive to your favourite location with: 
+		<screen><![CDATA[tar -xvjf swamp-*.tar.bz2]]></screen>
+		You can use a common zip program for unpacking the archive on windows. 
+		The directory swamp/ now contains the sources. 
+		</para>
+	</section>
+		
+		
+		
+	<section>
+		<title>Install from source</title>
+		<para>
+		Now you should create a host-specific config file to customize the build to your
+		environment: 
+		<screen><![CDATA[$ cd properties/
+$ cp host.properties `hostname`.properties
+$ vi `hostname`.properties]]></screen>
+		These settings should be self-documenting, really. They mainly set up the database environment 
+		and set the location of the tomcat installation. 
+		More general setttings, that don't depend on the host you are developing on are contained in 
+		the conf/ directory, but it should not be neccessary to do changes here for a first installation. 
+		The build process makes use of the make-tool 
+		<ulink url="http://ant.apache.org">ant</ulink> which needs to be installed in the system to continue.
+		To create the files needed for build out of your host-specific config-file and the template files, please run: 
+		<screen><![CDATA[$ ant local-init]]></screen>
+		The next step is the creation of the swamp database, and generation of database dependant code. 
+		Thus we need a running MSQL instance and a valid user as described in the next section.
+		The command: 
+		<screen><![CDATA[ant torque-init]]></screen> 
+		sets up the database tables and creates the Torque code for database access.
+		</para>
+		<para>For the next step you need to have the msgfmt executable in your $PATH 
+		for adding the translated strings from the .po files to the binary.
+		</para>
+		<para>
+		If everything went OK please call the wrapper script: 
+		<screen><![CDATA[bin/install-swamp.sh]]></screen> 
+		or on windows: 
+		<screen><![CDATA[bin/install-swamp.bat]]></screen> 
+		to compile and install the SWAMP server, the webSWAMP webapp and 
+		the SWAMP SOAP interface to tomcat.
+		After starting/restarting tomcat your first SWAMP installation can be 
+		accessed by browsing to the URL: http://localhost:8080/webswamp/swamp
+		</para>
+		
+	</section>
+		
+	
+	
+
+	<section>
+		<title>Special notes for building on Windows</title>
+		<para> 
+		
+		<itemizedlist>
+			<listitem><para>Note that on windows systems you need to use "/" as a filesystem separator 
+				in the config files. (For example C:/temp)</para></listitem>
+			<listitem><para>Ant can be downloaded from: <ulink url="http://ant.apache.org/bindownload.cgi">http://ant.apache.org/bindownload.cgi</ulink>. Please 
+				set your PATH variable to include the ant/bin dir.</para></listitem>
+			<listitem><para>Please set the environment variables ANT_HOME and JAVA_HOME to point to your ant and 
+				Java installations.</para></listitem>
+			<listitem><para>You need to have the msgfmt.exe in your $PATH to 
+				be able to build the translation files. It can be downloaded from here: 
+				<ulink url="http://gnuwin32.sourceforge.net/packages/gettext.htm">http://gnuwin32.sourceforge.net/packages/gettext.htm</ulink>
+				</para><para>
+				Maybe you also need the libiconv2.dll in your gettext\bin directory, it can be downloaded here: 
+				<ulink url="http://gnuwin32.sourceforge.net/packages/libiconv.htm">http://gnuwin32.sourceforge.net/packages/libiconv.htm</ulink>
+				</para></listitem>
+			<listitem><para>To generate the graphs on Windows, download Graphviz here: 
+				<ulink url="http://www.graphviz.org/Download_windows.php">http://www.graphviz.org/Download_windows.php</ulink> and extend your PATH variable to include the 
+				graphviz/bin directory.</para></listitem>
+			</itemizedlist>
+			
+			
+			
+		</para>
+		
+	</section>
+
+
+
+	
+	
+	<section>
+	<title>Set up the MySQL database backend</title>
+		
+		<para>
+		SWAMP needs a database backend to persist the applications state to disk. 
+		This means, each workflows data and status is stored in the db backend. 
+		</para>
+
+		<para>
+		To make the database handle utf-8 characters properly you have to 
+		start it in utf8 mode by adding: 
+		<screen><![CDATA[[mysqld] 
+default-character-set=utf8]]></screen>
+		to the /etc/my.cnf file. 
+		</para>
+
+		<section>
+		<title>Adding a SWAMP MySQL user</title>
+		
+		<para>
+		The easiest way to get it running is to use the MySQL root user for SWAMP, but we recommend 
+		you to create an extra user with restricted access rights due to security reasons. 
+		Nevertheless if you are fine with using the root user, you can skip this section, 
+		and can proceed with adding the credentials to the config file.
+		</para>
+		
+		<para>
+		A new database user can be added with several GUI tools, or directly via the 
+		mysql shell. Enter the following command to start the shell:  
+		<screen><![CDATA[mysql -u root -p]]></screen>
+		Now, we add the SWAMP user with access rights to the swamp db: 		
+	<screen><![CDATA[GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER 
+ON swamp.* 
+TO 'swamp'@'%' IDENTIFIED BY 'swamppwd', 
+'swamp'@'localhost' IDENTIFIED BY 'swamppwd';]]></screen>
+		This user is now able to log into the mysql server from any host (%) with the 
+		configured password. 
+		</para>
+		<para>
+		If you are building SWAMP from source or developing it, the db user 
+		needs additional rights to create/delete the swamp db: 
+<screen><![CDATA[GRANT ALL ON *.* TO 'swamp'@'%', 'swamp'@'localhost' WITH GRANT OPTION;]]></screen>
+		Make sure to revoke these privileges on a production server!
+		</para>
+		</section>
+		
+		
+		<section>
+		<title>Creating the SWAMP database</title>
+		<para>
+			Since the created user has no privilege to create new databases, we need 
+			to create the SWAMP database:
+
+		<screen><![CDATA[CREATE DATABASE IF NOT EXISTS swamp;
+quit;]]></screen>
+
+		Now we can import the initial SWAMP tables: 
+		(when you build from source this will be done automatically during  
+		the "ant torque-init" command)
+
+<screen><![CDATA[cd /srv/www/tomcat5/base/webapps/webswamp/WEB-INF/sql; 
+mysql -u swamp -p swamp < swamp-schema.sql;
+mysql -u swamp -p swamp < swamp-security-schema.sql;
+mysql -u swamp -p swamp < turbine-schema.sql; 
+mysql -u swamp -p swamp < swamp-scheduledjobs.sql;
+mysql -u swamp -p swamp < swamp-security.sql; ]]></screen>
+
+
+		</para>
+		</section>
+		
+		<section>
+		<title>Add the values to the config file</title>
+		<para>
+		The added SWAMP MySQL user and database name have to be added to the applications config file. 
+		If you installed from the RPM, this file resides at: /srv/www/tomcat5/base/webapps/webswamp/WEB-INF/conf/Torque.properties.
+		If you are building from source, you should add the values to your host.properties file before building.
+		</para>
+		</section>
+		
+	</section>
+	
+	
+	
+	
+	<section>
+		<title>Setup SWAMP users</title>
+		
+		<para>
+		SWAMP uses the MySQL backend by default to store user information such as the users password, email-adress and so on. 
+		If you want to use another backend (eg. LDAP) for user authentication, please read the corresponding chapter in the 
+		developers manual. 
+		</para>
+		<para>
+		Adding new users is not yet implemented in the webSWAMP frontent. 
+		This has to be done directly in the database. Easy GUIs for administrating MySQL databases 
+		are for example <ulink url="http://www.phpmyadmin.net/">phpMyAdmin</ulink> and 
+		<ulink url="http://www.mysql.com/products/tools/administrator/">MySQL Administrator</ulink>. 
+		For security reasons, the users passwords are not stored in clear-text, but just a MD5 Hash 
+		of the password. A MD5 representation of the password string can for example be 
+		generated by the command: 
+		<screen><![CDATA[perl -e 'use Digest::MD5 qw(md5_hex); print md5_hex("password");']]></screen>  
+		or 
+		<screen><![CDATA[echo -n "password" | md5sum;]]></screen> 
+		<literallayout>By default, there are already three accounts set up: 
+		username: <emphasis>mrswamp</emphasis>, password: <emphasis>swamp</emphasis>
+		username: <emphasis>swamp_admin</emphasis>, password: <emphasis>!swamp#</emphasis>
+		username: <emphasis>swamp_user</emphasis>, password: <emphasis>swamp</emphasis>
+		</literallayout>
+		Please change these values in a production environment.
+		</para>
+		<para>
+		When a user has logged in, the webSWAMP GUI provides a "Preferences" 
+		page where he can change his data including his password and preferred language. 
+		</para>
+	</section>
+	
+	
+	
+	
+	<section>
+		<title>Setup Apache Tomcat</title>
+		
+		<para>
+		The easiest way (on SuSE) is just to install the  
+		tomcat5 RPM, which can be done easily with YaST. 
+		On other distributions / operating systems, please use the package management tools or 
+		download the official distribution available from 
+		<ulink url="http://jakarta.apache.org/tomcat">http://jakarta.apache.org/tomcat</ulink>
+		which should work just as well.
+		We are developing on Tomcat 5.0.30, for older versions, please read the issues paragraph.
+		</para>
+		
+		<section>
+		<title>Tomcat issues:</title>
+		<para>
+		SLES9 (tomcat 5.0.19): 
+		<itemizedlist>
+		<listitem><para>
+		- Do a: chown -R tomcat.tomcat /srv/www/tomcat/base/webapps/webswamp/
+		  otherwise tomcat will not be able to write files
+		</para></listitem>
+		<listitem><para>
+		- Remove: /usr/share/tomcat/common/lib/commons-collections.jar
+		  as it conflicts with the collections lib installed by SWAMP.
+		</para></listitem>
+		</itemizedlist>
+		</para>
+		</section>
+		
+
+		
+
+			
+		<section>
+			<title>Setting up Tomcat:</title>
+
+		<para>
+		The following instructions are only neccessary if you want to do administrative tasks on the tomcat 
+		server itself. If you don't, just skip them.
+		</para>
+
+
+		<para>
+		Go to $TOMCAT_BASE/conf. ($TOMCAT_HOME is /srv/www/tomcat5/base/conf
+		for the SuSE rpm). Edit the file tomcat-users.xml and make the following
+		changes:
+		
+		<screen><![CDATA[<role rolename="tomcat"/>
++  <role rolename="manager"/>
++  <role rolename="admin"/>
+-  <user username="tomcat" password="tomcat" roles="tomcat" />
++  <user username="tomcat" password="tomcat" 
++	roles="tomcat,admin,manager"/>
+<user username="role1" password="tomcat" roles="role1"/>]]></screen>
+		
+		
+		This means that the user "tomcat" with password "tomcat" (please use a sensible password here!)
+		can now access tomcats manager and admin web-application.
+		</para>
+		</section>
+		
+		<section>
+		<title>Starting, restarting, and stopping Tomcat</title>
+		<para>
+		<literallayout>
+		For the SuSE rpm, issue as root:
+		# rctomcat start
+		# rctomcat restart
+		and
+		#rctomcat stop
+		</literallayout>
+		You can set additional options by setting the variable JAVA_OPTS in
+		/etc/sysconfig/j2ee, e.g.:
+		<screen><![CDATA[JAVA_OPTS="-server -Djava.net.preferIPv4Stack=true -Xmx128M"]]></screen>
+		On a manual installation, go to $TOMCAT_HOME/bin and call startup.sh
+		and shutdown.sh at your leasure.
+		</para><para>
+		Check http://localhost:8080/. You should see the Tomcat default page there.
+		</para>
+		</section>
+		
+		<section>
+		<title>Reloading web applications:</title>
+		<para>
+		Go to http://localhost:8080/manager/html and log in with the user
+		tomcat/tomcat (or whatever you set up in the step before). You see a list of
+		web applications Tomcat has found in its webapp directory.
+		If you rebuilt and re-installed a webapp, locate it in this list and click
+		on the "reload" link.
+		</para>
+		<para>To reload a webapp from the command line you can use:</para>
+		<screen><![CDATA[curl -u <user>:<password>@http://<hostname>:8080/manager
+	/html/reload?path=/webswamp]]></screen>
+		<para>
+		To avoid automatic re-deployment of the webapp on changes in config files, set autoDeploy="false" in the server.xml's &lt;Host&gt; element.
+		</para>
+		</section>
+		
+	</section>
+	
+
+
+
+	<section>
+		<title>SWAMP config files</title>
+		<para>On an installed SWAMP system there are some 
+		config files that have to be configured for your environment.</para>
+		<section>
+		<title>conf/defaults</title>
+		<para>
+		The main config file for the server.</para>
+		<para>
+		In this file you can configure for example the used mailserver and 
+		authentification parameters. 
+		</para>
+		</section>
+		
+		<section>
+		<title>conf/Torque.properties</title>
+		<para>
+		Database connection parameters are configured here.
+		
+		
+		</para>
+		</section>
+		
+		
+		<section>
+		<title>conf/TurbineResources.properties</title>
+		<para>
+		Configuration for the web-frontend webSWAMP</para>
+		<para>
+		Here you can set the hostname and port parameters so 
+		that links can get generated correctly. 
+		
+		</para>
+		</section>
+
+	</section>
+
+
+
+	<section>
+		<title>The first run of SWAMP</title>
+		
+		<para>
+		To start SWAMP, please start the tomcat server with: 
+		<screen><![CDATA[rctomcat5 start]]></screen>
+		After that, webSWAMP is available at the URL: http://&lt;hostname&gt;:8080/webswamp/swamp. 
+		The default SWAMP installation includes two example workflows which will be described 
+		in this section.
+		</para>
+		
+		<section>
+		<title>Workflow: Example</title>
+		<para>
+		This workflow is just a presentation of SWAMPs core features. 
+		It includes examples for branching and merging the workflow's thread, 
+		and contains examples for different kinds of possible tasks. 
+		All elements that were referenced in the adminguide in the 
+		"How to write a workflow template" section can be found here. 
+		That should provide you with a good insight on how the different 
+		elements actually work.	
+		</para>
+		</section>
+		
+		
+		
+		<section>
+		<title>Workflow: Meeting</title>
+		<para>
+		The meeting workflow is "real-world" example of a useful workflow. 
+		It helps to organise a meeting which includes notifying the participants of 
+		the meetings data and agenda, collecting the meeting minutes afterwards and 
+		send them to all attendees.
+		The next section contains a detailed description of the meeting workflow 
+		and its steps.
+		</para>
+		</section>
+
+		
+		<section>
+		<title>Workflow: minimal-test</title>
+		<para>
+		This workflow contains the absolute minimum configuration for a valid workflow. 
+		It is basically included to test the framework, but it is also a good starting 
+		point for building your own workflow from scratch.		
+		</para>
+		</section>
+		
+	</section>
+
+
+
+
+
+	<section>
+		<title>Example workflow: organizing a meeting</title>
+		<para>
+
+	Now that you succeeded in installing SWAMP, its time to get a real workflow started. 
+	The SWAMP distribution contains an example workflow called "Meeting" that helps 
+	to organize a meeting and distribute the meetings result by email afterwards. 
+	</para>
+	<para>
+	Please direct your browser to &lt;swamp-host&gt;:8080/webswamp/swamp
+	to get to webSWAMPs login screen and login with the credentials 
+	that were described in the last chapter (swamp_user:swamp for example).
+	After selecting the workflow "Meeting" on the start page the following 
+	start-screen of the meeting workflow is displayed: 
+	</para>
+
+	<para>
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-installguide/meeting1.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase></phrase></textobject>
+	</inlinemediaobject> 
+	</para>
+	
+	<para>
+	You can also see this workflow in action and test it 
+	<ulink url="http://swampdemo.suse.de/webswamp/swamp/action/UserActions/eventSubmit_doInterface/doInterface/interface/Meeting/wftemplate/Meeting/template/WorkflowIndex.vm">here</ulink> on the SWAMP demo server.
+	</para>
+	
+	<para>
+	This is the default workflow startscreen. It contains all general information 
+	of the meeting workflow and some statistical data, for example how many running 
+	instances of the meeting workflow exist in the system, and who has started 
+	the latest one. 
+	The page also contains links to start a new meeting workflow and to 
+	generate a graphical workflow graph.
+	</para>
+	<para>
+	So let's go and start a new meeting workflow by clicking on "Start".
+	The following screen will show up: 
+	</para>
+	<para>
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-installguide/meeting2.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase></phrase></textobject>
+	</inlinemediaobject> 
+	</para>
+	<para>
+	The system tells you that it has successfully started a new meeting workflow, 
+	and that the first task of it has been activated. 
+	Because you started it, you are now the owner of that workflow, and got 
+	the first task "Enter meeting data" assigned. 
+	You can proceed to this task by clicking on the link, and will the get this page 
+	presented: 
+	
+	</para>
+	<para>
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-installguide/meeting3.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase></phrase></textobject>
+	</inlinemediaobject> 
+	</para>
+	<para>
+	This page contains your first task in the workflow. You have to fill in some 
+	fields to tell the workflow what the meeting is all about, for example the 
+	topic, date and agenda of the meeting. 
+	You have to enter a list of attendees and specify the username of the person who will 
+	take the meeting minutes. SWAMP expects a list of comma seperated usernames 
+	that are known to the system. Just putting in email adresses is also allowed. 
+	Fields that are marked with a "*" in tthe last column are mandatory. 
+	You can try what happens when you leave out a mandatory field.
+	
+	</para>
+	<para>
+	
+	When you have completed your task, you will be redirected to a page 
+	that shows the results of your action. 
+	There have been some events been triggered in the background, for example 
+	a email notification has been sent out to all attendees containing 
+	the information you entered. Also, the person who should take the 
+	meeting minutes got a reminder to post the minutes in a SWAMP task 
+	as soon as the meeting has been held. 		
+	
+	</para>
+	<para>
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-installguide/meeting4.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase></phrase></textobject>
+	</inlinemediaobject> 
+	</para>
+	<para>
+	The last screen shows the workflow overview page the can be reached 
+	by the links "running", "closed" or "all" workflows from the 
+	navigation bar on the left. 
+	
+
+
+
+
+		</para>
+		
+	</section>
+
+
+
+
+</article>

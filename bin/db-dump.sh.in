@@ -1,0 +1,15 @@
+#!/bin/bash
+
+DB_PWD=@TORQUE_DATABASE_PASSWORD@
+DB_USER=@TORQUE_DATABASE_USER@
+DB_HOST=@TORQUE_DATABASE_HOST@
+DB_DB=@TORQUE_PROJECT@
+BACKUP_PATH=~
+
+FILENAME="${BACKUP_PATH}/dbdump_`date +%F`_`date +%H`-`date +%M`.sql";
+
+# --opt  Same as  --add-drop-table --add-locks --all --extended-insert --quick --lock-tables
+mysqldump -u ${DB_USER} -p${DB_PWD} -h ${DB_HOST} --opt -C -c -v -B ${DB_DB} > ${FILENAME} &&
+
+gzip -f $FILENAME &&
+echo "dumped db to: ${FILENAME}.gz";

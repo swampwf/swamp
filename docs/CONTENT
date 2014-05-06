@@ -1,0 +1,34 @@
+SWAMP Documentation
+===================
+
+This directory contains the SWAMP documentation.
+
+documents/
+-----
+toms diploma thesis
+
+
+docbook/
+------------------------
+SWAMP Core Documentation
+
+the documentation is in docbook format and can be build by: 
+"make html" or "make pdf". 
+(on SUSE Linux, this requires the "docbook-toys" package to be installed)
+
+swamp-adminguide.xml: 
+	documentation for administrating SWAMP, creating workflow definition files.
+swamp-installguide.xml:
+	how to install SWAMP from RPM, source, set up MySQL backend
+swamp-develguide.xml: 
+	documentation for developers. (not ready yet)
+	
+The generated html or pdf files will end up in pdf-/html-* subdirectories. 
+The generated docu is also available online at: http://swamp.sf.net/index.php?seite=docs
+
+	
+
+artwork/
+----
+gfx for advertising SWAMP
+

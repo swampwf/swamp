@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#- generating .pot from strings
+#- update/create .po translation files 
+	
+SWAMP_HOME=@SWAMP_HOME@;
+cd $SWAMP_HOME;
+rm -f $SWAMP_HOME/conf/i18n/keys.pot; touch $SWAMP_HOME/conf/i18n/keys.pot;
+
+echo "Create `pwd`/conf/i18n/keys.pot";
+# extract all String from tr() calls to .pot file
+for i in `find src -name "*.java"`; do 
+   xgettext -j -L Java --keyword= -ktr -o conf/i18n/keys.pot $i;
+done
+
+
+for i in `find conf/i18n/ -maxdepth 1 -name "*.po"`; do 
+    echo "Update $i";
+	msgmerge --backup=off -U $i conf/i18n/keys.pot
+done
+
+
+cd webapps/webswamp;
+rm -f conf/i18n/keys.pot; touch conf/i18n/keys.pot;
+
+echo "Create `pwd`/conf/i18n/keys.pot";
+# extract all String from tr() calls to .pot file
+for i in `find src -name "*.java"`; do 
+   xgettext -j -L Java --keyword= -ktr -o conf/i18n/keys.pot $i;
+done
+
+#also grep from velocity files: 
+# extract all String from tr() calls to .pot file
+for i in `find templates -name "*.vm"`; do 
+	xgettext -j -L Java --keyword= -ktr -o conf/i18n/keys.pot $i;
+done
+	
+#also grep from workflows velocity files: 
+# extract all String from tr() calls to .pot file
+for i in `find ../../conf/workflows/*/*/templates -name "*.vm"`; do 
+#   #echo "Calling: xgettext -ktrc -ktr -kmarktr -ktrn:1,2 -o conf/i18n/keys.pot $i;";
+   xgettext -j -L Java --keyword= -ktr -o conf/i18n/keys.pot $i;
+done
+	
+for i in `find conf/i18n/ -maxdepth 1 -name "*.po"`; do 
+    echo "Update $i";
+	msgmerge --backup=off -U $i conf/i18n/keys.pot
+done

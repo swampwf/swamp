@@ -1,0 +1,222 @@
+SWAMP UPGRADE NOTES: 
+---------
+The upgrade notes are useful when you want to convert an existing swamp database to the latest version 
+without rebuilding it. 
+---------
+
+1.6 -> 1.6.1
+
+- A new variable is needed in conf/defaults: SCRIPT_VERIFY_ON_STARTUP=[true|false]
+- The "language" attribute moved from the <scriptaction> element to <script>.
+  (Because user actions can have a <script> now too, that gets called for verification.)
+- Workflow .conf files get parsed with commons configuration, that means values that are not 
+  lists must escape commas. (\,)
+
+
+1.5.9 -> 1.6
+
+ALTER TABLE `dbDataconditions` CHANGE `condValue` `condValue` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
+in conf/defaults LOGIN_URL got renamed to BUGZILLA_LOGIN_URL
+
+1.5.8 -> 1.5.9
+
+-- milestones can be shown/hidden
+ALTER TABLE `dbMilestones` DROP `name`;
+ALTER TABLE `dbMilestones` DROP `reached`;
+ALTER TABLE `dbMilestones` ADD `displayed` TINYINT NOT NULL DEFAULT '1';
+UPDATE `dbMilestones` SET displayed =1 WHERE 1;
+
+-- new scheduler for reminder mails
+INSERT INTO `TURBINE_SCHEDULED_JOB` 
+(`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
+VALUES 
+('0', '00', '07', '-1', '-1', 'NotifyReminderScheduler', '', '');  
+
+
+
+1.5.7 -> 1.5.8
+
+- The role definition format in the xml has changed: 
+  the new definition looks like this: 
+	<role name="..." restricted="true|false" type="databit|value|reference|dbreference">
+		<rolevalue>...</rolevalue>
+	</role>
+
+
+
+1.5.6 -> 1.5.7
+
+- No incompatible changes so far.
+
+
+
+1.5.5 -> 1.5.6
+
+-- increase notification job rate 
+UPDATE TURBINE_SCHEDULED_JOB SET MINUTE = '5' WHERE TASK = 'NotifyScheduler' LIMIT 1 ;
+
+
+1.5.4 -> 1.5.5
+
+-- Database schema needs to be changed: 
+
+ALTER TABLE `dbComments` CHANGE `date` `date` DATETIME NULL;
+
+
+
+
+1.5.3 -> 1.5.4
+
+-- Database schema needs to be changed: 
+
+ALTER TABLE `dbDatabits` CHANGE `name` `name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ; 
+
+-- add new comments table: 
+
+CREATE TABLE IF NOT EXISTS `dbComments` (
+  `databitID` int(11) NOT NULL default '0',
+  `userName` varchar(255) NOT NULL,
+  `date` datetime NOT NULL,
+  PRIMARY KEY  (`databitID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- convert the database to utf-8: 
+-- (need to add default-character-set=utf8 to the my.cnf)
+
+ALTER DATABASE `swamp` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbConditions` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbContexthelp` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbDatabitenums` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbDatabits` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbDataconditions` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbDatasets` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbEditinfos` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbEventconditions` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbEventhistory` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbGroups` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbHistory` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbMilestones` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbNodes` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbNotifications` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbPermissions` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbStatistics` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbSubsfinishedconditions` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbTasks` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbUsers` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbUsers_Groups` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+ALTER TABLE `dbWorkflows` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci; 
+
+-- make the text fields ready for utf8 input: 
+
+ALTER TABLE `dbHistory` CHANGE `data` `data` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL;
+ALTER TABLE `dbDatabits` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE `dbDatabitenums` CHANGE `value` `value` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbDatabits` CHANGE `description` `description` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL ;
+ALTER TABLE `dbDataconditions` CHANGE `condValue` `condValue` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbDatasets` CHANGE `description` `description` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbDatasets` CHANGE `name` `name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbGroups` CHANGE `GROUP_NAME` `GROUP_NAME` VARCHAR( 99 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbMilestones` CHANGE `name` `name` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbNodes` CHANGE `name` `name` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbTasks` CHANGE `actionName` `actionName` VARCHAR( 128 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbUsers` CHANGE `FIRST_NAME` `FIRST_NAME` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE `dbUsers` CHANGE `LAST_NAME` `LAST_NAME` VARCHAR( 64 ) CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- bugzilla datatype renamed to bugzilla: 
+
+update dbDatabits SET `datatype` = 'bugzilla' WHERE `datatype` = 'bugzilla_id';
+
+-- update comment datatypes: 
+
+update `dbDatabits` set `datatype`='thread' where `datatype`='comment' AND `description` LIKE '%Comment by%';
+
+
+-- Workflow schema has changed: 
+
+attribute eventtype of recipient elements was removed.
+
+1.5.1 -> 1.5.3
+
+- Database schema needs to be changed: 
+ALTER TABLE `dbHistory` CHANGE `workflowID` `workflowID` INT( 11 ) DEFAULT NULL ;
+ALTER TABLE `dbTasks` CHANGE `state` `state` INT( 4 ) NOT NULL DEFAULT '0';
+ALTER TABLE `dbEventconditions` CHANGE `state` `state` SMALLINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbSubsfinishedconditions` CHANGE `state` `state` TINYINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbNodes` CHANGE `isendnode` `isendnode` TINYINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbNodes` CHANGE `activity` `activity` TINYINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbMilestones` CHANGE `reached` `reached` TINYINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbDatabits` CHANGE `state` `state` SMALLINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbDatasets` CHANGE `state` `state` INT( 6 ) NOT NULL DEFAULT '0';
+ALTER TABLE `dbDataconditions` CHANGE `state` `state` TINYINT NOT NULL DEFAULT '0';
+ALTER TABLE `dbTasks` ADD INDEX ( `actionName` );
+ALTER TABLE `dbUsers` DROP INDEX `dbUsers_I_USER_ID`;
+ALTER TABLE `dbUsers` DROP INDEX `dbUsers_I_LOGINNAME`;
+ALTER TABLE `dbDataconditions` DROP INDEX `dataCond_I_condID`;
+ALTER TABLE `dbEventconditions` DROP INDEX `eventCond_I_condID`;
+ALTER TABLE `dbSubsfinishedconditions` DROP INDEX `eventCond_I_condID`;
+ALTER TABLE `dbWorkflows` DROP INDEX `wfstore_I_wfid`;
+ALTER TABLE `dbUsers` CHANGE `PASSWORD_MD5` `PASSWORD_MD5` VARCHAR( 64 ) DEFAULT NULL ;
+
+- method signature of custom actions has changed to: 
+  public Boolean method(Integer wfid, String userId) throws Exception
+  
+- The attribute "defaultdataset" has been removed from the element "workflow" in the definition file as 
+  each definition only contains one toplevel dataset which is automatically the default dataset.
+
+- Subworkflows have 2 new attributes in the workflow element of their definition: parentwf="..." and parentwfversion="..." 
+  to help the verifier in checking the definition for errors.
+  
+
+
+1.5 -> 1.5.1
+
+- No incompatible changes so far.
+
+
+1.4.1 -> 1.5
+- No changes to workflow.dtd. 
+- The databese schema has been extended 
+  to be able to set a custom reply-to in notifications. 
+  To upgrade an existing installation please add the column manually. Example: 
+  echo "ALTER TABLE dbNotifications ADD replyto VARCHAR( 255 );" | mysql -u swamp -p swamp
+- The prefix for workflow attachment filesnames has changed from the datasetid to the databitid. 
+- A table for statistical data has been added, to add it manually, please run: 
+  CREATE TABLE `dbStatistics` (
+  `id` int(11) NOT NULL auto_increment,
+  `wftype` varchar(100) NOT NULL default '',
+  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `runningcount` int(11) NOT NULL default '0',
+  `avgage` bigint(20) NOT NULL default '0',
+  PRIMARY KEY  (`id`)
+  );
+  and add the statistic scheduler to constantly store runtime data: 
+  echo "INSERT INTO TURBINE_SCHEDULED_JOB (SECOND, MINUTE, HOUR, WEEK_DAY, DAY_OF_MONTH, TASK, EMAIL, PROPERTY) VALUES (0, 10, 24, -1, -1, 'Statistics', '', '');" | mysql -u swamp -p swamp
+- the workflow minimal-test has been renamed to minimal_test to match the restrictions.
+  (workflow names should be valid java package names)
+
+
+
+1.4.0 -> 1.4.1
+add version attribute to workflow.xml
+
+
+  
+Description
+-----------
+
+SWAMP is a generic Workflow-Management-System which does not contain any Workflow-specific code. 
+The workflow definitions are read from XML Files.
+  
+  
+Feedback 
+----------------
+
+  We are open for every kind of comment/feedback on SWAMP.
+  Please write to swamp [at] suse.de or join our mailinglist: 
+  http://lists.sourceforge.net/lists/listinfo/swamp-devel
+  
+
+  
+  
+  

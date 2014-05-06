@@ -1,0 +1,27 @@
+SWAMP INSTALLATION NOTES: 
+---------
+
+Please have a look into docs/CONTENT for a howto generate the documentation, 
+or read it online at: 
+http://swamp.sf.net/index.php?seite=docs
+
+  
+Description
+-----------
+
+SWAMP is a flexible, java based workflow server that runs on top of tomcat. 
+It reads its workflow definitions from XML files. Administration and tracking of workflow instances, 
+execution of individual tasks can be done via the web and SOAP interfaces.
+  
+  
+Feedback 
+----------------
+
+  We are open for every kind of comment/feedback on SWAMP.
+  Please write to swamp [at] suse.de or join our mailinglist: 
+  http://lists.sourceforge.net/lists/listinfo/swamp-devel
+  
+
+  
+  
+  

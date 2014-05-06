@@ -1,0 +1,67 @@
+$page.setBgColor($ui.bgcolor)
+
+<table width="100%" style="padding:0px; border-spacing:0px;">
+    <tr>
+	<td align="left" width="75">
+	
+	#if($ui.getInterface() && $ui.hasTemplate($ui.getInterface(), "page_top.vm"))
+		## Include Header template from Workflow-Interface
+		#parse("screens/workflows/${ui.getInterface()}/page_top.vm")
+	#else 	
+	
+		<a href="$link.setPage($turbineconf.getString("template.homepage"))">
+		## display testserver logo
+		#if ($turbineconf.getProperty("webswamp.testserver").equals("true"))
+			<a href="$link.setPage($turbineconf.getString("template.homepage"))">
+			<img src="$ui.image("logo_test")" border="0" alt="SWAMP Index" hspace="2" /></a>
+		#else 
+			##display workflow dependant logo
+			#if(!$ui.getInterface().equals("") && $ui.hasConfigValue($ui.getInterface(), "logo") && !$standardlogo) 
+				## TODO: link to workflows startpage
+				<a href="$link.setPage($turbineconf.getString("template.homepage"))">
+				<img src="$ui.getResourcePath($ui.getInterface(), "logo")" border="0" alt="$ui.getInterface() Index" hspace="2" /></a>	
+			#else 
+				<a href="$link.setPage($turbineconf.getString("template.homepage"))">
+				<img src="$ui.image("logo")" border="0" alt="SWAMP Index" hspace="2" /></a>	
+			#end
+		#end
+	#end
+	</td>
+
+
+	#if ($!helps && $!helps.size() > 0)
+	<td align="right" valign="top" width="100%">
+    	    <table cellpadding="0" cellspacing="0" border="0" style="border-width: 1px; border-style:solid; ">
+            <tr><td class="box_head" valign="top">
+            <table class="box_head"><tr><td>
+            <img src="$ui.image("help_16")" alt="" valign="middle" /></td>
+            <td class="box_head">
+             $ui.tr("available Help topics: ", $data.getUser())</td></tr></table>
+            </td>
+	    </tr><tr>
+	    <td class="box_nomal" valign="middle">
+	     
+	     <table>
+             #foreach ($helpitem in $helps)
+             <tr><td valign="top">
+             &middot; </td><td valign="top">
+             <a href="$link.setPage("Documentation.vm").addPathInfo("helpcontext", ${helpitem.getContext()})">$!{helpitem.getTitle()}</a><br />
+             </td></tr>
+             #end
+             </table>
+             
+             </td></tr> 
+    	    </table>
+	</td>
+	
+	#elseif(!$ui.hasTemplate($ui.getInterface(), "page_top.vm"))
+	
+	<td width="108" align="right"><img src="$ui.image("palastDerRepublik")" border="0" 
+		width="100" height="70" alt="Design" />
+	</td>
+	
+	#end
+
+    </tr>
+
+</table>

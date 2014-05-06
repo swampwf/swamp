@@ -1,0 +1,10 @@
+<div id="buginfo_content">
+<img src="$ui.image("buggie_16")"/> Summary for Bug #${bugInfo.get('bug_id')}
+<br/>
+<b>Summary:</b> ${bugInfo.get('short_desc')}<br/>
+<b>Product/Component:</b> ${bugInfo.get('product')}/${bugInfo.get('component')}<br/>
+<b>Status:</b> ${bugInfo.get('bug_status')}<br/>
+<b>Priority:</b> ${bugInfo.get('priority')}<br/>
+<b>Severity:</b> ${bugInfo.get('bug_severity')}<br/>
+<b>Assignee:</b> ${bugInfo.get('assigned_to')}
+</div>

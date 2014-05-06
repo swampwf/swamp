@@ -1,0 +1,39 @@
+#if ($rendertype.equals("wflist")) 
+    $content
+#elseif ($rendertype.equals("workflow"))
+    
+    #if ($content.equals(""))
+
+    <form method="POST" 
+    action="$link.setPage("DisplayWorkflow.vm").setAction("DatapackActions").addPathInfo("workflowid",${workflow.getId()})#data">
+    <table><tr><td valign="top">
+    #if (${field.getEditInfo()}) 
+    <textarea name="field_${field.getPath()}" cols="${field.getEditInfo().getXsize()}" rows="${field.getEditInfo().getYsize()}"></textarea>
+    #else
+    <textarea name="field_${field.getPath()}" cols="35" rows="5"></textarea>
+    #end
+    </td><td valign="bottom">
+    <input type="hidden" name="eventSubmit_doSavedatapack" value="true" />
+    <input type="submit" value="Add comment" />
+    </td></tr></table>
+    </form>
+    #else 
+        $content
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    #set ($xsize = 40)
+    #set ($ysize = 4)
+    #if (${field.getEditInfo()}) 
+        #set ($ysize = ${field.getEditInfo().getYsize()})
+        #set ($xsize = ${field.getEditInfo().getXsize()})
+    #end 
+
+    <textarea name="field_$field.getPath()" cols="$xsize" rows="$ysize">$!initval</textarea>
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

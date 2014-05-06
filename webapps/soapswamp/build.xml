@@ -1,0 +1,145 @@
+<!-- steps to take: 
+
+- copy axis stuff to /webapps
+- generate the static WSDL file from SWAMP manager interface 
+- generate deploy.wsdd deploy the Web service to a running Axis Web application, creating or modifying server-config.wsdd
+- generate client side proxy classes + test cases.
+-->
+
+
+	
+<project name="SoapSWAMP" default="generate" basedir=".">
+
+	<property file="${basedir}/../../build.properties" />
+	<property name="installdir" value="${catalina.base}/webapps/axis" />
+	
+	<path id="classpath">
+		<fileset dir="./lib">
+		  <include name="**/*.jar"/>
+		</fileset>
+		<fileset dir="../../build">
+		  <include name="swamp.jar"/>
+		</fileset>
+		<fileset dir="../../lib">
+		  <include name="*.jar"/>
+		</fileset>
+	</path>
+	
+	<mkdir dir="build"/>
+	
+	<taskdef resource="axis-tasks.properties" classpath="./build" 
+		classpathref="classpath"/>
+
+	
+	<!-- compile the SoapSwamp classes -->
+	<target name="compile" description="compile soapswamp">
+	    <javac debug="${compile.debug}" 
+    		optimize="${compile.optimize}" 
+    		deprecation="${compile.deprecation}" 
+    		verbose="${compile.verbose}" 
+    	    target="${compile.target}" 
+	    	source="${compile.source}"
+	    	destdir="build">
+	      <src path="src" />
+	      <classpath refid="classpath" />
+	    </javac>
+	</target>
+	
+	
+	
+	<!-- generate wsdl-file out of SoapSwamp class, 
+	and generate .wsdd and client code for automatic deploying on 
+	the axis/tomcat server -->
+	<target name="generate" depends="compile" description="generate wsdl">
+		<axis-java2wsdl
+		         output="build/SoapSwamp.wsdl"
+		         location="http://localhost:8080/axis/services/swamp"
+		         namespace="SWAMP"
+		         classname="de.suse.swamp.soap.SoapSwamp">
+		</axis-java2wsdl>
+	</target>
+	
+	
+	<target name="generate-clientsrc" depends="generate" description="Generate client src">
+		<mkdir dir="build/clientsrc"/>
+		<axis-wsdl2java
+		      output="build/clientsrc"
+		      deployscope="Application"
+		      serverside="true"
+		      url="build/SoapSwamp.wsdl" 
+			  implementationclassname="de.suse.swamp.soap.SoapSwamp"
+			/>
+	</target>
+	
+	
+	<target name="server-config" depends="generate-clientsrc" 
+		description="Generate the server-config.wsdd file">
+		<java classname="org.apache.axis.utils.Admin"
+			  classpath="./build" 
+			  classpathref="classpath" 
+			  failonerror="true">
+			 <arg line=" server build/clientsrc/SWAMP/deploy.wsdd"/>
+		</java>	
+	</target>
+	
+	
+	<!-- copy all neccessary file to tomcat dirs. -->
+	<target name="install" depends="server-config" description="Install to tomcat">
+		<mkdir dir="${installdir}/WEB-INF"/>
+		<mkdir dir="${installdir}/WEB-INF/classes"/>
+		<mkdir dir="${installdir}/WEB-INF/lib"/>
+		
+		<copy todir="${installdir}/WEB-INF">
+			<fileset file="./web.xml"/>
+		</copy>
+		<copy todir="${installdir}">
+			<fileset file="./index.html"/>
+		</copy>
+		<copy todir="${installdir}/WEB-INF/lib">
+			<fileset dir="./lib"/>
+		</copy>
+		<copy todir="${installdir}/WEB-INF/classes">
+			<fileset dir="./build">
+				<include name="de/**"/>
+			</fileset>
+		</copy>
+		<copy todir="${installdir}/WEB-INF">
+			<fileset dir=".">
+				<include name="server-config.wsdd"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	
+	
+	<!-- Runs the Test Script that simulates SOAP Client calls -->
+	<target name="test" description="Test" depends="generate-clientsrc">
+		
+		<javac  debug="${compile.debug}" 
+    		optimize="${compile.optimize}" 
+    		deprecation="${compile.deprecation}" 
+    		verbose="${compile.verbose}" 
+    	    target="${compile.target}" 
+	    	source="${compile.source}" 
+		    destdir="build">
+	      	<src path="test" />
+			<src path="build/clientsrc" />
+	    	<classpath refid="classpath" />
+	    </javac>
+		
+		<java classname="de.suse.swamp.soaptest.TestClient"
+			  classpath="./build" 
+			  classpathref="classpath"
+			  fork="true">
+		</java>
+	</target>
+	
+	
+	<!-- remove build files -->
+	<target name="clean" description="Clean build dir">
+	  	<delete dir="build"/>
+		<mkdir dir="build"/>
+	</target>
+	
+	
+</project>

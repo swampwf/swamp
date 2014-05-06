@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE workflow SYSTEM "../../../../../swamp/swamp/conf/dtds/workflow.dtd">
+<workflow name="application" 
+          version="1.0" 
+          leastSWAMPVersion="1.6" 
+          parentwf="JobTracker"
+          parentwfversion="1.0">
+
+    <metadata>
+      <templatedescription>
+      	Workflow to track a Job-Application
+      </templatedescription>
+      <description>
+      	Application of $wf.getDatabitValue("bewerbungsdata.bewerberdata.name") 
+      </description>
+      <creator>tschmidt</creator>
+      
+      	<history>
+        <change who="tschmidt" when="2005-06-20">Version 0.1</change>
+        </history>
+      
+		<roles>
+			<role name="owner" restricted="true" type="databit">
+				<rolevalue>bewerbungsdata.roles.owner</rolevalue>
+			</role>
+			<role name="admin" restricted="true" type="reference">
+				<description>Application admins</description>
+				<rolevalue>parent.admin</rolevalue>
+				<rolevalue>parent.resp_teamlead</rolevalue>
+			</role>
+			<role name="starter" restricted="true">
+				<rolevalue/>
+			</role>
+			<role name="user" restricted="true" type="reference">
+				<rolevalue>parent.user</rolevalue>
+			</role>
+
+		</roles>
+    </metadata>
+
+
+
+   <node type="start" name="bewerbung_start">
+    	<description>Start Job-Application</description>
+
+		<notification name="new_application" msgtemplate="notifications/new_application">
+			<recipient recipientrole="parent.resp_depleader"/>
+			<recipient recipientrole="parent.hr_responsible"/>
+			<description>notify resp. depleads + hr of new application</description>
+		</notification>
+
+   		<!-- preparing default Bewertung from Abt.leiter -->
+		<scriptaction name="default_bewertung">
+			<description>request Dep.Lead + hiring manager rating</description>
+			<script>
+				$wf.getDatabit("bewerbungsdata.bewerterdata.name").addValue($wf.getDatabitValue("ausschreibungsdata.roles.abtleiter"))
+				$wf.getDatabit("bewerbungsdata.bewerterdata.name").addValue($wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager"))
+			</script>
+		</scriptaction>
+
+       <edge to="wait_cancel" event="none" />
+       <edge to="fork_bewertung" event="none" />
+       <edge to="bewerbung_manage" event="none" />
+       <edge to="node_milestone_start" event="none" />
+       <edge to="comment_listener" event="none" />
+   </node>
+   
+
+    <node name="node_milestone_start">
+		<description>Job-Application started</description>
+		<milestone name="Bewerbung_started" weight="3">
+			<description>Job-Application started</description>
+		</milestone>
+	</node>
+
+
+
+    <!-- Assuming that HR Data is already there -->
+    <node name="trigger_new_bewertung">
+    	<description>Trigger new Rating</description>
+		
+		<scriptaction name="remove_nandover">
+			<description>Reset rater + comment</description>
+			<script>
+			$wf.getDatabit("bewerbungsdata.roles.watcher").addValue($wf.getDatabitValue("bewerbungsdata.bewerterdata.name"))
+			$wf.getDatabit("bewerbungsdata.bewerterdata.name").setValue("")
+			$wf.getDatabit("bewerbungsdata.bewerterdata.request_comment").setValue("")
+			</script>
+		</scriptaction>
+
+		<dataedit role="admin" name="hand_over_task" 
+			eventtype="HAND_OVER" restricted="true">
+			<description>Ask for additional opinion</description>
+			<field mandatory="yes" path="bewerbungsdata.bewerterdata.name"/>
+			<field mandatory="no" path="bewerbungsdata.bewerterdata.request_comment"/>
+		</dataedit>
+		
+   		<edge to="fork_bewertung" event="HAND_OVER" />
+		<!-- deactivate on decision -->
+   		<edge to="deadend" event="INTERVIEWED" />
+    </node>	
+
+
+	<node name="deadend">
+		<description>Deadend</description>
+	</node>
+
+    
+    <!-- Assuming that HR Data is already there -->
+    <node name="bewerbung_manage">
+    	<description>Manage Job-Application</description>
+
+		<dataedit role="admin" name="make_decision" eventtype="DECISION" 
+			restricted="true">
+			<description>Invite $wf.getDatabitValue("bewerbungsdata.bewerberdata.name") for interview</description>
+			<longdesc>Please provide a short comment why $wf.getDatabitValue("bewerbungsdata.bewerberdata.name") 
+			should be invited.</longdesc>
+			<field mandatory="true" path="bewerbungsdata.results.add_comment_decision"/>
+		</dataedit>
+		
+		<dataedit role="admin" name="cancel_bewerbung" eventtype="WORKFLOW_CANCEL" 
+			mandatory="true" restricted="true">
+			<description>Reject this Job-Application</description>
+			<longdesc>Please provide a short comment why this applicant is rejected.</longdesc>
+			<field mandatory="true" path="bewerbungsdata.results.comment_decision"/>
+			<field mandatory="true" path="bewerbungsdata.results.add_comment_decision"/>
+		</dataedit>
+		
+		<edge to="announce_cancel">
+				<event type="WORKFLOW_CANCEL"/>
+		</edge>
+
+   		<edge to="hr_invite">
+   			<event type="DECISION"></event>
+   		</edge>
+    </node>				
+    			
+    			
+   			
+    			
+	<node name="fork_bewertung">
+		<description>Start new Rating Process</description>
+
+		<scriptaction name="useradd_bewerter">
+			<description>Adding evaluator, start rating processes</description>
+			<script>
+				#set ($users = $wf.getDatabit("bewerbungsdata.bewerterdata.name").getValueAsList())
+				#foreach($user in $users)
+				#if (!$wf.hasRole($user, "admin"))
+				$wf.getDatabit("ausschreibungsdata.roles.user").addValue($user)
+				#end
+				$wf.getDatabit("bewerbungsdata.bewerterdata.name").setValue($user)
+				#set ($subwf = $scriptapi.createSubWorkflow("rating", "1.0"))
+				#end
+			</script>
+		</scriptaction>
+		<edge to="trigger_new_bewertung" event="none" />
+	</node>
+			
+
+
+	<node name="comment_listener">
+		<description>Wait for new comment</description>
+		<edge to="notify_discussion">
+			<data check="changed" field="bewerbungsdata.discussion.discussion" />
+		</edge>
+		<edge to="notify_communication">
+			<data check="changed" field="bewerbungsdata.communication.communication" />
+		</edge>
+	</node>
+
+
+
+	<node name="notify_discussion">
+		<description>Notify discussion</description>
+		<scriptaction name="set_watchers">
+		<description>Set watchers</description>
+		<script>
+		## need to set them on every round, because team- or depleads might have changed
+		#set ($dbit = $wf.getDatabit("bewerbungsdata.roles.watcher"))
+		$dbit.addValue($wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager"))
+		$dbit.addValue($wf.getDatabitValue("ausschreibungsdata.roles.abtleiter"))
+		</script>
+		</scriptaction>
+		
+		<notification name="not_discussion" msgtemplate="notifications/discussion">
+			<recipient dbit="bewerbungsdata.roles.watcher"/>
+			<description>New discussion notification</description>
+		</notification>
+		<edge to="comment_listener" event="none" />
+	</node>
+
+
+
+	<node name="notify_communication">
+		<description>Notify communication</description>
+		<scriptaction name="set_watchers2">
+		<description>Set watchers</description>
+		<script>
+		## need to set them on every round, because team- or depleads might have changed
+		#set ($dbit = $wf.getDatabit("bewerbungsdata.roles.watcher"))
+		$dbit.addValue($wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager"))
+		$dbit.addValue($wf.getDatabitValue("ausschreibungsdata.roles.abtleiter"))
+		</script>
+		</scriptaction>
+		
+		<notification name="not_communication" msgtemplate="notifications/communication">
+			<recipient dbit="bewerbungsdata.roles.watcher"/>
+			<description>New communication notification</description>
+		</notification>
+		<edge to="comment_listener" event="none" />
+	</node>
+
+			    							
+
+	<node name="wait_cancel">
+		<description>wait for external cancel</description>
+		<edge to="canceled">
+		<or>
+        <event type="PARENTWORKFLOW_FINISHED"/>
+		<or>
+		<event type="JOBTRACKER_FINISHED"/>
+		<event type="JOBTRACKER_CANCELED"/>
+		</or>
+		</or>
+		</edge>
+	</node> 
+
+	
+	
+	<node name="hr_invite">
+		<description>Invite the Candidate</description>
+		
+		<dataedit name="invite" role="parent.hrs" eventtype="INVITED"
+			notificationtemplate="notifications/please_invite" restricted="true">
+			<description>Please invite $wf.getDatabitValue("bewerbungsdata.bewerberdata.name")</description>
+			<longdesc>
+			
+			#set ($entries = $wf.getNode("hr_invite").getHistoryEntries($wf.getId(), "NODE_ENTER"))
+			#if ($entries &amp;&amp; $entries.size() > 0)
+			#set ($index = ${entries.size()} - 1)
+			#set ($who = $entries.get($index).getWho())
+			$who requested to invite $wf.getDatabitValue("bewerbungsdata.bewerberdata.name"). \n
+			#end
+			
+			With comment: \n
+			$wf.getDatabitValue("bewerbungsdata.results.add_comment_decision")	\n
+			\n
+			Please enter the date and participants of the interview. \n 
+			</longdesc>
+			
+			<field path="bewerbungsdata.results.interview_when" mandatory="false"/>
+			<field path="bewerbungsdata.results.interview_who" mandatory="false"/>
+			
+		</dataedit>
+		
+	<edge to="interview_fazit" event="INVITED"/>
+	<edge to="node_milestone_hr_invite" event="INVITED"/>
+	</node>
+    									
+    									
+
+    <node name="node_milestone_hr_invite">
+		<description>Candidate invited</description>
+	<milestone name="milestone_hr_invite" weight="9">
+		<description>Candidate invited</description>
+	</milestone>
+	</node>
+
+
+
+	<node name="interview_fazit">
+		<description>Enter Interview results</description>
+		
+		<longdesc>
+		The candidate has been invited for a meeting 
+		#if ($wf.getDatabitValue("bewerbungsdata.results.interview_when").length() > 0)
+		at: 
+		$wf.getDatabitValue("bewerbungsdata.results.interview_when") 
+		#end
+		#if ($wf.getDatabitValue("bewerbungsdata.results.interview_who").length() > 0)
+		with  $wf.getDatabitValue("bewerbungsdata.results.interview_who") 
+		#end
+		</longdesc>
+		
+		<scriptaction name="remove_handover">
+			<description>Reset age counter</description>
+			<script>$wf.getDatabit("bewerbungsdata.inactive_count").setValue("0")</script>
+		</scriptaction>
+		
+		<dataedit role="parent.hr_responsible" name="interview" eventtype="INTERVIEWED" 
+			notificationtemplate="notifications/interview_outcome">
+			<description>
+				Conclusion of interview with ${wf.getDatabitValue("bewerbungsdata.bewerberdata.name")}.
+			</description>
+			<field mandatory="yes" path="bewerbungsdata.results.accepted"/>
+			<field mandatory="no" path="bewerbungsdata.results.comments"/>
+		</dataedit>
+	<edge to="announce_finish" event="INTERVIEWED"/>
+	<edge to="node_milestone_fazit" event="INTERVIEWED"/>
+	</node>
+
+
+
+
+    <node name="node_milestone_fazit">
+		<description>Interview done</description>
+	<milestone name="milestone_hr_fazit" weight="19">
+		<description>Interview done</description>
+	</milestone>
+	</node>
+
+
+
+	<node name="announce_cancel">
+		<description>
+		Announcing Job-Application rejected
+		</description>
+		<notification name="announce_cancel_mail" msgtemplate="notifications/announce_cancel">
+			<recipient recipientrole="parent.hr_responsible"/>
+			<recipient recipientrole="parent.resp_teamlead"/>
+			<recipient recipientrole="parent.resp_depleader"/>
+		</notification>
+		<edge to="canceled" event="none"/>
+	</node>
+	
+	
+	<node name="announce_finish">
+		<description>Announcing Job-Application finished</description>
+		
+		<scriptaction name="copy_candidate">
+			<description>copy candidate name to ausschreibung if won</description>
+			<script>
+			#if ($wf.getDatabitValue("bewerbungsdata.results.accepted").equals("Yes"))
+			$wf.getDatabit("ausschreibungsdata.candidate").setValue($wf.getDatabitValue("bewerbungsdata.bewerberdata.name"));
+			#end
+			</script>
+		</scriptaction>
+		
+		<notification name="announce_finish_mail" 
+			msgtemplate="notifications/announce_finish">
+			<recipient recipientrole="parent.hr_responsible"/>
+			<recipient recipientrole="parent.resp_teamlead"/>
+			<recipient recipientrole="parent.resp_depleader"/>
+		</notification>
+		
+		<edge to="theend" event="none"/>
+	</node>
+
+   <!-- ############## End nodes ##################### -->
+
+	<node type="end" name="canceled">
+		<description>Job-Application is rejected</description>
+		
+		<customtask function="removeEmptyRatings" name="removeEmptyRatings" 
+			class="de.suse.swamp.suse.custom.JobTrackerActions" eventtype="none">
+			<description>delete all uncommented ratings</description>
+		</customtask>
+		
+		<!-- send event to subwfs about finish -->
+		<sendevent name="signal_bewerbung_cancel" eventtype="BEWERBUNG_FINISHED">
+	  		<targetwfs>
+	  		#foreach ($subwf in $wf.getSubWorkflows(true))
+	  			$subwf.getId(), 
+	  		#end
+	  		</targetwfs>  			
+		</sendevent>
+	</node>
+
+
+    <node type="end" name="theend">
+		<description>Job-Application finished</description>
+		<milestone name="milestone_theend" weight="99">
+			<description>Job-Application finished</description>
+		</milestone>
+	
+		<customtask function="removeEmptyRatings" name="removeEmptyRatings2" 
+			class="de.suse.swamp.suse.custom.JobTrackerActions" eventtype="none">
+			<description>delete all uncommented ratings</description>
+		</customtask>
+	
+		<!-- send event to subwfs about finish -->
+		<sendevent name="signal_bewerbung_close" eventtype="BEWERBUNG_FINISHED">
+	  		<targetwfs>
+	  		#foreach ($subwf in $wf.getSubWorkflows(true))
+	  			$subwf.getId(), 
+	  		#end
+	  		</targetwfs>  			
+		</sendevent>
+    </node>
+
+    <!-- ############## WF DATA ##################### -->
+    
+    <dataset name="bewerbungsdata" description="Data for this Job-Application">
+   
+	<databit name="inactive_count" shortdesc="age" 
+		description="Inactive since # days" type="number">
+		<defaultvalue>0</defaultvalue>
+	</databit>
+    
+	<dataset description="Results" name="results" state="read-write">
+		<databit name="contacting" description="contact by mail for further details" type="string"/>
+		<databit name="contacted_at" description="contacted at" type="date"/>
+		
+		<databit name="accepted" description="The applicant was taken for this job" type="enum">
+			<defaultvalue>No</defaultvalue>
+			<value type="string">Yes</value>
+			<value type="string">No</value>
+		</databit>
+		
+		
+		<databit name="comment_decision" description="comment for the decision" type="enum">
+			<defaultvalue>No default text.</defaultvalue>
+			<value type="string">No default text.</value>
+			<value type="string">
+			<!--  1) [vielversprechender Bewerber, aber derzeit keine passende Stelle] -->
+			Wir haben Ihre Bewerbung mit viel Interesse und Freude gelesen. Derzeit
+			können wir Ihnen leider keine passende Stelle anbieten möchten Sie
+			aber ausdrücklich ermuntern, unsere Stellenausschreibung weiterhin zu
+			verfolgen und sich zu einem späteren Zeitpunkt nochmals mit Hinweis
+			auf dieses Schreiben zu bewerben.
+			</value>
+			<value type="string">
+ 			<!-- 2) ["bequeme" Initiativbewerbungen] -->
+			Wir möchten Sie bitten, sich auf eine konkret ausgeschriebene Stelle
+			zu bewerben und in der Bewerbung anzugeben, warum Sie für diese Stelle
+			ein idealer Kandidat sind.
+			</value>
+			<value type="string">
+			<!-- 3) [Praktikumsbewerbungen unter 6 Monaten] -->
+			Wir bieten Praktika generell nicht unter einem Zeitraum von wenigstens
+			6 Monaten an. Wenn dies für Sie keinen Hinderungsgrund darstellt,
+			dann möchten wir Sie bitten uns dies nochmals mit Ihrer Bewerbung
+			mitzuteilen.
+			</value>
+		</databit>
+		<databit name="add_comment_decision" 
+			description="Comment for invitation/reject" type="string">
+				<dbedit type="text" ysize="6" xsize="60"/>
+		</databit>
+
+		<databit name="comments" description="Interview comments" type="text"/>
+		<databit name="interview_who" description="Who will attend the interview" type="person">
+			<longdesc>Comma seperated list of usernames</longdesc>
+		</databit>
+		<databit name="interview_when" description="When will the interview take place?" type="datetime"/>
+			
+		
+	</dataset>
+
+    <!-- Values will be copied in from the Ausschreibung Workflow -->
+    <dataset description="Applicant-Data" name="bewerberdata" state="read-write">
+		 <databit name="name" description="Name of the Job-Applicant" type="string"/>
+		 <databit name="eingang_am" description="Received at" type="date"/>
+		 <databit name="wiederholt" description="repeated application" type="boolean">
+			 <defaultvalue>false</defaultvalue>
+		 </databit>
+		 <databit name="intern" description="internal application" type="boolean">
+			 <defaultvalue>false</defaultvalue>
+		 </databit>
+	</dataset>
+	
+	
+	<dataset description="Applicants Files" name="files" state="read-write">
+		<databit name="file1" description="File1" type="fileref"/>
+		<databit name="file2" description="File2" type="fileref"/>
+		<databit name="file3" description="File3" type="fileref"/>
+		<databit name="file4" description="File4" type="fileref"/>
+	</dataset>
+	
+	<dataset description="Communication with the applicant" name="communication" state="read-write">
+		<databit name="communication" description="Communication with the applicant" type="comment"/>
+	</dataset>
+
+	<dataset description="internal discussion" name="discussion" state="read-write">
+		<databit name="discussion" description="internal discussion" type="comment"/>
+	</dataset>	
+	
+	<dataset description="Request a rating" name="bewerterdata" state="hidden">
+		 <databit name="name" description="request a rating from (comma seperated list of userids)" type="person" state="hidden"/>
+		 <databit name="request_comment" description="Comment for rating request" type="text" state="hidden"/>
+	</dataset>
+	
+	<dataset description="Roles" name="roles" state="hidden">
+		 <databit name="owner" description="Owner" type="person" state="hidden"/>
+		 <databit name="watcher" description="notify on comments" type="person" state="hidden"/>
+	</dataset>
+	
+	
+    </dataset>
+</workflow>

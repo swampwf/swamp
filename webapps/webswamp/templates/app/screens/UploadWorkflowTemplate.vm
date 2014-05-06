@@ -1,0 +1,63 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+    <tr class="box_head">
+          <td colspan="2">Adding new workflow definition</td>
+    </tr>
+
+
+#if (!$!result.hasErrors()) 
+
+#foreach ($error in $errors)
+	<tr><td width="20">
+	<img src="$ui.image("critical_16")">
+	</td><td>$error</td></tr>
+#end
+
+#foreach ($warning in $warnings)
+	<tr><td width="20">
+	<img src="$ui.image("alert_16")">
+	</td><td>$warning</td></tr>
+#end
+
+#end
+
+
+
+#if ($result.hasErrors() || $errors.size() > 0)
+	<tr><td width="20">
+	<img src="$ui.image("critical_16")">
+	</td><td>
+	
+	Cannot add uploaded workflow template to the list of available templates 
+	because of the previous errors.
+	</td></tr>
+	
+	<tr><td colspan="2">
+	<form method="POST"  enctype="multipart/form-data" 
+	action="$link.setPage("UploadWorkflowTemplate.vm").setAction("WorkflowActions")">
+	Try again:  
+	<input type="file" name="filename">
+	<input type="submit" name="eventSubmit_doUploadworkflow" value="--> upload"/>
+	</form>
+	
+	
+	</td></tr>
+#else 
+
+	<tr><td colspan="2">
+	
+	<form method="post" action="$link.setPage("WorkflowTemplateEdit.vm").setAction("WorkflowActions")">
+	
+	<input type="hidden" name="uniqueid" value="$uniqueid" />
+	<input type="submit" name="eventSubmit_doInstallworkflow" value="--> install"/>
+	
+	</form>
+	
+	</td></tr>
+
+#end
+
+
+</table>

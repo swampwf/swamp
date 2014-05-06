@@ -1,0 +1,96 @@
+
+## Expects the welcome text template name in $messagesName
+
+<script language="JavaScript">
+  	function showwftext(target) {
+	  	var obj = document.getElementById(target).style; obj.display='block'; 
+	}
+  	function hidewftext(target) {
+	  	var obj = document.getElementById(target).style; obj.display='none'; 
+	}
+  	function hidealltexts() {
+  		#foreach ($wftemplate in $latesttemplates)
+	  	var obj = document.getElementById('wftext-${wftemplate.getName()}').style; obj.display='none'; 
+	  	#end
+	  	var obj = document.getElementById('defaulttext').style; obj.display='none'; 
+	}
+</script>
+
+
+<table class="box_normal" style="border-width: 1px; border-style:solid; " >
+	<tr class="box_normal" height="300">
+	<td valign="top" >
+
+	<table>
+	<tr><td colspan="2" onmouseover="hidealltexts(); showwftext('defaulttext'); " >
+	<b>$ui.tr("Please choose your workflow:", $data.getUser()) </b><br /><br /></td></tr>
+	
+	#foreach ($wftemplate in $latesttemplates)
+	
+		#if (!$wftemplate.getParentTemplate())
+	
+		#set ($templatename = $wftemplate.getName())
+		<tr><td onmouseover="hidealltexts(); showwftext('wftext-${templatename}'); " width="30">
+	
+		#set ($indexlink = $link.setActionEvent("UserActions", "doInterface").addPathInfo("interface", $templatename).addPathInfo("wftemplate", $templatename).addPathInfo("template", $ui.getIndexPath($templatename)))
+		<a href="$indexlink">
+	
+		#if ($ui.hasConfigValue($wftemplate, "icon"))
+			<img src="$ui.getResourcePath($wftemplate, "icon")" alt="$templatename Icon" /></a><br />
+		#else
+			<img src="$ui.image("workflow-std_32")" alt="$templatename Icon" /></a><br />
+		#end
+		</a>
+	
+		</td><td onmouseover="hidealltexts(); showwftext('wftext-${templatename}'); " >
+		#set ($indexlink = $link.setActionEvent("UserActions", "doInterface").addPathInfo("interface", $templatename).addPathInfo("wftemplate", $templatename).addPathInfo("template", $ui.getIndexPath($templatename)))
+		<a href="$indexlink">
+		$wftemplate.getName()
+		</a>
+		
+		</td><tr>
+		#end
+	
+	#end
+	
+	</table>
+	
+	</td><td width="100">&nbsp;</td>
+	
+	<td valign="top" >
+	
+	<table class="box_light" cellpadding="3" cellspacing="3" width="500" style="border-width: 1px; border-style:solid; ">
+	<tr class="box_light">
+	<td>
+	
+	<div id="defaulttext">
+	#parse($messagesName)
+	</div>
+	
+	#foreach ($wftemplate in $latesttemplates)
+		<div id="wftext-${wftemplate.getName()}" style="display: none; ">
+		
+		<table><tr><td width="30">
+		#if ($ui.hasConfigValue($wftemplate, "icon"))
+			<img src="$ui.getResourcePath($wftemplate, "icon")" alt="$templatename Icon" /></a><br />
+		#else
+			<img src="$ui.image("workflow-std_32")" alt="$templatename Icon" /></a><br />
+		#end
+		</td><td>
+		<b>$wftemplate.getName()</b>
+		</td></tr>
+		<tr><td colspan="2">
+		<br />
+		$ui.newlineEncode($wftemplate.getTemplateDescription())
+		
+		</td></tr></table>
+		</div>
+	#end
+	
+	</td></tr></table>
+	
+	
+	</td>
+	
+	</tr>
+</table>

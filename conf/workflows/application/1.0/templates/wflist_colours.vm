@@ -1,0 +1,9 @@
+
+<table cellpadding="3" cellspacing="1" style="border-width: 1px; border-style: solid;" >
+<tr>
+<td>applications are coloured: </td>
+	<td style="background-color: #d0d0d0; ">closed</td>
+	<td style="background-color: #fff044; ">older 14 days</td>
+	<td style="background-color: #ff7700; ">older 28 days</td>
+</tr>
+</table>

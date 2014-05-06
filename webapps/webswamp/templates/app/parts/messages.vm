@@ -1,0 +1,22 @@
+$ui.tr("Welcome to the web interface of SWAMP.", $data.getUser())<br />
+$ui.tr("The README file for SWAMP %1 can be found <a href='/webswamp/README'>here</a>.", $data.getUser(), $swampVersion) 
+<br /><br />
+
+#if (!$turbineconf.getProperty("webswamp.testserver").equals("false"))
+$ui.tr("This is a SWAMP Testsystem. ", $data.getUser())
+$ui.tr("Please be aware that you can test everything here and no mails etc will be sent out. ", $data.getUser())
+<br /><br />
+#end
+
+$ui.tr("Please test and check the system out by:", $data.getUser()) 
+<ul>
+  <li>$ui.tr("browse installed workflow templates", $data.getUser())</li>
+  <li>$ui.tr("create new Workflows", $data.getUser())</li>
+  <li>$ui.tr("view already existing workflows", $data.getUser())</li>
+  <li>$ui.tr("use the workflows", $data.getUser())</li>
+  
+</ul>
+<b>$ui.tr("Please visit our project homepage at", $data.getUser())  
+<a href="http://swamp.sf.net">http://swamp.sf.net</a> 
+$ui.tr("for more information.", $data.getUser())</b>
+<br /><br />

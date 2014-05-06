@@ -1,0 +1,10 @@
+<Context path="/rss" docBase="${catalina.base}/webapps/rss" 
+	debug="9" 
+	privileged="true"
+	cookies="true" 
+	reloadable="false">
+	
+   <!-- using our Realm for connecting HTTP-Auth -->
+   <Realm className="de.suse.swamp.rss.auth.SwampRssRealm" />
+
+</Context>

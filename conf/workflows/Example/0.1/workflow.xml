@@ -1,0 +1,360 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "../../../dtds/workflow.dtd">
+<workflow name="Example" 
+          version="0.1" 
+          leastSWAMPVersion="1.5.4" 
+          parentwf="Example" 
+          parentwfversion="0.1">
+
+	<metadata>
+		<templatedescription>Workflow for Testing Issues</templatedescription>
+		<description>Workflow for Testing Issues</description>
+		<creator>Thomas Schmidt</creator>
+		<history>
+		<change who="tschmidt" when="2004-10-27">Creation</change>
+		</history>
+		
+		<roles>
+			<role name="owner" restricted="true" type="databit">
+				<rolevalue>testdataset.roles.owner</rolevalue>
+			</role>
+			<role name="admin" restricted="true">
+				<description>Admins</description>
+				<rolevalue>swamp_admin</rolevalue>
+			</role>
+			<role name="starter" restricted="true" type="databit">
+				<rolevalue>testdataset.roles.starter</rolevalue>
+			</role>
+			<role name="user" restricted="false" type="databit">
+				<rolevalue>testdataset.roles.user</rolevalue>
+			</role>
+		</roles>
+			
+	</metadata>
+
+
+	<node type="start" name="start">
+	<description>Start node</description>
+	<longdesc>long description for that node</longdesc>
+	
+	<!--  example for a notification task: -->
+	<notification name="notify_owner" msgtemplate="notifications/notification1">
+		<recipient recipientemail="please_change@swamp.swamp"/>
+		<recipient dbit="testdataset.roles.user"/>
+		<recipient recipientrole="user"/>
+		<recipient recipientname="swamp_user"/>
+	</notification>
+	
+	<edge to="node1" event="none"/>
+	</node>
+
+	<node name="node1">
+	<description>Example for a DataeditAction</description>
+	
+	<!--  Example for a dataeditaction -->
+	<dataedit name="dataedit" restricted="false" eventtype="DATAEDIT_OK">
+		<description>Please fill in the fields.</description>
+		<field path="testdataset.product.product_name" mandatory="yes" />
+		<field path="testdataset.roles.manualtask_owner" mandatory="yes" />
+		<field path="testdataset.duedate1" mandatory="yes" />
+	</dataedit>
+		
+	<!--  Example for Edges with Event-Conditions -->
+	<edge to="node2">
+		<event type="DATAEDIT_OK" />
+	</edge>
+	<edge to="node_milestone1" event="DATAEDIT_OK" />
+	</node>
+
+
+	<!--  example for a milestone: -->
+	<node name="node_milestone1">
+      <description>Milestone 1 reached</description>
+      <milestone name="m1" weight="5">
+      	<description>Milestone 1 reached</description>
+      </milestone>
+	</node>
+
+
+
+
+	<node name="node2">
+	<description>Example for a Decision</description>
+	<duedate databit="testdataset.duedate1"/>
+	<decision name="decision">
+		<description>Choosing a path</description>
+		<question>Please choose a path</question>
+		<answer eventtype="PATH1">Take Path 1 in this Workflow.</answer>
+		<answer eventtype="PATH2">Take Path 2 in this Workflow.</answer>
+		<answer eventtype="PATH3">Take Path 3 in this Workflow. 
+			(includes starting a subworkflow)</answer>
+		</decision>
+		<edge to="path1" event="PATH1" />
+		<edge to="path2" event="PATH2" />
+		<edge to="path3" event="PATH3" />
+	</node>
+
+
+
+
+
+	<node name="path1">
+	<description>Example for a node with a Customtask</description>
+
+	<!--  Example for a custom-task -->
+	<customtask name="custom_test" eventtype="none" 
+		class="de.suse.swamp.custom.CustomActionExample" 
+		function="customTest" >
+		<description>Calling de.suse.swamp.custom.CustomActionExample.customTest()</description>
+	</customtask>
+	
+	<edge to="path1-2" event="none" />
+	</node>
+	
+	
+	
+	
+	<node name="path1-2">
+	<description>Example for a ManualTask</description>
+	
+	<!--  example for a scriptaction -->
+	<scriptaction name="script_example">
+		<description>Setting comment</description>
+		<script>
+      	$wf.getDatabit("testdataset.comment").setValue("Comment set by scriptaction.")
+      	</script>
+	</scriptaction>
+	
+	<manualtask name="manualtask1" eventtype="UNITE">
+		<description>Go on in the Workflow</description>
+	</manualtask>
+	
+	<edge to="unite" event="UNITE" />
+	</node>
+
+
+	<node name="path2">
+	<description>Example for a ManualTask</description>
+	<manualtask name="manualtask2" eventtype="UNITE">
+		<description>Go on in the Workflow</description>
+	</manualtask>
+	
+	<!--  example for a sendevent action -->
+	<sendevent name="reminder" eventtype="DELAY_1D">
+  		<triggerdate databit="System.path2.enterDate" 
+  			offset="+1d"
+  			onlyweekdays="true"/> 
+	</sendevent>
+	
+	
+	<edge to="unite" event="UNITE" />
+	<edge to="path2" event="DELAY_1D" />
+	<edge to="path2_is_late" >
+		<event type="DELAY_1D"/>
+	</edge>
+	</node>
+	
+	
+	
+	<node name="path2_is_late">
+	<description>Node path2 is late</description>
+
+	<!-- this node will get activated if "path2" is not left 1 day 
+		after it was activated. So we could insert notifications etc. here -->
+	</node>
+	
+	
+	
+	
+	<node name="path3">
+	<description>forking subworkflow</description>
+
+	<!--  Example for forking a subworkflow -->
+	<startsubworkflow name="startsub" subname="Example" subversion="0.1">
+		<description>Starting Subworkflow</description>	
+	</startsubworkflow>
+
+	<edge to="path3-2" event="none" />
+	</node>
+
+
+
+	<node name="path3-2">
+	<description>Example for a ManualTask</description>
+	<manualtask name="manualtask3" eventtype="UNITE">
+		<description>Go on in the Workflow</description>
+	</manualtask>
+	<edge to="unite" event="UNITE" />
+	</node>
+
+
+
+
+
+	<node name="unite">
+	<description>Example for a DataeditTask</description>
+		
+	<!--  Example for a duedate -->
+	<duedate databit="testdataset.duedate1"/>
+	
+	<dataedit name="dataedit1" eventtype="DATAEDIT2_OK">
+		<description>Please fill in the fields.</description>
+		<longdesc>Depending on your choice either endnode1 or endnode2 will be entered. \n
+		The edges to a regular expression check on the product field. </longdesc>
+		<field path="testdataset.product.product_name" mandatory="yes" />
+		<field path="testdataset.roles.manualtask_owner" mandatory="yes" />
+	</dataedit>
+
+	<edge to="node_milestone2" event="DATAEDIT2_OK" />
+
+	<!--  split the workflow depending on content of testdataset.product.product_name -->
+	<edge to="node_product1">
+		<data check="regexp" field="testdataset.product.product_name" value=".*SLES.*"/>
+	</edge>
+
+	<!--  example for a nested condition (does not really make sense)-->
+	<edge to="node_product1">
+		<and>
+		<event type="DATAEDIT2_OK"/>
+		<not>
+		<data check="regexp" field="testdataset.product.product_name" value=".*LINUX.*"/>
+		</not>
+		</and>
+	</edge>
+
+	<edge to="node_product2">
+		<data check="regexp" field="testdataset.product.product_name" value=".*LINUX.*"/>
+	</edge>
+	</node>
+
+
+	<!--  example for a milestone: -->
+	<node name="node_milestone2">
+      <description>Milestone 2 reached</description>
+      <milestone name="m2" weight="15">
+      	<description>Milestone 2 reached</description>
+      </milestone>
+	</node>
+
+
+
+
+	<node name="node_product1">
+      <description>Milestone 2 reached</description>
+
+	<edge to="theend2" event="none" />
+	</node>
+
+
+
+	<node name="node_product2">
+      <description>Milestone 2 reached</description>
+
+	<edge to="theend1" event="none" />
+	</node>
+	
+
+
+
+
+    <node type="end" name="theend1">
+      <description>Endnode 1</description>
+    </node>
+
+
+    <node type="end" name="theend2">
+      <description>Endnode 2</description>
+    </node>
+    
+    
+    
+    
+    
+	<!--  attached data of the workflow -->
+    <dataset name="testdataset" description="Core Dataset for Testworkflow">
+
+	<dataset description="Roles" name="roles">
+		 
+		 <databit name="owner" description="Owner of this Workflow" type="person" 
+		 	state="read-write" shortdesc="Owner"/>
+		 <databit name="admin" description="Workflow-Admins" type="person" state="read-write">
+		 	<defaultvalue>swamp_admin</defaultvalue>
+		 </databit>
+		 <databit name="starter" description="Who is allowed to start this Workflow" type="person" state="read-write">
+		 	<defaultvalue>swamp_user</defaultvalue>
+		 </databit>
+		 <databit name="user" description="Workflow-Users" type="person" state="hidden"/>
+		 		
+		 <databit name="manualtask_owner" 
+		 description="Who is responsible for the manual Task?" 
+		 type="person"/>
+	</dataset>
+	
+		 
+	
+	<databit name="reason" description="The Reason for this Workflow case" 
+		 type="string">
+	<defaultvalue>A new year, a new product</defaultvalue>
+	</databit>
+
+	<databit name="duedate1" 
+		 description="DueDate for 2nd dataedittask" type="date">
+	</databit>
+
+	<databit name="comment" 
+		 description="Comment to this workflow" type="text">
+	</databit>
+
+	<dataset name="product"    
+		 description="This Dataset contains product information">
+
+	    <databit name="product_name" 
+	             description="The name of the product" type="enum" >
+		<defaultvalue >NLD 10</defaultvalue>
+		<value type="string">NLD 10</value>
+		<value type="string">SUSE LINUX 9.3</value>
+		<value type="string">SUSE LINUX 9.2</value>
+		<value type="string">SUSE LINUX 10</value>
+		<value type="string">SLES 9</value>
+		</databit>
+		     
+		     
+		 <dataset name="product_texts"    
+		 description="Texts for the product">
+
+	    <databit name="desc" 
+	             description="Description Text" 
+		     type="text" />
+		</dataset>
+		     
+	</dataset>
+	
+	
+	<dataset name="childset1"    
+		 description="child1 of root set">
+
+	    <databit name="bit_child12" 
+	             description="bit1 in child set1" 
+		     type="number" />
+	    <databit name="bit_child22" 
+	             description="bit2 in child set1" 
+		     type="number" />		
+		     
+		     
+		 <dataset name="childset1-1"    
+		 description="child of childset1">
+
+	    <databit name="bit_child2-2-1" 
+	             description="bit1 in childset1-1" 
+		     type="number" state="read-only" />
+	    <databit name="bit_child2-2-2" 
+	             description="bit2 in childset1-1" 
+		     type="number" state="read-write" />		
+		</dataset>
+		     
+	</dataset>
+	
+
+	
+    </dataset>
+</workflow>

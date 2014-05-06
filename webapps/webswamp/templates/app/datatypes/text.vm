@@ -1,0 +1,25 @@
+#if ($rendertype.equals("wflist")) 
+    $content
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+        $content
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    #set ($xsize = 40)
+    #set ($ysize = 4)
+    #if (${field.getEditInfo()}) 
+        #set ($ysize = ${field.getEditInfo().getYsize()})
+        #set ($xsize = ${field.getEditInfo().getXsize()})
+    #end 
+
+    <textarea name="field_$field.getPath()" cols="$xsize" rows="$ysize">$!initval</textarea>
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

@@ -1,0 +1,46 @@
+#if ($rendertype.equals("wflist") || $rendertype.equals("workflow")) 
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+    
+    <a href="$link.setAction("FileDownload").addPathInfo("wfid", $workflow.getId()).addPathInfo("path", $path)"><img 
+    #if ($!content.endsWith("pdf"))
+    src="$ui.image("pdf_16")" 
+    #elseif ($!content.endsWith("doc") || $!content.endsWith("odt") || $!content.endsWith("sxw") || $!content.endsWith("rtf"))
+    src="$ui.image("document_16")" 
+    #else 
+    src="$ui.image("download_16")" 
+    #end
+    alt="file download" hspace="2"/></a>
+    <a href="$link.setAction("FileDownload").addPathInfo("wfid", $workflow.getId()).addPathInfo("path", $path).addPathInfo("name", $content)">$!content</a>
+    
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    #if (!$!initval.equals(""))
+        <table cellpadding="0" cellspacing="0"><tr>
+        <td valign="middle">
+        <a href="$link.setAction("FileDownload").addPathInfo("wfid", $workflow.getId()).addPathInfo("path", $field.getPath())"><img 
+        #if ($!cntent.endsWith("pdf"))
+            src="$ui.image("pdf_16")"
+        #elseif ($!cntent.endsWith("doc") || $!cntent.endsWith("odt") || $!cntent.endsWith("sxw") || $!cntent.endsWith("rtf"))
+            src="$ui.image("document_16")" 
+        #else 
+            src="$ui.image("download_16")" 
+        #end
+       alt="file download" hspace="2"/></a></td>
+       <td valign="middle">
+       <a href="$link.setAction("FileDownload").addPathInfo("wfid", $workflow.getId()).addPathInfo("path", $field.getPath())">$!initval</a></td>
+       </tr></table><br />
+       <i>(uploading a new file will overwrite the old one)</i><br />
+    #end
+
+    <input type="file" name="field_$field.getPath()">
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end
+

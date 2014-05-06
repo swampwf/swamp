@@ -1,0 +1,19 @@
+#if ($rendertype.equals("wflist")) 
+    $content
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+        $content
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    <input name="boolean_$field.getPath()" value="true" type="hidden">
+    <input type="checkbox" name="field_$field.getPath()" value="true" #if ($initval.equals("true")) checked #end>
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

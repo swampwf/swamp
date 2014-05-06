@@ -1,0 +1,482 @@
+<!-- Ant build file for the SWAMP project. Call
+     $ ant -p to see a list of available targets.  Ant documentation is available at: 
+     http://ant.apache.org/manual/index.html 
+-->
+
+<project name="SWAMP" default="compile" basedir=".">
+
+<!--  ==================== Basic Properties ============================== -->
+
+  <property name="swamp.home" value="${basedir}" />
+  <property name="torque.buildfile" value="${basedir}/build-torque.xml" />
+  <property name="torque.buildproperties" value="build.properties" />
+	
+  <tstamp>
+      <format property="buildtime" pattern="dd.MM.yyyy H:mm:ss" />
+  </tstamp>
+
+
+<!-- ===================== Essential setup work ===========================  -->
+
+<!-- The "init" target does some preparation work for compilation. -->
+  <target name="init">
+    <property file="build.properties" />
+    
+    <path id="classpath">
+        <fileset dir="${lib.home}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <property name="database.creation" value="true" />
+  </target>
+
+  
+<!-- Try to load host-spec. properties for build.properties generation -->
+  <target name="init-host-properties">
+    <!-- load host specific build properties -->
+    <exec outputproperty="hostname" executable="hostname" />
+    <property file="properties/${hostname}.properties" />
+    <echo message="Building on ${hostname}." />
+  </target>
+  
+  
+  <target name="check-host-properties" depends="init-host-properties" unless="local.swamp.logfilelocation">
+    <echo>
+    ***** Please setup a host specific properties file at properties/${hostname}.properties*****
+    ***** properties will be created with default values! *****
+    ***** run: "ant local-init" to update the build properties *****
+    </echo>
+    <property file="properties/host.properties" />
+  </target>
+
+
+  <target name="local-init" depends="check-host-properties" 
+          description="Generate build property files from local settings">
+
+    <filter token="TORQUE_PROJECT" value="${local.torqueproject}"/>
+    <filter token="TORQUE_DATABASE_CREATE_URL" value="${local.database.uri}"/>
+    <filter token="TORQUE_DATABASE_BUILD_URL" value="${local.database.uri}"/>
+    <filter token="TORQUE_DATABASE_USER" value="${local.database.user}"/>
+    <filter token="TORQUE_DATABASE_PASSWORD" 
+            value="${local.database.password}"/>
+    <filter token="TORQUE_DATABASE_HOST" value="${local.database.host}"/>
+    <filter token="TORQUE_SETUPDB" value="${local.setupdb}" />
+    <filter token="CATALINA_BASE" value="${local.catalina.base}" />
+    <filter token="CATALINA_HOME" value="${local.catalina.home}" />
+    <filter token="CATALINA_COMMONLIBS" value="${local.catalina.commonlibs}" />
+    <filter token="CATALINA_SERVERLIBS" value="${local.catalina.serverlibs}" />
+    <filter token="BUILD_COMPILER" value="${local.compiler}" />
+    <filter token="BUILD_DEBUG" value="${local.compile.debug}" />
+    <filter token="BUILD_OPTIMIZE" value="${local.compile.optimize}" />
+    <filter token="BUILD_DEPRECATION" value="${local.compile.deprecation}" />
+    <filter token="BUILD_VERBOSE" value="${local.compile.verbose}" />
+    <filter token="BUILD_TARGET" value="${local.compile.target}" />
+    
+    <filter token="SWAMP_HOME" value="${swamp.home}" />
+    <filter token="SWAMPCONF" value="${local.swamp.conf}" />
+    <filter token="SWAMP_MAILSERVER" value="${local.swamp.mailserver}" />
+    <filter token="SWAMP_POSTMASTER" value="${local.swamp.postmaster}" />
+    <filter token="SWAMP_MAILDEBUG" value="${local.swamp.mail.debug}" />
+    <filter token="SWAMP_LOGLOCATION" value="${local.swamp.logfilelocation}" />
+    <filter token="ATTACHMENT_DIR" value="${local.swamp.filelocation}" />
+  	
+    <copy 
+      file="${basedir}/build.properties.in"
+      tofile="${basedir}/build.properties"
+      overwrite="yes" filtering="yes" />
+    <property file="build.properties" />
+
+   <copy
+      file="${conf.home}/defaults.in"
+      tofile="${conf.home}/defaults"
+      overwrite="yes"
+      filtering="yes"
+    />
+    <replace file="${conf.home}/defaults" token="@BUILDTIME@" value="${buildtime}"/>
+    <replace file="${conf.home}/defaults" token="@BUILDHOST@" value="${hostname}"/>
+        
+    <!-- also update Torque.properties -->
+    <antcall target="torque-update-tr-props"/>
+      
+   <copy
+      file="${conf.home}/Log4j.template"
+      tofile="${conf.home}/Log4j.properties"
+      overwrite="yes"
+      filtering="yes"
+    />
+ 
+    <copy
+      file="${conf.home}/schema/swamp-schema.xml.in"
+      tofile="${conf.home}/schema/swamp-schema.xml"
+      overwrite="yes"
+      filtering="yes"
+    />
+
+  	
+    <copy
+      file="${conf.home}/schema/swamp-security-schema.xml.in"
+      tofile="${conf.home}/schema/swamp-security-schema.xml"
+      overwrite="yes"
+      filtering="yes"
+    />
+  	
+    <!-- FIXME: has to vanish with turbine-independant scheduler -->
+    <copy
+      file="${conf.home}/schema/turbine-schema.xml.in"
+      tofile="${conf.home}/schema/turbine-schema.xml"
+      overwrite="yes"
+      filtering="yes"
+    />
+
+    <copy
+      file="${conf.home}/schema/swamp-scheduledjobs.sql.in"
+      tofile="${conf.home}/schema/swamp-scheduledjobs.sql"
+      overwrite="yes"
+      filtering="yes"
+    />
+  	
+  	<chmod file="bin/extracthelp.sh" perm="755" />
+    
+  	<copy
+      file="bin/install-webswamp.sh.in"
+      tofile="bin/install-webswamp.sh"
+      overwrite="yes"
+      filtering="yes"
+    />
+    <chmod file="bin/install-webswamp.sh" perm="755" />
+    
+  	<copy
+      file="bin/install-webswamp.bat.in"
+      tofile="bin/install-webswamp.bat"
+      overwrite="yes"
+      filtering="yes"
+    />
+
+  	<copy
+      file="bin/install-workflows.sh.in"
+      tofile="bin/install-workflows.sh"
+      overwrite="yes"
+      filtering="yes"
+    />
+    <chmod file="bin/install-workflows.sh" perm="755" />
+  	
+  	
+  	<copy
+      file="bin/install-swamp.sh.in"
+      tofile="bin/install-swamp.sh"
+      overwrite="yes"
+      filtering="yes"
+    />
+    <chmod file="bin/install-swamp.sh" perm="755" />
+
+  	<copy
+      file="bin/install-swamp.bat.in"
+      tofile="bin/install-swamp.bat"
+      overwrite="yes"
+      filtering="yes"
+    />
+
+    <copy
+          file="bin/db-dump.sh.in"
+          tofile="bin/db-dump.sh"
+          overwrite="yes"
+          filtering="yes"
+        />
+    <chmod file="bin/db-dump.sh" perm="755" />
+  	
+    <copy
+      file="bin/generate-po.sh.in"
+      tofile="bin/generate-po.sh"
+      overwrite="yes"
+      filtering="yes"
+    />
+    <chmod file="bin/generate-po.sh" perm="755" />
+  	
+  	<mkdir dir="${build.home}" />
+  	
+  </target>
+
+
+
+  <!-- ================================================================ -->
+  <!-- T O R Q U E  I N I T  T A R G E T                                -->
+  <!-- ================================================================ -->
+  <!-- You will probably only run this target once. It will generate    -->
+  <!-- your sources for you and compile them.                           -->
+  <!-- ================================================================ -->
+  <target
+    name="torque-init" depends="init"
+    description="--> generates and inserts sql, and generates the om classes">
+
+    <delete dir="${torque.output.dir}" />
+    <mkdir dir="${torque.output.dir}" /> 
+  	
+    <antcall target="torque-update-tr-props"/>
+    <antcall target="torque-create-database"/>
+    <antcall target="torque-schema-sql"/>
+    <antcall target="torque-security-sql"/>
+    <antcall target="torque-insert-sql-files"/>
+    <antcall target="torque-update-tr-props"/>
+    <antcall target="torque-project-om"/>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- C R E A T E  T A R G E T  D A T A B A S E                        -->
+  <!-- ================================================================ -->
+
+  <target name="torque-create-database" depends="init">
+    <ant antfile="${torque.buildFile}" target="create-db"/>
+  </target>
+
+  <!-- ================================================================ -->
+  <!--                                                                  -->
+  <!-- G E N E R A T E  T A B L E  S Q L                                -->
+  <!--                                                                  -->
+  <!-- ================================================================ -->
+
+  <target name="torque-schema-sql" depends="init">
+    <ant antfile="${torque.buildFile}" target="sql">
+    </ant>
+  </target>
+
+  <!-- ================================================================ -->
+  <!--                                                                  -->
+  <!-- G E N E R A T E  S E C U R I T Y  S Q L                          -->
+  <!--                                                                  -->
+  <!-- ================================================================ -->
+
+  <target
+    name="torque-security-sql"
+    unless="noSecuritySQL" depends="init">
+
+    <taskdef
+      name="torque-datasql"
+      classname="org.apache.torque.task.TorqueDataSQLTask">
+      <classpath refid="classpath"/>
+    </taskdef>
+
+    <torque-datasql
+      contextProperties="${torque.buildproperties}"
+      controlTemplate="${DataSQLControlTemplate}"
+      outputDirectory="${torque.sql.dir}"
+      dataXmlFile="${torque.schema.dir}/swamp-security.xml"
+      dataDTD=""
+      useClasspath="true"
+      outputFile="swamp-security.sql"
+      xmlFile="${torque.schema.dir}/swamp-security-schema.xml"
+            targetDatabase="${torque.database}"
+      sqldbmap="${torque.sql.dir}/sqldb.map"
+    />
+
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- G E N E R A T E  P R O J E C T  P E E R  B A S E D  O M          -->
+  <!-- ================================================================ -->
+  <!-- Generate the Peer-based object model for your project.           -->
+  <!-- These are in addition to the base Turbine OM!                    -->
+  <!-- ================================================================ -->
+
+  <target name="torque-project-om"
+    unless="noObjectModel" depends="init">
+
+    <ant antfile="${torque.buildFile}" target="om">
+    </ant>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- I N S E R T  S Q L  I N T O  D A T A B A S E                     -->
+  <!-- ================================================================ -->
+
+  <target name="torque-insert-sql-files" depends="init">
+
+    <property name="sqlInsert.databaseUrl" value="${torque.databaseUrl}"/>
+
+    <ant antfile="${torque.buildFile}" target="insert-sql">
+    </ant>
+  </target>
+
+  <!-- ================================================================ -->
+  <!-- U P D A T E  T U R B I N E  R E S O U R C E S  P R O P S         -->
+  <!-- ================================================================ -->
+
+  <target name="torque-update-tr-props" depends="init">
+
+    <filter token="APPLICATION_ROOT" value="."/>
+    <filter token="DATABASE" value="${torque.database}"/>
+    <filter token="DATABASE_DRIVER" value="${torque.database.driver}"/>
+    <filter token="DATABASE_URL" value="${torque.database.buildUrl}"/>
+    <filter token="DATABASE_BUILD_URL" value="${torque.database.buildUrl}"/>
+    <filter token="DATABASE_USER" value="${torque.database.user}"/>
+    <filter token="DATABASE_PASSWORD" value="${torque.database.password}"/>
+    <filter token="DATABASE_HOST" value="${torque.database.host}"/>
+    <filter token="DATABASE_DEFAULT" value="${torque.project}"/>
+
+    <property name="database.name" value="${torque.project}"/>
+    
+    <copy
+      file="${conf.home}/Torque.template"
+      tofile="${conf.home}/Torque.properties"
+      overwrite="yes"
+      filtering="yes"
+    />
+  </target>
+
+
+    <!-- ==================== Compile Targets ================================== -->
+
+    <target name="compile-torque" depends="init"
+            description="--> Compile java sources generated by torque">
+    <ant antfile="${torque.buildFile}"
+        target="compile">
+    </ant>
+    </target>
+
+
+    <target name="compile-swamp" depends="init"
+            description="--> Compile swamp core java sources only">
+    <javac debug="${compile.debug}" 
+        optimize="${compile.optimize}" 
+        deprecation="${compile.deprecation}" 
+        verbose="${compile.verbose}" 
+        destdir="${build.home}"
+        target="${compile.target}"
+        source="${compile.source}">
+    <src path="${src.home}" />
+    <classpath refid="classpath" />
+    </javac>
+    </target>
+
+
+
+    <target name="compile" depends="init, compile-torque, compile-swamp"
+        description="--> Compile all Java sources">
+    </target>
+            
+            
+    <!-- ==================== Localization Target ============================= -->
+    <!-- generate pot + po files with bin/generate-po.sh -->
+    
+    <target name="i18n" depends="init"
+                description="--> Generate Resource files from *.po files">
+            <echo message="Generating language resource files to de.suse.swamp.i18n.Core" />
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild"/>
+                    <arg value="--resource=de.suse.swamp.i18n.Core"/>
+                    <arg value="--locale=de"/>
+                    <arg value="${conf.home}/i18n/keys.de.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild"/>
+                    <arg value="--resource=de.suse.swamp.i18n.Core"/>
+                    <arg value="--locale=cs"/>
+                    <arg value="${conf.home}/i18n/keys.cs.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild"/>
+                    <arg value="--resource=de.suse.swamp.i18n.Core"/>
+                    <arg value="--locale=en"/>
+                    <arg value="${conf.home}/i18n/keys.en.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild"/>
+                    <arg value="--resource=de.suse.swamp.i18n.Core"/>
+                    <arg value="--locale=es"/>
+                    <arg value="${conf.home}/i18n/keys.es.po"/>
+            </exec>
+    </target>
+    
+    <!-- ==================== Jar target ====================================== -->
+
+        <target name="jar-up" depends="compile"
+                description="--> Build jar file with all swamp classes, used by webapp and shell">
+    		<jar destfile="build/swamp.jar" basedir="${build.home}" 
+                    excludes="*.jar" compress="true" />
+        </target>
+        
+        
+    <!-- ==================== Install to tomcat ====================================== -->
+
+        <target name="install-tomcat" depends="compile"
+                description="--> install all classes to tomcat">
+    
+            <!-- copy to tomcat shared dir: 
+            - from this dir, both webSWAMP and soapSWAMP have access to the SWAMP core. 
+            -->
+            <copy todir="${catalina.commonlibs}">
+                    <fileset dir="${lib.home}">
+                            <exclude name="junit-*"/>
+                            <exclude name="torque-gen*"/>
+                    </fileset>
+                    <fileset dir="${swamp.home}/build" includes="swamp.jar"/>
+            </copy>
+        </target>
+        
+        
+    <!-- ==================== Clean Target ====================================== -->
+        
+    <target name="clean" 
+    description="--> Cleanup all generated files">
+            <delete dir="build" />
+            <mkdir dir="build" />
+    </target>   
+        
+    <!-- ==================== Javadoc target ================================== -->
+
+    <!-- Build javadoc from everything. -->
+
+        <target name="javadoc" depends="init" description="--> Build javadoc documentation">
+        <javadoc packagenames="de.suse.swamp.*"
+                    windowtitle="SWAMP API Documentation"
+                    destdir="${docs.home}"
+                    author="true">
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+            <link href="http://jakarta.apache.org/turbine/turbine-2.3/apidocs/" />
+            <link href="http://db.apache.org/torque/apidocs/" />
+            <sourcepath>
+            <pathelement path="${src.home}" />
+            <pathelement path="${torque.output.dir}/java" />
+            </sourcepath>
+            <classpath refid="classpath" />
+        </javadoc>
+        </target> 
+    
+    
+    <!-- ==================== JUnit targets ================================== -->
+
+        <target name="junit" depends="compile" description="--> Starting SWAMP Unit-Tests">
+            
+        <path id="test-classpath">
+                    <fileset dir="${swamp.home}/test/lib">
+                        <include name="*.jar"/>
+                    </fileset>
+                    <fileset dir="${swamp.home}/webapps/webswamp/lib">
+                        <include name="*.jar"/>
+                    </fileset>
+                    <pathelement location="${build.home}"/>
+        </path>
+            
+            <javac debug="${compile.debug}" 
+                    destdir="${build.home}" 
+                    target="${compile.target}"
+                    source="${compile.source}">
+                    <src path="${swamp.home}/test" />
+                    <classpath refid="classpath" />
+                <classpath refid="test-classpath" />
+            </javac>
+            
+        <java fork="yes" classname="junit.textui.TestRunner" 
+            taskname="junit" failonerror="true">
+            <arg value="de.suse.swamp.test.SWAMPTestSuite"/>
+            <jvmarg value="-Dswamp.home=${swamp.home}" />
+            <jvmarg value="-Dswamp.conf=/conf/defaults" />
+            <classpath refid="test-classpath" />
+            <classpath refid="classpath" />
+        </java>
+        </target> 
+	
+</project>

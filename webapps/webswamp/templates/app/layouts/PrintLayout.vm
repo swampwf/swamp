@@ -1,0 +1,40 @@
+## SWAMP Workflow Administration and Management Platform
+##
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <link rel="SHORTCUT ICON" href="$ui.image("favicon")" title="Favicon">
+    <title>$page.Title</title>
+    <meta http-equiv="Content-Type" content="text/html; utf-8">
+    #foreach($metaTag in $page.MetaTags.keySet())
+        <meta name="$metaTag" content="$page.MetaTags.get($metaTag)">
+    #end
+
+    <link rel="stylesheet" href="$ui.getCommonStylecss()" type="text/css" 
+		title="SWAMP common stylesheet">
+
+    <link rel="stylesheet" href="$ui.getStylecss()" type="text/css" 
+		title="SWAMP skin stylesheet">
+
+    #foreach( $styleSheet in $page.StyleSheets )
+        <link rel="stylesheet" href="$styleSheet.Url"
+        #if($styleSheet.Type != "" ) type="$styleSheet.Type" #end
+        #if($styleSheet.Media != "") media="$styleSheet.Media" #end
+        #if($styleSheet.Title != "") title="$styleSheet.Title" #end
+        >
+    #end
+
+
+</head>
+<body bgcolor="#ffffff" text="#000000">
+
+
+						
+	$screen_placeholder
+
+
+
+
+</body>
+</html>

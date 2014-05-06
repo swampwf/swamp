@@ -1,0 +1,148 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle($ui.tr("WebSWAMP User Preferences", $data.getUser()))
+
+
+<table cellpadding="8" cellspacing="0" border="1">
+	<tr class="box_head">
+	    <td valign="top" class="box_head" colspan="2">
+	    $ui.tr("WebSWAMP User Preferences", $data.getUser())</td>
+	</tr>
+
+	<tr class="box_normal">
+	<td>
+	$ui.tr("Username: ", $data.getUser())
+	</td><td class="box_normal"> 
+	${data.getUser().getName()}
+	</td></tr>
+
+	<tr class="box_normal">
+	    <form method="post" action="$link.setPage("Preferences.vm").setAction("UserActions")">
+		<td valign="middle" class="box_normal">
+		$ui.tr("Choose your language: ", $data.getUser())
+	    </td>
+	    <td valign="middle" class="box_normal">
+		<select name="lang">
+			#foreach ($locale in $locales.keySet())
+			#if ($userlocale.equals($locale))
+				<option value="$locale" selected>$locales.get($locale)</option>
+			#else 
+				<option value="$locale">$locales.get($locale)</option>
+			#end
+		#end
+		</select>
+		<img src="$ui.image("locale_24")" />
+		</td>
+	</tr>
+	
+	
+    <tr class="box_normal">
+        <form method="post" action="$link.setPage("Preferences.vm").setAction("UserActions")">
+        <td valign="middle" class="box_normal">
+        $ui.tr("Page shown after finishing a task: ", $data.getUser())
+        </td>
+        <td valign="middle" class="box_normal">
+        <select name="taskpage">
+            <option value="results" #if ($taskpage.equals("results")) selected #end>$ui.tr("Task results", $data.getUser())</option>
+            <option value="previous" #if ($taskpage.equals("previous")) selected #end>$ui.tr("Previous page", $data.getUser())</option>
+            <option value="workflow" #if ($taskpage.equals("workflow")) selected #end>$ui.tr("The workflow the task belongs to", $data.getUser())</option>
+        </select>
+        </td>
+    </tr>
+
+
+    <tr class="box_normal">
+        <form method="post" action="$link.setPage("Preferences.vm").setAction("UserActions")">
+        <td valign="top" class="box_normal">
+        $ui.tr("Send regular reminder mail with my open tasks: ", $data.getUser())
+        </td>
+        <td valign="top" class="box_normal">
+        <table><tr><td colspan="2">
+        Workflow: </td>
+        #foreach ($wfname in $wfnames)
+        <tr><td>$wfname: </td><td> 
+        <select name="${wfname}_reminder">
+                <option value="none" #if ($reminders.get($wfname).equals("none")) selected #end>none</option>
+                <option value="daily" #if ($reminders.get($wfname).equals("daily")) selected #end>daily</option>
+                <option value="weekly" #if ($reminders.get($wfname).equals("weekly")) selected #end>weekly</option>
+        </select>
+        <td></tr>
+        #end
+        </table>
+        </td>
+    </tr>    
+	
+	#if ($locked)
+	<tr class="box_normal">
+	<td colspan="2">
+	<i>$locked</i>
+	</td></tr>
+	#end 
+	
+	
+	<tr class="box_normal">
+	<td>
+	$ui.tr("Firstname: ", $data.getUser())
+	</td><td class="box_normal">
+	#if (!$locked)
+	<input type="text" name="firstname" value="${data.getUser().getFirstName()}">
+	#else 
+	${data.getUser().getFirstName()}
+	#end
+	</td></tr>
+	
+	<tr class="box_normal">
+	<td>
+	$ui.tr("Lastname: ", $data.getUser())
+	</td><td class="box_normal">
+	#if (!$locked)
+	<input type="text" name="lastname" value="${data.getUser().getLastName()}">
+	#else 
+	${data.getUser().getLastName()}
+	#end
+	</td></tr>
+	
+	<tr class="box_normal">
+	<td>
+	$ui.tr("Email: ", $data.getUser())
+	</td><td class="box_normal">
+	#if (!$locked)
+	<input type="text" name="email" value="${data.getUser().getEmail()}">
+	#else 
+	${data.getUser().getEmail()}
+	#end
+	</td></tr>
+
+	#if (!$locked)
+	<tr class="box_normal">
+	<td>
+	$ui.tr("Current password: ", $data.getUser())
+	</td><td class="box_normal">
+	<input type="password" name="currentpw" value="">
+	</td></tr>
+	
+	<tr class="box_normal">
+	<td>
+	$ui.tr("new password: ", $data.getUser())
+	</td><td class="box_normal">
+	<input type="password" name="pw" value="">
+	</td></tr>
+	
+	<tr class="box_normal">
+	<td>
+	$ui.tr("repeat new password: ", $data.getUser())
+	</td><td class="box_normal">
+	<input type="password" name="pw2" value="">
+	</td></tr>
+	#end
+	
+	<tr class="box_normal">
+	<td colspan="2">
+	    <div align="right">	
+	    #set ($txt = $ui.tr("Change", $data.getUser()))
+		<input type="submit" value="$txt" name="eventSubmit_doChangeprefs">
+	    </div>
+	</td>
+	</form>
+	</tr>
+</table>

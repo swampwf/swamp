@@ -1,0 +1,49 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP - $!mastertemplatename Workflows")
+
+
+#if (!$wfs.isEmpty() )
+    
+	#if($mastertemplatename && $ui.hasTemplate($mastertemplatename, "wflist_top.vm"))
+		## Include Workflow-Interfaces
+		#parse("screens/workflows/$mastertemplatename/wflist_top.vm")
+	#else 
+		#parse("WorkflowFilter.vm")
+	#end
+	
+	#foreach($wflist in $wfs.values())
+	
+		#if($wflist.size() > 0)
+
+			#set($mastertemplatename = $wflist.get(0).getTemplateName())
+			#set($columns = $displayedcolumns.get($mastertemplatename))
+			#set($displaysubwfs = $displaysubwfsSet.get("systemfilter_displaysubwfs_$mastertemplatename"))
+			
+			<br />
+			<table cellpadding="2" cellspacing="1" border="0" width="100%">
+	    		
+	    		<tr><td>
+				#showeditcolumns($mastertemplatename $columns)
+				</td>
+	    		</tr>
+			</table>
+			
+			#showworkflows ($wflist $displayedcolumns "true")
+			
+			<br />
+			
+			
+		#end
+		
+	#end ## End foreach WfList
+	
+	#if ($columns)
+		#workflowfooter ()
+	#end
+	
+#end
+
+#if (!($!displayedWorkflows > 0))
+<h2>$ui.tr("No Workflows could be found for your current Filter-Configuration.", $data.getUser())</h2>
+#end

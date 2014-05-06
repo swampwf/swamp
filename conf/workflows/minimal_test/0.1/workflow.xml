@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "../../../dtds/workflow.dtd">
+<workflow name="minimal_test" version="0.1" leastSWAMPVersion="1.4">
+
+	<metadata>
+		<templatedescription>
+		Test for a abolute minimal workflow definition. \n
+		Taking this template is a good starting point to develop 
+		your workflow. 
+		</templatedescription>
+		<description>Minimal Workflow</description>
+		
+		<roles>
+			<role name="owner" restricted="false" type="databit">
+				<rolevalue>testdataset.owner</rolevalue>
+			</role>
+			<role name="admin" restricted="false"/>
+			<role name="starter" restricted="false"/>
+			<role name="user" restricted="false"/>
+		</roles>
+	</metadata>
+
+
+	<node type="start" name="start">
+		<description>Startnode</description>
+		<edge to="end" event="none"/>
+	</node>
+
+
+    <node type="end" name="end">
+		<description>Endnode reached</description>
+    </node>
+    
+    
+    
+	<!--  attached data of the workflow -->
+	
+    <dataset name="testdataset" description="minimal dataset">
+		<databit name="owner" type="person" />
+    </dataset>
+
+
+</workflow>

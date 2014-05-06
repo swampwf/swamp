@@ -1,0 +1,102 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP - ${wftemplate.getName()} Index")
+
+<table width="100%" cellspacing="4" cellpadding="4">
+<tr><td valign="top" align="right" width="100">
+
+#if ($ui.hasConfigValue($wftemplate, "icon_big"))
+	<img src="$ui.getResourcePath($wftemplate, "icon_big")" alt="icon" />
+#elseif ($ui.hasConfigValue($wftemplate, "icon"))
+	<img src="$ui.getResourcePath($wftemplate, "icon")" alt="icon" />
+#else 
+	<img src="$ui.image("workflow-std_32")" alt="icon" />
+#end
+
+</td>
+<td align="left">
+<table width="100%" callspacing="3" cellpadding="3"><tr>
+<td class="box_head">
+Admin page for Workflow: ${wftemplate.getName()}
+</td></tr></table>
+</td>
+</tr>
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" align="right" width="100">
+<b>Description:</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+$wftemplate.getTemplateDescription()
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" 
+align="right">
+<b>Versions:</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+
+#set ($templateversions = $templateMap.get($wftemplate.getName()))
+
+<table>
+#foreach ($templateversion in $templateversions)
+
+<tr><td>
+$templateversion.getVersion() 
+</td>
+#if ($isAdmin || $templateversion.hasRole(${data.getUser().getName()} , "admin"))
+    <td>
+    [<a href="$link.setPage("$data.getScreenTemplate()").addPathInfo("eventSubmit_doTemplreload", "true").setAction("AdminActions").addPathInfo("templatename", $templateversion.getName()).addPathInfo("templateversion", $templateversion.getVersion())" >Reload</a>]
+    </td><td>
+    [<a href="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowtemplate", $templateversion.getName()).addPathInfo("workflowversion", $templateversion.getVersion())">Show Graph</a>]
+    </td><td>
+    <!-- [Edit]   -->
+    </td><td>
+    <!-- [Delete] -->
+    </td>
+#end
+</tr>
+
+#end
+</table>
+
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+
+#if ($isAdmin)
+<tr><td valign="top" 
+align="right">
+<b>Actions:</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+
+<table>
+<tr>
+<td>[<a href="$link.setPage("$data.getScreenTemplate()").addPathInfo("eventSubmit_doTemplreload", "true").setAction("AdminActions").addPathInfo("templatename", $wftemplate.getName())" >Reload all versions</a>] 
+</td></tr>
+<tr><td>
+
+<form method="POST"  enctype="multipart/form-data" 
+action="$link.setPage("UploadWorkflowTemplate.vm").setAction("WorkflowActions")">
+
+Add/Replace a workflow version:  
+
+<input type="hidden" name="templatename" value="$wftemplate.getName()" />
+		
+<input type="file" name="filename">
+<input type="submit" name="eventSubmit_doUploadworkflow" value="--> upload"/>
+</form>
+
+<i>(Please upload a plain workflow.xml file or a *.zip workflow resource bundle)</i>
+
+</td></tr></table>
+
+#end
+</tr>
+</table>
+<br />

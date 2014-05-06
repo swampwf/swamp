@@ -1,0 +1,60 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP - Status")
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+	style="border-width: 1px; border-style: solid; ">
+        <tr class="box_head">
+        <td class="box_head">$ui.tr("Workflow state: ", $data.getUser())</td>
+</tr>
+#if ($!workflow)
+	<tr>
+	<td class="box_normal">
+
+	<div id="wf_stack">
+	<img src="$ui.image("rotate")"> 
+	$ui.tr("Loading workflow stack...", ${data.getUser()})
+	</div>
+	
+	<script language="JavaScript">
+	new Ajax.Updater({ success:'wf_stack'}, '/webswamp/swamp',
+	  {
+	    method:'get', 
+	    evalScripts: 'true', 
+	    parameters: {action: 'AjaxData', 
+	                 eventSubmit_doGetwfstack: 'true', 
+	                 masterworkflowid: '$workflow.getMasterParentWf().getId()', 
+	                 highlightid: '${workflow.getId()}', 
+	                 stackmode: 'instance' 
+	                 },
+	    onFailure: function(transport){ 
+			Element.update('wf_stack', 
+	                '<div id="wf_stack"><img src="$ui.image("alert_16")"> ' + 
+	                '$ui.tr("An error ocurred while loading the workflow stack.", ${data.getUser()})</div>')
+			}
+	  });
+	</script>
+	
+	</tr>
+#end
+</table>
+<br /><br />
+
+#if ($!workflow && $workflow.getActiveTasks(true).size() > 0)
+	<b>$ui.tr("current Tasks in this Workflow: ", $data.getUser())</b><br />
+	<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+	class="box_normal" style="border-width: 1px; border-style: solid; ">
+	#showtasks($workflow.getActiveTasks(true) $workflow)
+	</table>
+<br />
+#end
+
+#if ($!workflow && $workflow.getActiveTasks(false).size() > 0)
+	<b>$ui.tr("current optional Tasks in this Workflow: ", $data.getUser())</b><br />
+	<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+	class="box_normal" style="border-width: 1px; border-style: solid; ">
+	#showtasks($workflow.getActiveTasks(false) $workflow)
+	</table>
+<br />
+#end
+    

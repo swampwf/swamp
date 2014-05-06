@@ -1,0 +1,126 @@
+## SWAMP Workflow Administration and Management Platform
+##
+
+
+
+#if (${data.getUser().hasLoggedIn()} && $ui.getInterface() && !$ui.getInterface().equals(""))
+    #set ($template = $ui.getInterface())
+	#if ($ui.hasTemplate($template, "menutop.vm"))
+	    ## Include Workflow-Interfaces
+        #parse("screens/workflows/$template/menutop.vm")
+    #else 
+        #parse("parts/menutop.vm") 
+    #end
+#end
+
+
+ 
+## Standard-Menu:
+	## <!-- SessionID=$!sessionid --> 
+ 	#navhead ("" "" "SWAMP")
+	<table cellpadding="0" cellspacing="0" border="0" width="190" class="box_normal">
+        <tr>
+          <td width="10" align="left" valign="top">
+            <img src="$ui.image("clearpix")" height="1" width="10" alt=" " border="0" />
+          </td>
+          <td align="left">
+
+            <table cellspacing="0" cellpadding="5" border="0">
+
+          #if (${data.getUser().hasLoggedIn()})
+              #dotentry($ui.tr("SWAMP Home", $data.getUser()) $link.setPage($turbineconf.getString("template.homepage")))
+	      #else 
+	          #dotentry($ui.tr("Login", $data.getUser()) $link.setPage($turbineconf.getString("template.homepage")))
+	      #end
+							  
+
+	  	#dotentry($ui.tr("Documentation", $data.getUser()) $link.setPage("Documentation.vm"))	  		
+	  		
+	  		
+	  		#if (${data.getUser().hasLoggedIn()})
+	  		
+	  		#dotentry($ui.tr("Preferences", $data.getUser()) $link.setPage("Preferences.vm"))
+	  		<tr>
+			    <td align="right" valign="top" class="box_normal">
+			      <img src="$ui.image("olivebullet")" width="8" height="8" 
+			      alt="*" vspace="3" border="0" />
+			    </td>
+			    <form action="$link.setPage("DisplayWorkflow.vm")" method="GET">
+			    <td align="left" valign="top" class="box_normal">
+					<input type="text" name="workflowid" size="8" value="SWAMP-ID" 
+						onblur="javascript:if (value== '') { value='SWAMP-ID' }; return true;" 
+						onfocus="javascript:if (value == 'SWAMP-ID') { value='' }; return true;" />
+    				#set ($txt = ${ui.tr("Go", $data.getUser())})
+    				<input type="submit" value="$txt">
+			    </td>
+			    </form>
+			</tr>  		
+	  		
+	  		    #set ($username = ${data.getUser().getUserName()})
+			    #dotentry($ui.tr("Logout (%1)", $data.getUser(), $username) $link.addPathInfo("eventSubmit_doLogoutuser", "true").setAction("LoginActions"))
+			#end
+	  		
+	  
+            </table>
+          </td>
+          <td width="6" align="right" valign="top"><img 
+          src="$ui.image("clearpix")" height="1" width="6" alt=" " border="0" /></td>
+          <td width="1" align="right" valign="top" class="box_border"><img 
+          src="$ui.image("clearpix")" height="1" width="1" alt=" " border="0" /></td>
+        </tr>
+        </table>
+            
+	#navbottom()
+
+
+<br/>
+
+## only show this to the admins
+#if(${data.getUser().isGroupMember("swampadmins")})
+
+	#navhead ($ui.image("edit_32") "" $ui.tr("Admin Area", $data.getUser()))     
+	<table cellpadding="0" cellspacing="0" border="0" width="190" class="box_normal">
+        <tr>
+          <td colspan="3" class="box_head"><img src="$ui.image("clearpix")" 
+          width="1" height="6" alt=" " border="0" /></td>
+          <td width="1" align="right" valign="top" 
+          class="box_border"><img src="$ui.image("clearpix")" height="1" 
+          width="1" alt=" " border="0" /></td>
+        </tr>
+        <tr>
+          <td width="10" align="left" valign="top">
+            <img src="$ui.image("clearpix")" height="1" width="10" alt=" " border="0" />
+          </td>
+          <td align="left">
+            <table cellspacing="0" cellpadding="5" border="0">
+
+				#dotentry($ui.tr("Objects", $data.getUser()) $link.setPage("Debug.vm"))
+				#dotentry($ui.tr("Workflow Templates", $data.getUser()) $link.setPage("Templates.vm"))
+
+            </table>
+          </td>
+          <td width="6" align="right" valign="top"><img 
+          src="$ui.image("clearpix")" height="1" width="6" alt=" " border="0" /></td>
+          <td width="1" align="right" valign="top" class="box_border"><img 
+          src="$ui.image("clearpix")" height="1" width="1" alt=" " border="0" /></td>
+        </tr>
+	</table>
+	#navbottom()
+
+<br/>
+	
+#end
+
+
+        
+<br />    
+<div align="center">
+SWAMP is supported by: <br />
+<a href="http://swamp.sf.net"><!-- <img src="http://sourceforge.net/sflogo.php?group_id=68771&amp;type=2" 
+width="125" height="37" border="0" alt="SourceForge.net Logo" /> --><img src="$ui.image("sflogo")" 
+width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
+<br />
+and 
+<br />
+<a href ="http://forge.novell.com/modules/xfmod/project/?swamp">Novell Forge</a>
+</div>

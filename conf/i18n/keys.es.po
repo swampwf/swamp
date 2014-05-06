@@ -1,0 +1,96 @@
+# translation of keys.po to
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# tom <tschmidt æŧ suse.de>, 2006.
+# Thomas Schmidt <tschmidt@suse.de>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: keys\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-20 14:41+0100\n"
+"PO-Revision-Date: 2009-04-13 00:48-0400\n"
+"Last-Translator: Ciro Iriarte <ciriarte@personal.net.py>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: src/de/suse/swamp/core/data/datatypes/booleanDatabit.java:60
+#: src/de/suse/swamp/core/data/datatypes/numberDatabit.java:61
+#: src/de/suse/swamp/core/data/datatypes/dateDatabit.java:70
+#: src/de/suse/swamp/core/data/datatypes/datetimeDatabit.java:92
+msgid "Field "
+msgstr "Campo"
+
+#: src/de/suse/swamp/core/data/datatypes/booleanDatabit.java:61
+msgid " must contain a bool (true or false)!"
+msgstr "debe contener un valor Booleano (true/false)!"
+
+#: src/de/suse/swamp/core/data/datatypes/numberDatabit.java:62
+msgid " must contain a number!"
+msgstr "debe contener un número!"
+
+#: src/de/suse/swamp/core/data/datatypes/dateDatabit.java:71
+msgid " must contain a date in the format: "
+msgstr "debe contener una fecha en el siguiente formato: "
+
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:72
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:77
+msgid "Unable to fetch data from: "
+msgstr "No fue posible obtener datos desde: "
+
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
+msgid "Parsing error in line "
+msgstr "Error de análisis en la linea"
+
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
+msgid ", column "
+msgstr ", columna "
+
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:75
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:79
+msgid "Reason: "
+msgstr "Razón: "
+
+#: src/de/suse/swamp/core/data/datatypes/multienumDatabit.java:76
+#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:64
+msgid "Assignment to Field "
+msgstr "Asignación a Campo"
+
+#: src/de/suse/swamp/core/data/datatypes/multienumDatabit.java:77
+#, fuzzy
+msgid " must be in Enumeration-Array!"
+msgstr "debe estar en Arreglo-Enumeración!"
+
+#: src/de/suse/swamp/core/data/datatypes/commentDatabit.java:122
+#, fuzzy
+msgid " at "
+msgstr "en"
+
+#: src/de/suse/swamp/core/data/datatypes/commentDatabit.java:181
+msgid "Reply: "
+msgstr "Respuesta: "
+
+#: src/de/suse/swamp/core/data/datatypes/datetimeDatabit.java:93
+msgid " must contain a datetime in the format: "
+msgstr "debe contener una fecha en el siguiente formato: "
+
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:75
+msgid "Unknown User: "
+msgstr "Usuario Desconocido: "
+
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:76
+msgid " in field "
+msgstr "en el campo "
+
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:86
+msgid " is not a valid E-Mail address."
+msgstr "no es una dirección E-mail válida."
+
+#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
+#, fuzzy
+msgid " must be in Enumeration-Array! "
+msgstr "debe estar en Arreglo-Enumeración!"
+

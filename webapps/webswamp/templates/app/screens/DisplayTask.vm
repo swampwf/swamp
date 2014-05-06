@@ -1,0 +1,245 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+$page.setTitle("WebSWAMP - Displaying Task: $task.getActionTemplate().getReplacedDescription($workflow.getId())")
+
+
+<table width="100%"><tr><td valign="top">
+
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    style="border-width: 1px; border-style:solid; ">
+        <tr class="box_head">
+            <td valign="top" class="box_head">Task Name</td>
+            <td valign="top" class="box_head">Assigned Users</td>
+            <td valign="top" class="box_head">Workflow ID</td>
+        </tr>
+       <tr class="box_normal">
+           <td valign="top">$task.getActionTemplate().getReplacedDescription($workflow.getId())</td>
+           <td valign="top">
+	    	
+	    	#set ($atemplate = $task.getActionTemplate())
+	    	#if (${task.getRoleName()} && !${task.getRoleName().equals("")})
+				#if (${atemplate.isRestricted()})
+					#set($txt = "This task is restricted and can only be done by users of the group <i>${task.getRoleName()}</i>. <br />")
+				#else 
+				    #set($txt = "")
+				#end
+				#set($txt = "$!{txt}Users of role <i>${task.getRoleName()}</i>: ${task.getUsersForRole()}")
+
+	        	#if (${task.getUsersForRole().size()} == 0)
+		    		<i>none<i>
+		    	#else 
+			    	<span onmouseover="Tip('$txt', OFFSETX, -70)" onmouseout="UnTip()"> 
+		    		Group <i>${task.getRoleName()}<i>
+					#if (${atemplate.isRestricted()})			
+						<img src="$ui.image("security_16")" valign="middle" />
+					</span>
+					#end
+		    	#end
+		    #else
+		    	<i>none<i>
+			#end
+	    	
+           </td>
+           <td valign="top">
+           <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", ${task.getWorkflowId()})">${workflow.getName()}</a></td>
+       </tr>
+       
+		<tr class="box_head">
+		<td valign="top" colspan="3" class="box_head">
+		Workflow:
+		</td></tr>
+		<tr>
+		<td class="box_normal" colspan="3" valign="top" align="left">
+
+		<div id="wf_stack">
+		<img src="$ui.image("rotate")"> 
+		$ui.tr("Loading workflow stack...", ${data.getUser()})
+		</div>
+
+		<script language="JavaScript">
+		new Ajax.Updater({ success:'wf_stack'}, '/webswamp/swamp',
+		  {
+		    method:'get', 
+		    evalScripts: 'true', 
+		    parameters: {action: 'AjaxData', 
+		                 eventSubmit_doGetwfstack: 'true', 
+		                 masterworkflowid: '$masterwf.getId()', 
+		                 highlightid: '${workflow.getId()}', 
+		                 stackmode: 'instance' 
+		                 },
+		    onFailure: function(transport){ 
+				Element.update('wf_stack', 
+		                '<div id="wf_stack"><img src="$ui.image("alert_16")"> ' + 
+		                '$ui.tr("An error ocurred while loading the workflow stack.", ${data.getUser()})</div>')
+				}
+		  });
+		</script>
+		
+		</td></tr>
+    </table>
+
+
+
+#if ($!{desc})
+    <br />
+    <table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    style="border-width: 1px; border-style:solid; ">
+        <tr><td class="box_head">Detailed description of this task:</td></tr>
+        <tr class="box_normal"><td>$ui.newlineEncode($desc)</td></tr> 
+    </table>
+#end
+
+
+
+</td>
+
+## display milestone box
+#set ($milestones = $workflow.getMileStones(true))
+#if ($milestones.size() > 0)
+	<td width="15">&nbsp;
+	</td>
+	<td valign="top" width="200">
+	#showMilestones($milestones)
+	</td>
+#end
+
+
+
+</tr></table>
+<br/>
+
+
+#if ($task.getActionTemplate().getType() == "manualtask")
+
+    <h3>$ui.tr("Please press 'Done' to finish this task.", $data.getUser())</h3>
+
+    <form method="post" name="manualtask" 
+    	action="$link.setPage("DisplayTask.vm").addPathInfo("workflowid",$workflow.getId()).addPathInfo("taskid",$task.getId())" 
+    	onSubmit="return submitForm(this.submit)">
+  
+    
+  
+    <table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    style="border-width: 1px; border-style:solid; ">
+      <tr class="box_head">
+        <td class="box_head">$task.getActionTemplate().getReplacedDescription($workflow.getId())</td>
+      </tr>
+      <tr class="box_normal">
+        <td>
+          <div style="float:left">
+          <input type="submit" name="submit" value="Done" />
+          <input type="hidden" name="eventSubmit_doTaskok" value="true" />
+          <input type="hidden" name="template" value="Status.vm" />
+          <input type="hidden" name="action" value="WorkflowActions" />
+          </div>
+        </td>
+      </tr>
+    </table>
+    
+    </form>
+#end
+
+
+#if ($task.getActionTemplate().getType() == "decision")
+    <form method="post" name="decision" 
+    	action="$link.setPage("DisplayTask.vm").addPathInfo("workflowid",$workflow.getId()).addPathInfo("taskid",$task.id)" 
+    	onSubmit="return submitForm(this.submit)">
+
+    <table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    style="border-width: 1px; border-style:solid; ">
+      <tr class="box_head">
+        <td class="box_head">$task.getActionTemplate().getReplacedQuestion($workflow)</td>
+      </tr>
+      <tr class="box_normal">
+        <td>
+          #set($i = 0)
+          <table>
+          #foreach ($answer in $task.getActionTemplate().getReplacedAnswers($workflow))
+            <tr><td valign="top"><input type="radio" name="answer" value="$i"></td>
+            <td valign="top">$answer.getText().replaceAll("< br / >", "<br />")</td></tr>
+            #set($i = $i + 1)
+          #end
+          </table>
+        </td>
+      </tr>
+      <tr class="box_normal">
+        <td>
+          <div style="float:left">
+          <input type="submit" name="submit" value="Done" />
+          <input type="hidden" name="eventSubmit_doTaskok" value="true" />
+          <input type="hidden" name="template" value="Status.vm" />
+          <input type="hidden" name="action" value="WorkflowActions" />
+          </div>
+        </td>
+      </tr>
+    </table>
+  
+    </form>
+#end
+
+
+
+#if ($task.getActionTemplate().getType() == "dataedit")
+	
+    <h3>Please provide the following data: </h3>
+    
+    <form method="post" name="dataedit"
+          enctype="multipart/form-data"
+          action="$link.setPage("DisplayTask.vm").addPathInfo("workflowid",$workflow.getId()).addPathInfo("taskid",$task.id)"
+          onSubmit="return submitForm(this.submit)">
+
+    <table cellpadding="4" cellspacing="0" border="0" width="100%"
+    style="border-width: 1px; border-style:solid; ">
+      <tr class="box_normal">
+        <td>Only fields with a (*) are mandatory. You may skip all the rest.</td>
+<!--
+      </tr>
+      <tr class="box_normal">
+-->
+        <td>
+	  <div style="float:left"><input type="reset" value="Reset Form" />
+          #set ($txt = $ui.tr("Done", $data.getUser()))
+          <input type="submit" name="submit" value="$txt" />
+          <input type="hidden" name="eventSubmit_doTaskok" value="true" />
+          <input type="hidden" name="template" value="Status.vm" />
+          <input type="hidden" name="action" value="WorkflowActions" />
+          </div>
+        </td>
+      </tr>
+   </table>
+
+    ## include datapackedit form
+    #set ($noBugzillaRefresh = "true")
+    #set ($taskview = "true")
+    #set ($showhidden = "true")
+    #parse ("DataPackEdit.vm")
+
+    <table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    style="border-width: 1px; border-style:solid; ">
+      <tr class="box_normal">
+        <td>Only fields with a (*) are mandatory. You may skip all the rest.</td>
+<!--
+      </tr>
+      <tr class="box_normal">
+-->
+        <td>
+	  <div style="float:left"><input type="reset" value="Reset Form" />
+          #set ($txt = $ui.tr("Done", $data.getUser()))
+          <input type="submit" name="submit" value="$txt" />
+          <input type="hidden" name="eventSubmit_doTaskok" value="true" />
+          <input type="hidden" name="template" value="Status.vm" />
+          <input type="hidden" name="action" value="WorkflowActions" />
+          </div>
+        </td>
+      </tr>
+   </table>
+   
+   </form>
+#end
+
+
+<br />
+<br />
+

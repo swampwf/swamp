@@ -1,0 +1,41 @@
+#if ($initval) #set ($value = $initval) #else #set ($value = $content) #end
+
+#set ($pos = $value.indexOf('#') + 1)
+#set ($bugid = $value.substring($pos, $value.length()) )
+
+
+#if ($rendertype.equals("wflist")) 
+    <nobr><img src="$ui.image("buggie_16")" /> 
+        <a href="${bugzilla_url}${bugid}" 
+       onmouseover="loadData(${bugid}); Tip(drawpopup(${bugid}));" 
+       onmouseout="UnTip()">$value</a></nobr>
+     
+#elseif ($rendertype.equals("workflow"))
+    #if ($value.equals(""))
+        <i>no value</i>
+    #else 
+        <nobr><img src="$ui.image("buggie_16")" />
+        <a href="${bugzilla_url}${bugid}" 
+           onmouseover="loadData(${bugid}); Tip(drawpopup(${bugid}));" 
+           onmouseout="UnTip()">$value</a></nobr>
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    <input name="field_$field.getPath()" value="$!value" type="text" size ="10" />
+
+    #if (!$!noBugzillaRefresh)
+        <input type="submit" name="refresh_bugzilla" value="Refresh Bugzilla data" />
+    #end
+
+    #if (!$value.equals("") && !$field.getState().equals($datastates.ERROR))
+        <br /><a href="${bugzilla_url}${bugid}" 
+       onmouseover="loadData(${bugid}); Tip(drawpopup(${bugid}));" 
+       onmouseout="UnTip()">Link</a> to this Bug.
+    #end
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

@@ -1,0 +1,14 @@
+
+
+set SWAMP_HOME=@SWAMP_HOME@
+cd %SWAMP_HOME%
+
+call "ant" i18n
+
+call "ant" jar-up install-tomcat 
+  
+cd webapps\webswamp 
+call "ant" i18n
+call "ant" install jar
+cd %SWAMP_HOME%
+

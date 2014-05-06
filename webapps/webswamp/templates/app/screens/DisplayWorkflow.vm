@@ -1,0 +1,399 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+$page.setTitle("WebSWAMP - Displaying Workflow: $workflow.getReplacedDescription()")
+
+#parse ("WorkflowHistory.vm")
+
+
+<table cellpadding="0" cellspacing="0" width="100%"><tr><td valign="top">
+    
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+style="border-width: 1px; border-style: solid; ">
+	<tr class="box_head">
+	    <td class="box_head" valign="middle"><nobr>
+		#if ($ui.hasConfigValue($workflow, "icon"))
+			<img src="$ui.getResourcePath($workflow, "icon")" alt="$workflow.getName()" align="middle" />
+		#else 
+			<img src="$ui.image("workflow-std_32")" alt="icon" align="middle" />
+		#end
+	    $ui.tr("Name", $data.getUser())</nobr></td>
+	    <td class="box_head" valign="middle"><nobr>
+	    <a href="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowid", $workflow.getId())"><img 
+	    src="$ui.image("graph_32")" alt="Show Graph" border="0" align="middle" /></a>$ui.tr("Image", $data.getUser())
+		</nobr></td>
+ 	    <td class="box_head" valign="middle"><nobr>
+ 	    <a href="$toggleHistoryURL"><img 
+ 	    src="$ui.image("history_32")" alt="Show History" hspace="2" border="0" align="middle" /></a>$ui.tr("History", $data.getUser())
+ 	    </nobr></td>
+	    <td class="box_head" valign="middle"><nobr>
+	    <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","true")#data"><img 
+ 	    src="$ui.image("editdata_32")" alt="Edit data" hspace="2" border="0" align="middle" /></a>$ui.tr("Data", $data.getUser())
+ 	    </nobr></td>
+ 	    
+ 	    #if(${workflow.hasRole($data.getUser().getUserName(), "admin")})
+ 	    	#set ($isadmin = "true")
+ 	    	#set ($headcolumns = 5)
+ 	    #else
+ 	    	#set ($headcolumns = 4)
+ 	    #end
+ 	    
+ 	    #if($isadmin)
+	    <td class="box_head" valign="middle"><nobr>
+ 	    <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")#admin"><img 
+ 	    src="$ui.image("edit_32")" alt="Admin console" hspace="2" border="0" align="middle" /></a>$ui.tr("Admin", $data.getUser())
+ 	    </nobr></td>
+ 	    #end
+ 	    
+ 	    
+	</tr>
+	<tr class="box_normal">
+	    <td>$workflow.getName()</td>
+	    <td><a href="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowid", $workflow.getId())">$ui.tr("generate Graph", $data.getUser())</a></td>
+	    <td><a href="$toggleHistoryURL">$historyLabel</a></td>
+	    <td>
+	    #if (!$dataedit)
+		<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","true")#data">$ui.tr("Edit", $data.getUser())</a>
+		#else 
+		<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","false")#data">$ui.tr("View", $data.getUser())</a>
+		#end
+	    </td>
+		#if($isadmin)
+		<td><a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")#admin">$ui.tr("Admin console", $data.getUser())</a></td>
+		#end
+	</tr>
+	
+	<tr class="box_head">
+	<td valign="top" colspan="$headcolumns" class="box_head">
+	$ui.tr("Description:", $data.getUser())
+	</td></tr>
+	<tr>
+	<td class="box_normal" colspan="$headcolumns" valign="top" align="left">
+
+	<div id="wf_stack">
+	<img src="$ui.image("rotate")"> 
+	$ui.tr("Loading workflow stack...", ${data.getUser()})
+	</div>
+	
+	<script language="JavaScript">
+	new Ajax.Updater({ success:'wf_stack'}, '/webswamp/swamp',
+	  {
+	    method:'get', 
+	    evalScripts: 'true', 
+	    parameters: {action: 'AjaxData', 
+	                 eventSubmit_doGetwfstack: 'true', 
+	                 masterworkflowid: '$masterworkflow.getId()', 
+	                 highlightid: '${workflow.getId()}'
+	                 },
+	    onFailure: function(transport){ 
+			Element.update('wf_stack', 
+	                '<div id="wf_stack"><img src="$ui.image("alert_16")"> ' + 
+	                '$ui.tr("An error ocurred while loading the workflow stack.", ${data.getUser()})</div>')
+			}
+	  });
+	</script>
+
+	</td></tr>	
+	</table>
+
+
+#set ($statedesc = $workflow.getStateDescription())
+#if ($statedesc && $statedesc.length() > 0)
+    <h3>$ui.tr("Workflow state:", $data.getUser())</h3>
+	<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+	style="border-width: 1px; border-style: solid; ">
+	<tr class="box_normal"><td>
+	$ui.newlineEncode($statedesc).replaceAll(",", ", ")
+	</td></tr></table>
+#end
+
+
+#if (!$tasks.isEmpty() || !$optionalTasks.isEmpty())
+	<a name="tasks" ></a>
+	<h3>$ui.tr("Currently Active Tasks:", $data.getUser())</h3>
+	<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+	class="box_normal" style="border-width: 1px; border-style: solid; ">
+	#showtasks($tasks $workflow)
+	
+	#if (!$optionalTasks.isEmpty() )
+		<tr><td><i>$ui.tr("optional tasks:", $data.getUser())</i></td></tr> 
+		#showtasks($optionalTasks $workflow)
+	#end
+	
+	</table>
+#end
+
+
+#if ($timeTasks && $timeTasks.size() > 0)
+<h3>$ui.tr("active time triggers:", $data.getUser())</h3>
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+style="border-width: 1px; border-style: solid; ">
+#foreach ($task in $timeTasks) 
+	#set ($actionTemplate = $task.getActionTemplate())
+	<tr class="box_normal">
+	#set ($wfid = $workflow.getId())
+	#if ($actionTemplate.getDescription() && !$actionTemplate.getDescription().equals(""))
+		#set ($desc = $actionTemplate.getDescription())
+	#else 
+		#set ($desc = $actionTemplate.getName())
+	#end
+	#if (!${actionTemplate.getTriggerDate($wfid)})
+		#set ($triggerdate = $ui.tr("<i>Not yet set</i>", $data.getUser()))
+	#else 
+		#set ($triggerdate = ${actionTemplate.getTriggerDateAsString($wfid)})
+	#end
+	<td valign="middle">
+	<img src="$ui.image("clock_16")" />
+	$desc ($ui.tr("scheduled for:", $data.getUser()) ${triggerdate})	
+	#if (${actionTemplate.isOnlyWeekdays()})
+	(${ui.tr("only weekdays", $data.getUser())})
+	#end
+	#if (${actionTemplate.getTriggerDatabit()} && !${actionTemplate.getTriggerDatabit().startsWith("System.")})
+	[ <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","true")#data">${ui.tr("edit", $data.getUser())}</a> ]
+	#end
+	</td>
+	</tr>
+#end
+</table>
+#end 
+
+
+
+</td>
+## display milestone box
+#set ($milestones = $workflow.getMileStones(true))
+#if ($milestones.size() > 0)
+	<td width="15">&nbsp;
+	</td>
+	<td valign="top" width="200">
+	#showMilestones($milestones)
+	</td>
+#end
+
+</tr></table>
+
+
+## eval if view or edit mode: 
+#if (!$adddatabit) <a name="data" ></a> #end
+<h3>${ui.tr("Workflow Data:", $data.getUser())} 
+
+#if (!$dataedit)
+[<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","true")#data">${ui.tr("Edit", $data.getUser())}</a>]
+#else 
+[<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("dataedit","false")#data">${ui.tr("View", $data.getUser())}</a>]
+#end
+</h3>
+
+## display the default dset first!
+#set ($setmap = $rootmap)
+#set ($setnames = $rootmap.keySet().toArray())
+
+#if ($dataedit)
+
+<form method="POST" enctype="multipart/form-data" ACCEPT-CHARSET="UTF-8"
+	action="$link.setPage("DisplayWorkflow.vm").setAction("DatapackActions").addPathInfo("workflowid",${workflow.id})#data"
+	onSubmit="return submitForm(this.submit)" name="dataedit">
+
+#parse ("DataPackEdit.vm")
+<br />
+
+#foreach ($setmap in $setmaps) 
+	#set ($setnames = $setmap.keySet().toArray())
+	#parse ("DataPackEdit.vm")
+	<br />
+#end
+   
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+style="border-width: 1px; border-style: solid; ">
+     <tr class="box_normal">
+	 <td align="left">
+     <input type="reset" value="${ui.tr("Reset Changes", $data.getUser())}" />
+	 <input type="hidden" name="showdata" value="true" />
+	 <input type="hidden" name="eventSubmit_doSavedatapack" value="true" />
+	 <input type="submit" name="submit" value="${ui.tr("Save Changes", $data.getUser())}" />
+     </td>
+     </tr>
+</table>
+</form>
+
+#if (!$adddatabit)
+	<h3><a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("action","DatapackActions").addPathInfo("eventSubmit_doAdddatabit", "true")#data">${ui.tr("Add", $data.getUser())}</a> ${ui.tr("a Databit.", $data.getUser())}</h3>
+#end
+
+#else 
+
+
+	#parse ("DataPackView.vm")
+	<br />
+	
+	#foreach ($setmap in $setmaps) 
+		#set ($setnames = $setmap.keySet().toArray())
+		#parse ("DataPackView.vm")
+		<br />
+	#end
+
+
+#end
+
+
+
+
+
+## display the add databit stuff: 
+#if ($adddatabit)
+	<br />
+	<a name="data"></a>
+ 	#parse ("AddDatabit.vm")
+#end
+
+
+
+## check role
+#if(${workflow.hasRole($data.getUser().getUserName(), "admin")})
+
+#if ($showadmin)
+
+<a name="admin" ></a>
+
+#if ($history && $history.getResults().size() > 0)
+<br />
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+        <tr class="box_head">
+        <td class="box_head">$ui.tr("What has happened: ", $data.getUser())</td>
+        </tr>
+</table>
+<br />
+<table>
+#foreach ($hist in $history.getResults())
+    <tr><td width="25" valign="top">
+    #if($hist.getLevel() == 2) 
+    	<img src="$ui.image("critical_16")">
+    #elseif($hist.getLevel() == 1) 
+    	<img src="$ui.image("alert_16")">
+    #else 
+    	<img src="$ui.image("milestone_reached")">
+    #end
+   </td><td valign="top">$ui.newlineEncode($ui.htmlEncode($hist.getMessage()))</td>
+   </tr>
+#end 
+</tr></table>
+<br />
+#end
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%" 
+style="border-width: 1px; border-style: solid; ">
+     <tr class="box_head">
+     <td class="box_head">${ui.tr("Node states:", $data.getUser())} [<a href="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowid", $workflow.getId())">${ui.tr("display graph", $data.getUser())}</a>]</td></tr>
+     
+     <tr class="box_normal"><td>
+<form action="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")#admin">
+<input type="hidden" name="action" value="WorkflowActions">
+<input type="hidden" name="eventSubmit_doChangenodesactivity" value="true">
+<table>
+	<tr>
+		<td><b>Name</b></td>
+		<td><b>Id</b></td>
+		<td><b>Description</b></td>
+		<td><b>State</b></td>
+		<td>&nbsp;</td>
+	</tr>
+#foreach ($node in $nodes)
+	<tr>
+		<td>$node.getName()</td>
+		<td>$node.getId()</td>
+		<td>${node.getReplacedDescription()}</td>
+		<td><select name="$node.getName()">
+			#if ($node.isActive())
+				<option value="true" selected>active</option>
+				<option value="false">inactive</option>
+			#else 
+				<option value="false" selected>inactive</option>
+				<option value="true">active</option>
+			#end
+			</select>
+		</td>
+		#if ($node.isActive())
+			<td width="20" style="background-color: green;">
+		#else 
+			<td width="20" style="background-color: #c0c0c0;">
+		#end
+		&nbsp;
+		</td>
+    </tr>
+    #if ($node.getMileStone())
+        <tr><td colspan="3">
+        MileStone: $node.getMileStone().getTemplate().getDescription()
+        </td><td><select name="$node.getMileStone().getName()">
+            #if ($node.getMileStone().isDisplayed())
+                <option value="true" selected>displayed</option>
+                <option value="false">hidden</option>
+            #else 
+                <option value="false" selected>hidden</option>
+                <option value="true">displayed</option>
+            #end
+            </select>
+        </td>
+        </td>
+        #if ($node.getMileStone().isDisplayed())
+            <td width="20" style="background-color: green;">
+        #else 
+            <td width="20" style="background-color: #c0c0c0;">
+        #end
+        &nbsp;
+        </td></tr>
+    #end
+		
+#end
+<tr><td colspan="5" align="right">
+<input type="submit" value="update node states">
+</td></tr>
+</table>
+</form>
+
+</td></tr></table>
+
+
+<h3>Send Event to this Workflow:</h3> 
+<form action="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")">
+<input type="text" name="etype" value="">
+<input type="hidden" name="wfid" value="$workflow.getId()">
+<input type="hidden" name="action" value="ExternalActions">
+<input type="submit" name="eventSubmit_doSendevent" value="send event">
+	
+</form>
+
+
+#if ($workflow.getTemplate().getParentWfName())
+	<h3>Change parent workflow:</h3> 
+	<form action="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")">
+	<input type="text" name="parentid" value="$workflow.getParentwfid()" size="10" />
+	<input type="hidden" name="wfid" value="$workflow.getId()" />
+	<input type="hidden" name="action" value="WorkflowActions" />
+	<input type="submit" name="eventSubmit_doChangeparentid" value="change" />
+	</form>
+#end
+
+<form action="$link.addPathInfo("action","WorkflowActions").setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("showadmin","true")">
+<h3>Restart Workflow: </h3>
+<input type="submit" name="eventSubmit_doRestartworkflow" value="Restart Now">
+</form>
+
+<form action="$link.addPathInfo("action","WorkflowActions").setPage($turbineconf.getString("template.homepage")).addPathInfo("wfid",${workflow.id})">
+<h3>Delete Workflow: </h3>
+<input type="submit" name="eventSubmit_doRemoveworkflow" value="Delete Now">
+</form>
+
+
+<h3>Workflow Details: </h3>
+Name, Version: ${workflow.getName()} v${workflow.getVersion()} <br/>
+Waiting for DATA_CHANGED on fields: $workflow.getTemplate().getListenerPaths() <br/>
+Waiting for events: $workflow.getTemplate().getWaitingForEvents()
+
+#end
+
+#end ##end check role
+
+
+<br />
+<br />
+

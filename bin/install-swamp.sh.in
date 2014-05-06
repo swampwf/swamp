@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SWAMP_HOME=@SWAMP_HOME@;
+cd $SWAMP_HOME &&
+
+./bin/install-webswamp.sh &&
+
+# install soapswamp
+cd $SWAMP_HOME/webapps/soapswamp &&
+ant install &&
+
+# install rss swamp
+cd $SWAMP_HOME/webapps/rss-swamp &&
+ant install;

@@ -1,0 +1,9 @@
+
+<table cellpadding="3" cellspacing="1" style="border-width: 1px; border-style: solid;" >
+<tr>
+<td>$ui.tr("applications are coloured:", $data.getUser()) </td>
+	<td style="background-color: #cdccbf; ">$ui.tr("closed", $data.getUser())</td>
+	<td style="background-color: #fff044; ">$ui.tr("older 14 days", $data.getUser())</td>
+	<td style="background-color: #ff7700; ">$ui.tr("older 28 days", $data.getUser())</td>
+</tr>
+</table>

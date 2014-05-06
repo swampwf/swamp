@@ -1,0 +1,29 @@
+## se string.vm for parameters
+
+#if ($rendertype.equals("wflist")) 
+    $content
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+        $content
+    #end
+#elseif ($rendertype.equals("edit")) 
+
+    ## only load .js if needed
+    #if (!$!calid)
+    <script language="JavaScript" src="/webswamp/resources/ui/skins/common/popcalendar.js" type="text/javascript"></script>
+    #end
+    
+    #set ($calid = "field_${field.getPath()}")
+    #set ($dateformat = "yyyy-mm-dd")
+    <input name="field_$field.getPath()" value="$!initval" type="text" size ="40" id="field_$field.getPath()" />
+    <input id="cal_${calid}" name="cal_${calid}" type="button" value="..." 
+        onclick="var mycal = document.getElementById('cal_${calid}'); showCalendar(mycal, document.getElementById('${calid}'), '${dateformat}', 'en', 1); var el = document.getElementById('pccalendar'); el.style.top = findPosY(mycal) + 20 + 'px'; " />
+    
+#elseif ($rendertype.equals("flags")) 
+    yyyy-MM-dd
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

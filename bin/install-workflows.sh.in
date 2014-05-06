@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# script for installing workflows from 
+# working dir to installed webswamp directory.
+
+WORKFLOWS_DEVEL=@SWAMP_HOME@/conf/workflows;
+WORKFLOWS_PRODUCTION=@CATALINA_BASE@/webapps/webswamp/WEB-INF/conf/workflows;
+
+cd ${WORKFLOWS_DEVEL};
+for i in `find . -type f | grep -v ".svn"`; do 
+   cp -u --parents $i ${WORKFLOWS_PRODUCTION}/
+done

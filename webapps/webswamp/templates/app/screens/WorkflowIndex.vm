@@ -1,0 +1,185 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP - ${wftemplate.getName()} Index")
+
+<table width="100%" cellspacing="4" cellpadding="4">
+<tr><td valign="top" align="right" width="100">
+
+#if ($ui.hasConfigValue($wftemplate, "icon_big"))
+	<img src="$ui.getResourcePath($wftemplate, "icon_big")" alt="icon" />
+#elseif ($ui.hasConfigValue($wftemplate, "icon"))
+	<img src="$ui.getResourcePath($wftemplate, "icon")" alt="icon" />
+#else 
+	<img src="$ui.image("workflow-std_32")" alt="icon" />
+#end
+
+</td>
+<td align="left">
+<table width="100%" callspacing="3" cellpadding="3"><tr>
+<td class="box_head">
+$ui.tr("Startpage for Workflow:", $data.getUser()) ${wftemplate.getName()} v${wftemplate.getVersion()}
+</td></tr></table>
+</td>
+</tr>
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" align="right" width="100">
+<b>$ui.tr("Description:", $data.getUser())</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+$ui.newlineEncode($wftemplate.getTemplateDescription())
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" align="right">
+<b>$ui.tr("Roles:", $data.getUser())</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+
+#foreach ($role in $wfroles)
+	## only display roles that are restricted and have default assignees
+	#if ($role.getMemberNames($wftemplate) && $role.getMemberNames($wftemplate).size() > 0)
+		#if ($role.isRestricted())
+		<img src="$ui.image("security_16")" valign="middle" /> 
+		#end
+		<b>$role.getDescription()</b> ($role.getName()):
+		<br />
+		#if ($role.getRoleRefs())
+		<i>$ui.tr("Role is inherited from:", $data.getUser()) $role.getRoleRefs()</i>
+		#else
+		$role.getMemberNames($wftemplate)
+		#end
+		<br />
+		#set ($hasroles = "true")
+	#end
+#end
+
+#if (!$hasroles)
+	<i>$ui.tr("This workflow does not implement any role restrictions.", $data.getUser())</i>
+#end 
+
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" 
+align="right">
+<b>$ui.tr("Search", $data.getUser()):</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+$ui.tr("Display all %1 Workflows", $data.getUser(), $wftemplate.getName())
+#set ($ownerbit = $wftemplate.getWorkflowRole("owner").getRoleDatabit())
+<a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $wftemplate.getName()).addPathInfo("systemfilter_databit", $ownerbit).addPathInfo("systemfilter_bitregex", $data.getUser().getName())">
+$ui.tr("where I (%1) am the owner", $data.getUser(), $data.getUser().getName())</a><br />
+
+
+#if ($help)
+$ui.tr("Show the %1 Workflows Help page ", $data.getUser(), $wftemplate.getName())
+(<a href="$link.setPage("Documentation.vm").addPathInfo("helpcontext", ${help.getContext()})">$!{help.getTitle()}</a>)<br />
+#end
+
+<form method="get" action="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $wftemplate.getName())">
+$ui.tr("Display %1 Workflows with (regexp) value of ", $data.getUser(), $wftemplate.getName())
+<input type="text" name="systemfilter_bitregex" size="10" />
+$ui.tr("in field ", $data.getUser())
+<select name="systemfilter_databit">
+	<option>$ui.tr("Please choose...", $data.getUser())</option>
+    #foreach ($bit in $dbitpaths)
+    <option value="$!bit">
+    #if (!$!{dbits.get($bit).getDescription()} || $!{dbits.get($bit).getDescription().length()} == 0)
+    	$!{dbits.get($bit).getName()}
+    #elseif ($!{dbits.get($bit).getDescription().length()} > 28)
+    	$!{dbits.get($bit).getDescription().substring(0,27)}...
+    #else 
+    	$!{dbits.get($bit).getDescription()}
+    #end
+    </option>
+    #end
+</select>
+<input type="submit" value="Filter"/>
+</form>
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+<tr><td valign="top" 
+align="right">
+<b>$ui.tr("Actions:", $data.getUser())</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+## show only if "starter"
+#if (${data.getUser().hasRoleInWorkflow("starter", $wftemplate)})
+	<form method="post" 
+	action="$link.setPage("Status.vm").addPathInfo("templatename", $wftemplate.getName()).setAction("WorkflowActions")"
+	onSubmit="return submitForm(this.submit)">
+	<img src="$ui.image("rocket_32")" alt="Show Graph" border="0" align="middle" />
+	$ui.tr("Start new %1 Workflow instance", $data.getUser(), $wftemplate.getName()) 
+	<input type="hidden" name="eventSubmit_doStartnewworkflow" value="true" />
+	<input type="submit" name="submit" value="Start" />
+	</form>
+	<br />
+#end
+
+<form method="post" action="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowversion", $wftemplate.getVersion()).addPathInfo("workflowtemplate", $wftemplate.getName())">
+<img src="$ui.image("graph_32")" alt="Show Graph" border="0" align="middle" />
+$ui.tr("Generate %1 Workflow Graph", $data.getUser(), $wftemplate.getName())  
+#set ($txt = $ui.tr("Draw", $data.getUser()))
+<input type="submit" value="$txt" />
+</form>
+
+#if ($wftemplate.hasRole($data.getUser().getUserName(), "admin"))
+    	<form method="GET" action="$link.setPage("WorkflowTemplateEdit.vm")">
+    	<img src="$ui.image("edit_32")" alt="Edit template" border="0" align="middle" />
+    	$ui.tr("Administrate workflow template", $data.getUser()) 
+	<input type="hidden" name="templatename" value="$wftemplate.getName()">
+	#set ($txt = $ui.tr("Edit", $data.getUser()))
+	<input type="submit" name="submit" value="$txt">
+	</form>
+#end
+
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+
+#if ($latestwf && $latestwf.size() > 0)
+	<tr><td valign="top" align="right">
+	<b>$ui.tr("History", $data.getUser()):</b> </td>
+	<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+	
+	
+	$ui.tr("latest Workflows:", $data.getUser()) <br />
+	#foreach ($job in $latestwf)
+	&middot; <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $job.getId())">$job.getReplacedDescription().trim()</a> 
+	#set ($hist = $job.getStartNode().getHistoryEntries($job.getId(), "NODE_ENTER"))
+	#if ($hist && $hist.size() > 0)
+		<i>($ui.tr("started by:", $data.getUser(), "de.suse.swamp.i18n.Swamp") $hist.get(0).getWho() 
+		$ui.tr("at:", $data.getUser(), "de.suse.swamp.i18n.Swamp") ${hist.get(0).getWhen()})</i>
+	#end
+	<br />
+	#end
+#end
+
+</td></tr>
+
+<tr><td colspan="2"></td></tr>
+
+
+#if ($!statsImage)
+<tr><td valign="top" 
+align="right">
+<b>$ui.tr("Statistics", $data.getUser()):</b> </td>
+<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
+
+#if ($!statsImage)
+<img src="$!statsImage" alt="Stats" /><br /><br />
+#end 
+
+$ui.tr("currently running/closed Workflows:", $data.getUser()) #$runningcount / #$closedcount<br />
+
+</td></tr>
+#end
+
+<tr><td colspan="2"></td></tr>
+
+
+</table>
+<br />

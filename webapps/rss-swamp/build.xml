@@ -1,0 +1,88 @@
+<project name="Rss-SWAMP" default="compile" basedir=".">
+
+	<property file="${basedir}/../../build.properties" />
+	<property name="installdir" value="${catalina.base}/webapps/rss" />
+	<property name="swamp.home" value="${basedir}/../.." />
+	
+	<path id="classpath">
+		<fileset dir="./lib">
+		  	<include name="*.jar"/>
+		</fileset>
+		<fileset dir="../../build">
+		  <include name="swamp.jar"/>
+		</fileset>
+		<fileset dir="../../lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	
+	<mkdir dir="build"/>
+
+	
+	<target name="compile" description="compile">
+	    <javac debug="${compile.debug}" 
+    		optimize="${compile.optimize}" 
+    		deprecation="${compile.deprecation}" 
+    		verbose="${compile.verbose}" 
+    	    target="${compile.target}" 
+	    	source="${compile.source}"
+	    	destdir="build">
+	      <src path="src" />
+	      <classpath refid="classpath" />
+	    </javac>
+	</target>
+	
+	
+    <target name="jar" depends="compile" description="--> Build jar file with auth class">
+		<jar destfile="build/swamp-rss-auth.jar" basedir="build" 
+                includes="**/SwampRssRealm.class" compress="true" />
+    </target>
+	
+	
+	<target name="install" depends="jar" description="--> install to tomcat" >
+    	<echo message="installing to ${installdir}" />
+	
+		<mkdir dir="${installdir}/WEB-INF/classes" />
+		<mkdir dir="${installdir}/WEB-INF/lib" />
+		<mkdir dir="${installdir}/META-INF" />
+		
+	  	<copy todir="${installdir}/META-INF">
+	  		<fileset dir="./conf" includes="context.xml"/>
+	  	</copy>
+	  	<copy todir="${installdir}/WEB-INF">
+	  		<fileset dir="./conf" includes="web.xml"/>
+	  	</copy>
+	  	<copy todir="${catalina.serverlibs}">
+	  		<fileset dir="./build" >
+	  			<include name="*.jar"/>
+	  		</fileset>
+	  	</copy>
+	  	<copy todir="${installdir}/WEB-INF/classes">
+	  		<fileset dir="./build" >
+	  			<exclude name="**/auth/"/>
+	  			<exclude name="*.jar"/>
+	  		</fileset>
+	  	</copy>
+	  	<copy todir="${installdir}/WEB-INF/lib">
+	  		<fileset dir="./lib" includes="rome-*, jdom*">
+	  		</fileset>
+	  	</copy>
+	  	<copy todir="${installdir}">
+	  		<fileset dir="./" >
+	  			<include name="README"/>
+	  		</fileset>
+	  	</copy>
+		
+	</target>	
+	
+	
+	<!-- remove build files -->
+	<target name="clean" description="Clean build dir">
+	  	<delete failonerror="false">
+	  		<fileset dir="build" includes="**"/>
+	    </delete>
+		<mkdir dir="build"/>
+	</target>
+	
+	
+</project>

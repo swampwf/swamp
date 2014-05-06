@@ -1,0 +1,470 @@
+## SWAMP Workflow Administration and Management Platform
+## Macros for rendering the workflow list pages
+
+
+#macro (showpageoptions ) 
+    #if($numberOfWorkflows >= 30 && !$multipleview)
+        #set($wfsPerPage = $wfsPerPageMap.get("systemfilter_wfsPerPage_$mastertemplatename"))
+        <form method="" action="$link.setPage("Workflows.vm").addSystemFilterParams()">
+
+            #if ($currentPage > 1)
+                <a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "0").addPathInfo("wfsPerPage", $wfsPerPage).addSystemFilterParams()">&lt;&lt;</a>
+                #set ($targetoffset = (($currentPage - 1) * $wfsPerPage) - $wfsPerPage)
+                <a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "$targetoffset").addPathInfo("wfsPerPage", "$wfsPerPage").addSystemFilterParams()">&lt;</a>
+            #end
+
+            #foreach ($page in $pages)
+                ## display only 4 pages before and 4 pages after the current page
+                #if ($currentPage - $page == 3 || $currentPage - $page == -3)
+                ...
+                #end
+                #if ($currentPage - $page <= 2 && $currentPage - $page >= -2)
+                    #if ($page != $currentPage)
+                        #set ($targetoffset = ($page * $wfsPerPage) - $wfsPerPage)
+                        [<a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "$targetoffset").addPathInfo("wfsPerPage", "$wfsPerPage").addSystemFilterParams()">$page</a>]
+                    #else
+                        [<b>$page</b>]
+                    #end
+                #end
+            #end
+
+            #if ($currentPage <  $pages.size())
+                #set ($targetoffset = (($currentPage + 1) * $wfsPerPage) - $wfsPerPage)
+                <a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "$targetoffset").addPathInfo("wfsPerPage", "$wfsPerPage").addSystemFilterParams()">&gt;</a>
+                #set ($targetoffset = ($pages.size() * $wfsPerPage) - $wfsPerPage)
+                <a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "$targetoffset").addPathInfo("wfsPerPage", "$wfsPerPage").addSystemFilterParams()">&gt;&gt;</a>
+            #end
+
+            Items per page: <select name="wfsPerPage_$mastertemplatename">
+                <option value="$wfsPerPage">$wfsPerPage</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="150">150</option>
+            </select>
+            <input type="submit" value='$ui.tr("Set:", $data.getUser())'>
+        </form>
+    #end
+#end ## end macro
+
+
+
+#macro (showlistoptions ) 
+    #if($!displaySubworkflowsDropdown.contains($mastertemplatename))
+        <form method="" action="$link.setPage("Workflows.vm").addSystemFilterParams()">
+            $ui.tr("Display Subworkflows:", $data.getUser()) <br />
+            <div style="width: 250px; ">
+                <input type="hidden" name ="wfOffset" value="$!wfOffset"/>
+                <input type="hidden" name ="wfsPerPage" value="$!wfsPerPage"/>
+                <input type="hidden" name ="subwfsuserchange_$mastertemplatename" value="true"/>
+                <select name="systemfilter_displaysubwfs_$mastertemplatename">
+                    #if ($!displaysubwfs.equals("active"))
+                        <option value="all">$ui.tr("all", $data.getUser())</option>
+                        <option selected value="active">$ui.tr("active", $data.getUser())</option>
+                        <option value="none">$ui.tr("none", $data.getUser())</option>
+                    #elseif ($!displaysubwfs.equals("none"))
+                        <option value="all">$ui.tr("all", $data.getUser())</option>
+                        <option value="active">$ui.tr("active", $data.getUser())</option>
+                        <option selected value="none">$ui.tr("none", $data.getUser())</option>
+                    #else
+                        <option selected value="all">$ui.tr("all", $data.getUser())</option>
+                        <option value="active">$ui.tr("active", $data.getUser())</option>
+                        <option value="none">$ui.tr("none", $data.getUser())</option>
+                    #end
+                </select>
+                <input type="submit" value='$ui.tr("Set", $data.getUser())'/>
+            </div>
+        </form>
+    #end
+#end
+
+
+
+
+#macro (showcolumnheadings $columns $wftemplatename) 
+    #set ($wfTemplate = $wfman.getWorkflowTemplate($wftemplatename))
+    #foreach ($column in $columns)
+        ## Standard Columns (Workflow-Properties)
+        #if ($column.equals("column_workflowid"))
+            #set ($columnname = $ui.tr("ID", $data.getUser()))
+        #elseif ($column.equals("column_wficon"))
+            #set ($columnname = "&nbsp;")
+        #elseif ($column.equals("column_workflowname"))
+            #set ($columnname = $ui.tr("Name", $data.getUser()))
+        #elseif ($column.equals("column_workflowdescription"))
+            #set ($columnname = $ui.tr("Description", $data.getUser()))
+        #elseif ($column.equals("column_taskdescription"))
+            #set ($columnname = $ui.tr("Task", $data.getUser()))
+        #elseif ($column.equals("column_users"))
+            #set ($columnname = $ui.tr("Assigned Users", $data.getUser()))
+        #elseif ($column.equals("column_nexttasks"))
+            #set ($columnname = $ui.tr("Next Tasks", $data.getUser()))
+        #elseif ($column.equals("column_state"))
+            #set ($columnname = $ui.tr("State", $data.getUser()))
+        #elseif ($column.equals("column_wflink"))
+
+        #elseif ($column.equals("column_progress"))
+            #set ($columnname = $ui.tr("Progress", $data.getUser()))
+
+        ## else assuming Databit-Column
+        #else
+
+            #if ($wfTemplate.containsDatabitTemplate($column) && $wfTemplate.getDatabitTemplate($column).hasShortDescription())
+                #set ($dbitTemplate = $wfTemplate.getDatabitTemplate($column))    
+                #set ($columnname = $dbitTemplate.getShortDescription())
+                #set ($dbitTemplate = "")
+            #else
+                #set ($pos = ${column.lastIndexOf(".")} + 1)
+                #set ($columnname = $column.substring($pos))
+            #end
+
+        #end
+
+        #if ($showsubheading)
+            <td class="box_normal" style="border-width: 1px; border-style:solid; ">
+        #else
+            <td class="box_head">
+        #end
+                #if ($!columnname)
+                    #if ($defaultview.equals("workflow"))
+                        #set ($ordercall = "wforder_$wftemplatename")
+                    #elseif ($defaultview.equals("task"))
+                        #set ($ordercall = "taskorder_$wftemplatename")
+                    #end
+
+                    #set ($directioncall = "wfdirection_$wftemplatename")
+                    #if ($direction.toLowerCase().equals("descending"))
+                        #set ($directionval = "ascending")
+                    #else
+                        #set ($directionval = "descending")
+                    #end
+
+                    ##// don't offer ordering for some columns where its not possible yet:
+                    ## ordering not possible in multi-view
+                    #if ($multipleview || $showsubheading || $column.equals("column_wficon") || $column.equals("column_nexttasks") || $column.equals("column_workflowname") || $column.equals("column_workflowdescription") || $column.equals("column_progress") || $column.startsWith("System."))
+                        <nobr>$columnname</nobr>
+                    #else
+                        <nobr>
+                            <a href="$link.setPage("Workflows.vm").setAction("ViewActions").addPathInfo("eventSubmit_doSetorder", "true").addPathInfo($ordercall, $column).addPathInfo($directioncall, $directionval).addSystemFilterParams()">$columnname</a>
+                            #if ($column.equals($orderBy))
+                                #if ($direction.toLowerCase().equals("descending"))
+                                    <img src="$ui.image("pfeil_up")" />
+                                #else
+                                    <img src="$ui.image("pfeil_down")" />
+                                #end
+                            #end
+                        </nobr>
+                    #end
+                #end
+            </td>
+    #end 
+#end
+
+
+#macro (showcolumns $workflow $columns)
+    <tr style="border-width: 1px; border-style:solid; ${ui.getWorkflowColour($workflow)}">
+        #foreach ($column in $columns)
+            ## set width of the column:
+            #if ($column.equals("column_wficon") || $column.equals("column_progress") || $column.equals("column_workflowid"))
+                <td width="25" valign="middle">
+            #else
+                <td valign="middle">
+            #end
+                    ## <!-- column $column -->
+                    ## Standard Columns (Workflow-Properties)
+                    #if ($column.equals("column_workflowid"))
+                        <b><a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.id)">
+                            $workflow.getId()</a></b>
+                    #elseif ($column.equals("column_workflowname"))
+                        #set ($tooltip = $!workflow.getReplacedDescription() )
+                        #if (!$workflow.isRunning())
+                            #set ($tooltip = "${tooltip} <br />${workflow.getStateDescription()}")
+                        #end
+                        #set ($tooltip = $ui.tooltipEncode($!tooltip) )
+                        <b><a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.id)"
+                            onmouseover="Tip('$tooltip')" onmouseout="UnTip()">$workflow.getName()</a></b>
+                    #elseif ($column.equals("column_wficon"))
+                        #if ($ui.hasConfigValue($workflow.getTemplateName(), "icon_small"))
+                            <img src="$ui.getResourcePath($workflow, "icon_small")"
+                            alt="" align="middle" />
+                        #else
+                            <img src="$ui.image("workflow-std_22")" alt="" align="middle" />
+                        #end
+                    #elseif ($column.equals("column_workflowdescription"))
+                        #set ($tooltip = $ui.tooltipEncode("${workflow.getStateDescription()}"))
+                        #if ($tooltip.trim().length() == 0) #set ($tooltip = "") #end
+                        <b><a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.id)"
+                            #if (!$tooltip.equals("")) onmouseover="Tip('$tooltip')" onmouseout="UnTip()" #end>
+                            $workflow.getReplacedDescription()</a></b>
+                    #elseif ($column.equals("column_wfdesc_nolink"))
+                        $workflow.getReplacedDescription()
+                    #elseif ($column.equals("column_nexttasks"))
+                        <table cellspacing="0" cellpadding="0">
+                            ## if we filter the displayed tasks, also include non-mandatory ones
+                            #if($!displaytasks)
+                                #set($tasks = $workflow.getActiveTasks())
+                            #else
+                                #set($tasks = $workflow.getActiveTasks(true))
+                            #end
+                            #foreach ($task in $tasks)
+
+                                ## !! if we have the wf list filtered by task properties, only display the relevant ones:
+                                ## - display optional tasks, - display only tasks for $taskOwner (includes $taskOwner@... assignments)
+
+                                #set($displaythistask = "false")
+                                #if(!$taskOwner)
+                                    #set($displaythistask = "true")
+                                #else
+                                    #foreach ($taskuser in $task.getUsersForRole())
+                                        #if($taskuser.equals($taskOwner) || $taskuser.indexOf("${taskOwner}@") >= 0)
+                                            #set($displaythistask = "true")
+                                        #end
+                                    #end
+                                #end
+
+                                ## hide this task if its not in the configured list
+                                #if($!displaytasks && !$!displaytasks.contains($task.getActionTemplate().getName()))
+                                    #set($displaythistask = "false")
+                                #end
+
+                                #if($displaythistask.equals("true"))
+                                    #set ($showrole = "false")
+                                    #showtasks ([$task] $workflow)
+                                #end
+                            #end
+                        </table>
+                    #elseif ($column.equals("column_state"))
+                        $workflow.getState()
+                    #elseif ($column.equals("column_startdate"))
+                        FIXME: Date started
+                    #elseif ($column.equals("column_progress"))
+                        #progressbar ($workflow)
+                    ## else assuming Databit-Column
+                    #else
+                        #if ($!{workflow.containsDatabit($column)})
+                            #set ($content = $!{workflow.getDatabit($column).getValue()})
+                            #if (!$content.equals(""))
+                                #set ($content = $ui.htmlEncode($content).replaceAll(",", ", ").replaceAll("\n", "<br />"))
+                                #set ($path = $column)
+                                #set ($type = $!{workflow.getDatabit($column).getType()})
+                                #set ($rendertype = "wflist")
+                                #parse( "datatypes/${type}.vm" )
+                            #end
+                        #end
+                    #end
+                </td>
+        #end
+    </tr>
+#end
+
+
+#macro (iscolumnactive $column $columns) 
+    #if ($columns.contains($column))
+        *
+    #end
+#end
+
+
+#macro (showeditcolumns $template $columns) 
+    #if (!$!wfOffset) #set ($wfOffset = 0) #end
+    #if (!$!wfsPerPage) #set ($wfsPerPage = 100) #end
+    #if ($editcolumns.equals($template))
+        <table width="100%">
+            <tr>
+                <td valign="middle">
+                    #if ($ui.hasConfigValue($template, "icon"))
+                        <img src="$ui.getResourcePath($template, "icon")" alt="$template Icon" align="middle" />
+                    #else
+                        <img src="$ui.image("workflow-std_32")" alt="$template Icon" align="middle" />
+                    #end
+                    $ui.tr("Workflow-Template", $data.getUser()) <b>$template</b>
+                </td>
+                <td align="right" valign="middle">
+                    #showpageoptions ()
+                </td>
+            </tr>
+
+            <form method="post" action="$link.setPage("Workflows.vm").setAction("ViewActions").addSystemFilterParams()">
+                <tr class="box_normal">
+                    <td colspan="2">
+
+                    <select name="column">
+                        <option value="" selected>$ui.tr("Choose Column", $data.getUser())</option>
+                        <option value="column_workflowid">#iscolumnactive ("column_workflowid" $columns)$ui.tr("Workflow ID", $data.getUser())</option>
+                        <option value="column_workflowname">#iscolumnactive ("column_workflowname" $columns)$ui.tr("Workflow name", $data.getUser())</option>
+                        <option value="column_workflowdescription">#iscolumnactive ("column_workflowdescription" $columns)$ui.tr("Workflow description", $data.getUser())</option>
+                        <option value="column_progress">#iscolumnactive ("column_progress" $columns)$ui.tr("Progress-bar", $data.getUser())</option>
+                        #if ($defaultview.equals("task"))
+                            <option value="column_taskid">#iscolumnactive ("column_taskid" $columns)$ui.tr("Task ID", $data.getUser())</option>
+                            <option value="column_taskdescription">#iscolumnactive ("column_taskdescription" $columns)$ui.tr("Task Description", $data.getUser())</option>
+                            <option value="column_users">#iscolumnactive ("column_users" $columns)$ui.tr("Assigned Users", $data.getUser())</option>
+                        #else
+                            <option value="column_nexttasks">#iscolumnactive ("column_nexttasks" $columns)$ui.tr("Next Tasks", $data.getUser())</option>
+                            <option value="column_state">#iscolumnactive ("column_state" $columns)$ui.tr("Workflow State", $data.getUser())</option>
+                            <option value="column_wficon">#iscolumnactive ("column_wficon" $columns)$ui.tr("Icon", $data.getUser())</option>
+                        #end
+
+                        ## offer to remove bogus user defined columns
+                        #foreach ($col in $columns)
+                            #if (!$columndatabitnames.contains($col) && !$col.startsWith("column_"))
+                                <option value="$col">
+                                #iscolumnactive ($col $columns) $col</option>
+                            #end
+                        #end
+                        <option value="">--- Databits: ---
+                        #foreach ($databitname in $columndatabitnames)
+                            <option value="$databitname">
+                            #iscolumnactive ($databitname $columns)
+                            $databitname</option>
+                        #end
+                    </select>
+
+                    <input type="hidden" name="editcolumns" value="$template">
+                    <input type="hidden" name="defaultview" value="$defaultview">
+                    <input type="hidden" name="wftemplate" value="$template">
+                    <input type="hidden" name="wfOffset" value="$!wfOffset">
+                    <input type="hidden" name="wfsPerPage" value="$!wfsPerPage">
+                    <input type="submit" name="eventSubmit_doAddcolumn" value="Add">
+                    <input type="submit" name="eventSubmit_doDeletecolumn" value="Remove">
+                    <input type="submit" name="eventSubmit_doResetcolumns" value="Reset to defaults">
+
+                    </td>
+                </tr>
+            </form>
+        </table>    
+    #else 
+        <table width="100%">
+            <tr>
+                <td width="50%" valign="middle">
+                    <table>
+                        <tr>
+                            <td valign="middle">
+                                #if ($ui.hasConfigValue($template, "icon"))
+                                    <img src="$ui.getResourcePath($template, "icon")" alt="$template Icon" align="middle" />
+                                #else
+                                    <img src="$ui.image("workflow-std_32")" alt="$template Icon" align="middle" />
+                                #end
+                            </td>
+                            <td valign="middle">
+                                $ui.tr("Workflow-Template", $data.getUser()) <b>$template</b>
+                                #if (!$!noeditcolumns)
+                                    <br />
+                                    [ <a href="$link.setPage("Workflows.vm").addPathInfo("editcolumns", "$template").addPathInfo("wfOffset", "$!wfOffset").addPathInfo("wfsPerPage", "$!wfsPerPage").addSystemFilterParams()">$ui.tr("configure columns", $data.getUser())</a> ]
+                                #end
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td align="left" valign="middle">
+                    #showlistoptions ()
+                </td>
+                <td width="50%" align="right" valign="middle">
+                    #showpageoptions ()
+                </td>
+            </tr>
+        </table>
+    #end
+#end
+
+
+## expects $displaysubwfs to be set to "active", "all" or "none" 
+#macro (showworkflows $wflist $displayedcolumns $showheading) 
+    ## This table surrounds all (sub)workflows of this level
+    <table cellpadding="1" cellspacing="1" border="1" rules="rows" width="100%" style="border-width: 1px; border-style:solid;">
+        #if ($showheading.equals("true") )
+            #if ($showsubheading)
+                <tr class="box_normal">
+            #else 
+                <tr class="box_head">
+            #end
+                    ## Column Headings
+                    #set ($templatename = $wflist.get(0).getTemplate().getName())
+                    #set ($columns = $displayedcolumns.get($templatename))
+                    #showcolumnheadings($columns $templatename)
+                </tr>
+        #end
+
+        ##// attention: don't use $wflist in here, velocity recursion changes the reference
+        #foreach ($workflow in $wflist)
+            #set ($columns = $displayedcolumns.get($workflow.getTemplateName()))
+            #showcolumns($workflow $columns)
+
+            ## display subworkflows if:
+            ## - the template has a subworkflowtemplate
+            ## - setting is "active" and it has active subworkflows
+            ## - setting if "all" and it has any
+
+            #set($displaysubwfs = $displaysubwfsSet.get("systemfilter_displaysubwfs_${workflow.getTemplateName()}"))
+            #if (!$!displaysubwfs || $displaysubwfs.equals("none"))
+            #elseif ($displaysubwfs.equals("active") && !(${workflow.getSubWorkflows(true).size()} == 0 ) || $displaysubwfs.equals("all") && ${workflow.getSubWfIds().size()} > 0 )
+                <tr>
+                    <td colspan="${columns.size()}">
+                        <table width="97%" cellspacing="0" cellpadding="2" align="right">
+                            ## show its subworkflows
+                            #if ($displaysubwfs.equals("active"))
+                                #set ($showsubwfs = ${workflow.getSubWorkflows(true)})
+                            #else
+                                #set ($showsubwfs = ${workflow.getSubWorkflows()})
+                            #end
+                            <tr>
+                                <td>
+                                    ## show subwfs heading?
+                                    #set ($subtemplate = $showsubwfs.get(0).getTemplate())
+                                    #set ($subtemplatename = $showsubwfs.get(0).getTemplate().getName())
+                                    #if (($ui.hasConfigValue($subtemplatename, "heading_workflowview") && $ui.getConfigValue($subtemplatename, "heading_workflowview").equals("true")))
+                                        #set ($showsubheading = "true")
+                                    #else
+                                        #set ($showsubheading = "false")
+                                    #end
+                                    ## velocity will log an error for recursive macro calls, please ignore
+                                    #showworkflows ($showsubwfs $displayedcolumns $showsubheading)
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            #end ## end if subwfs
+        #end ## End foreach Workflow
+    </table>
+#end ## end macro showworkflows
+
+
+
+#macro(workflowfooter )
+    <table width="100%" border="0">
+        <tr>
+            <td align="left" valign="middle">
+
+                #if ($ui.hasTemplate($mastertemplatename, "wflist_colours.vm"))
+                    ## Include Workflow-Interfaces
+                    #parse("screens/workflows/$mastertemplatename/wflist_colours.vm")
+                #else
+                    <table cellpadding="3" cellspacing="1" style="border-width: 1px; border-style: solid;" >
+                        <tr>
+                            <td>$ui.tr("Workflow Colours:", $data.getUser()) </td>
+                            <td class="box_inactive">$ui.tr("inactive", $data.getUser())</td>
+                        </tr>
+                    </table>
+                #end
+            </td>
+            <td align="right" valign="middle">
+                #if (!$!wfOffset) #set ($wfOffset = 0) #end
+                #if (!$!wfsPerPage) #set ($wfsPerPage = 100) #end
+                #if (!$printview.equals("true"))
+                    <a href="$link.setPage("Workflows.vm").addPathInfo("printview", "true").addPathInfo("wfOffset", "$!wfOffset").addPathInfo("wfsPerPage", "$!wfsPerPage").addSystemFilterParams()"><img align="middle"
+                        alt="Printable view" src="$ui.image("printer_22")" hspace="2" /></a>
+                        <a href="$link.setPage("Workflows.vm").addPathInfo("printview", "true").addPathInfo("wfOffset", "$!wfOffset").addPathInfo("wfsPerPage", "$!wfsPerPage").addSystemFilterParams()">$ui.tr("printable View", $data.getUser())</a>
+                #else
+                    [<a href="$link.setPage("Workflows.vm").addPathInfo("wfOffset", "$!wfOffset").addPathInfo("wfsPerPage", "$!wfsPerPage").addSystemFilterParams()">$ui.tr("switch back to normal view", $data.getUser())</a>]
+                #end
+            </td>
+            <td align="right" valign="middle">
+                <a href="$link.getRssLink()"><img src="$ui.image("rss_16")" alt="RSS"/></a>
+            </td>
+            <td valign="middle" align="right">
+                #showpageoptions ()
+            </td>
+        </tr>
+    </table>
+#end
+

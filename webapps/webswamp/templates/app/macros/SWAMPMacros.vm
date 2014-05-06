@@ -1,0 +1,351 @@
+## SWAMP Workflow Administration and Management Platform
+##
+
+#macro (navhead $image $link $text)
+  <table cellpadding="0" cellspacing="0" border="0" width="190" class="box_normal">
+        <tr>
+          <td valign="top" width="173" colspan="2" style="background-image:url($ui.image("navboxbordertop")); background-position:top; background-repeat: repeat-x;" 
+          class="box_head"><img src="$ui.image("clearpix")" width="1" height="7" 
+          alt="" border="0" /></td>
+          <td valign="top" align="right" 
+          class="box_head"><img src="$ui.image("navboxcornertopinside")" 
+          alt="" border="0" width="6" height="7" /></td>
+          <td valign="top" align="right"><img src="$ui.image("navboxcornertopoutside")" 
+          alt="" border="0" /></td>
+        </tr>
+        <tr>
+          <td width="10" align="left" valign="top" class="box_head"><img 
+			src="$ui.image("clearpix")" width="10" height="1" alt="" border="0" /></td>
+          <td align="left" class="box_head" valign="middle">
+          <table><tr><td valign="middle" align="middle" width="35">
+         
+          #if ($image && $image.length() > 0)
+          	<img src="$image" alt="" align="middle" hspace="1" />
+          #end
+          
+          </td><td valign="middle" align="left" class="box_head">
+          
+          #if ($link && $link.length() > 0)
+          	<a href="$link">
+          #end
+          $text
+          #if ($link && $link.length() > 0)
+          	</a>
+          #end
+          </td></tr></table>
+          </td>
+          <td width="6" align="right" valign="top" class="box_head"><img 
+			src="$ui.image("clearpix")" height="1" width="6" alt=" " border="0" /></td>
+          <td width="1" align="right" valign="top" class="box_border"><img 
+			src="$ui.image("clearpix")" height="1" width="1" alt=" " border="0" /></td>
+        </tr>
+   </table>
+#end
+
+
+
+#macro (navbottom)
+	<table cellpadding="0" cellspacing="0" border="0" width="190" class="box_normal">
+        <tr>
+          <td valign="bottom" width="184" colspan="3" 
+          style="background-image:url($ui.image("navboxborderbottom")); background-position:bottom; background-repeat: repeat-x;"><img 
+          src="$ui.image("clearpix")" width="1" height="7" alt="" border="0" /></td>
+          <td valign="top" align="right"><img src="$ui.image("navboxcornerbottominside")" 
+          alt="" border="0" width="6" height="7" /></td>
+          ## <td valign="top" align="right"><img src="$ui.image("navboxcornerbottomoutside")" 
+          ## alt="" border="0" width="1" height="7" /></td> -->
+        </tr>
+	</table>
+#end
+
+
+
+#macro (dotentry $name $link)
+  <tr>
+    <td align="right" valign="top" class="box_normal">
+      <img src="$ui.image("olivebullet")" width="8" height="8" 
+      alt="*" vspace="3" border="0" />
+    </td>
+    <td align="left" class="box_normal" valign="top">
+      <a href="$link">$name</a>
+    </td>
+  </tr>
+#end
+
+
+#macro (roundtabletop)
+        <tr class="box_head">
+          <td valign="top" class="box_head">
+          <img src="$ui.image("clearpix")" width="1" height="7" 
+          alt="" border="0" /></td>
+          
+          <td valign="top" class="box_head">
+          <img src="$ui.image("clearpix")" width="1" height="7" 
+          alt="" border="0" /></td>
+          
+          <td valign="top" align="right" width="6" height="7">
+          <img src="$ui.image("border_top_right")" 
+          alt="" border="0" height="7" width="6" border="0" /></td>
+        </tr>
+#end
+
+
+#macro (roundtablebottom)
+        <tr>
+          <td valign="bottom" width="172" colspan="2" 
+          style="background-image:url($ui.image("navboxborderbottom")); background-position:bottom; background-repeat: repeat-x;">
+          <img src="$ui.image("clearpix")" width="1" height="7" alt="" border="0" /></td>
+          <td valign="top" align="right"><img src="$ui.image("navboxcornerbottominside")" 
+          alt="" border="0" width="6" height="7" /></td>
+          <td valign="top" align="right"><img src="$ui.image("navboxcornerbottomoutside")" 
+          alt="" border="0" width="1" height="7" /></td>
+        </tr>
+#end
+
+
+
+## show MileStone Box 
+#macro (showMilestones $milestones)
+	#if ($!milestones && $!{milestones.size()} > 0) 
+		<table width="100%" cellpadding="3" cellspacing="0" border="0" 
+		style="border-width: 1px; border-style: solid; "><tr class="box_head"> 
+		<td class="box_head" colspan="2"> 
+		Milestones: </td></tr>
+		#foreach ($milestone in $!milestones)
+    		#if ($milestone.isReached())
+    		<tr class="box_normal"><td class="box_normal">
+    		<img src="$ui.image("milestone_reached")" alt="" /></td><td>
+    		#else 
+    		<tr class="box_white"><td class="box_white">
+    		<img src="$ui.image("milestone_unreached")" alt="" /></td><td>
+    		#end
+    		$milestone.getDescription()
+    		</td></tr>
+		#end
+		</table>
+	#end
+#end
+
+
+
+## Display Milestone progressbar + hover effect with details
+#macro (progressbar $workflow) 
+
+    #set ($milestones = $workflow.getMileStones(true))
+	#if ($milestones.size() > 0)
+	    <span id="milestones_${workflow.getId()}" style="visibility: hidden; display: none;">#showMilestones($milestones)</span>
+		<div onmouseover="TagToTip('milestones_${workflow.getId()}', PADDING, 0);" onmouseout="UnTip()">
+
+		<table cellspacing="1" cellpadding="0" bgcolor="#c0c0c0" 
+		style="border-width: 1px; border-style: solid; border-color: #000000; "><tr>
+		#foreach ($stone in $milestones)
+			#if ($stone.isReached())
+				<td class="box_head" width="10" height="12"> </td>
+			#else 
+				<td class="box_normal" width="10" height="12"><b> </b></td>
+			#end 
+		#end
+		</tr></table>
+		</div>
+	#end
+#end
+
+
+
+
+#macro (showsubwfs $subwfs $highlightid $parentid) 
+	<table width="97%" align="right" border="0" cellpadding="0" cellspacing="0">
+
+	#foreach ($subwf in $subwfs)
+		#if ( $highlightid == $subwf.getId() || $subwf.getAllSubWfIds().contains($highlightid) )
+			#set($foo = $!{displayedTrees.add($subwf.getId())})
+			#showwfsummaryline($subwf $highlightid)
+			#if ($!subwf.getSubWorkflows().size() > 0)
+			 	<tr>
+			 	<td colspan="3">
+			 	#showsubwfs($subwf.getSubWorkflows() $highlightid $subwf.getId())
+			 	</td>
+			 	</tr>
+			#end
+		#end
+	#end
+	
+	<tr><td colspan="3">
+	<div class="branch" id="wftree-${parentid}">
+	<table width="100%" cellspacing="0" cellpadding="0">
+	
+	#foreach ($subwf in $subwfs)
+	    ## only display if not done before
+		#if(!$displayedTrees.contains($subwf.getId()))
+			#if ( $highlightid != $subwf.getId() && !$subwf.getAllSubWfIds().contains($highlightid) )
+			#showwfsummaryline($subwf $highlightid)
+			#end 
+	
+			#if ($subwf.getSubWorkflows().size() > 0)
+			 	<tr>
+			 	<td colspan="3">
+			 	#showsubwfs($subwf.getSubWorkflows() $highlightid $subwf.getId())
+			 	</td>
+			 	</tr>
+			#end
+		#end
+	#end
+	</table>
+	</div>
+	</td></tr>
+
+	#if (${subwfs.size()} > 1 || !(${subwfs.get(0).getId()} == $highlightid))
+   	<tr><td colspan="3">
+   	<div class="trigger" onClick="toggleBranch('wftree-${parentid}'); swapImage('img-${parentid}')" ><img src="$ui.image("item_open")" id="img-${parentid}" /> 
+   	Show all (${subwfs.size()}) ${subwfs.get(0).getTemplateName()} subworkflows</div>
+   	</td></tr>
+   	#end
+	
+	</table>
+#end
+
+
+
+
+## mode is one of: "all" "singleStack" "active" "instance" (not used...)
+#macro (showwfstack $masterwf $highlightid $mode) 
+	#if (!$!mode) #set ($mode = "all") #end
+	#if (!$!highlightid) #set ($highlightid = 0) #end
+	#set ($inactiveCount = 0)
+	
+	<table width="100%" align="right" border="0" cellpadding="0" cellspacing="0">
+		
+		#showwfsummaryline($masterwf $highlightid)
+		#set ($subwfs = $masterwf.getSubWorkflows())
+		#if ($subwfs.size() > 0)
+	
+			<script language="JavaScript">
+		   
+		  	toggleBranch = function(branch) {
+		      	   var objBranch = document.getElementById(branch).style;
+		      	   if(objBranch.display=="block")
+		               objBranch.display="none";
+		           else
+		               objBranch.display="block";
+			}
+		   
+		   
+		   	showBranch = function(branch) {
+		      	    var objBranch = document.getElementById(branch).style;
+		            objBranch.display="block";
+			}
+		   
+		   	hideBranch = function(branch) {
+		            var objBranch = document.getElementById(branch).style;
+		            objBranch.display="none";
+		   	}
+		   
+		   	swapImage = function(img) {
+		            objImg = document.getElementById(img);
+		            if(objImg.src.indexOf('$ui.image("item_close")')>-1)
+		                objImg.src = '$ui.image("item_open")';
+		            else
+		                objImg.src = '$ui.image("item_close")';
+			}
+			</script>
+	
+		 	<tr>
+		 	<td colspan="3">
+		 	
+		 	## store list of already displayed trees
+		 	#set( $displayedTrees = [] )
+		 	
+		 	#showsubwfs($subwfs $highlightid $masterwf.getId())
+		 	</td>
+		 	</tr>
+		#end
+	</table>
+#end
+
+
+
+
+
+#macro (showwfsummaryline $wf $highlightid) 
+	<tr style="${ui.getWorkflowColour($wf)}; #if ($highlightid && $highlightid == $wf.getId()) font-weight: bold; #end " >
+	<td width="30">
+	#if ($ui.hasConfigValue($wf.getTemplate(), "icon_small"))
+		<img src="$ui.getResourcePath($wf, "icon_small")" alt="" />
+	#end
+	</td><td>
+	
+	#set ($tooltip = ${wf.getStateDescription()} )
+	#set ($tooltip = $ui.tooltipEncode($!tooltip) )
+	<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $wf.getId())" 
+	#if ($tooltip.trim().length() > 1)
+	onmouseover="Tip('$tooltip')" onmouseout="UnTip()"
+	#end 
+	>
+	#set ($desc = $wf.getReplacedDescription().replaceAll(",", ", ").replaceAll("\\n", " ").replaceAll("\n", " "))
+	#if ($desc.length() > 300) #set ($desc = "${desc.substring(0,300)}...") #end
+	$desc</a> 
+	#if ($tooltip.trim().length() > 1)
+	<img src="$ui.image("info_16")" onmouseover="Tip('$tooltip')" onmouseout="UnTip()" />
+	#end
+	</td>
+	<td width="100" align="left">	
+	#progressbar ($wf)
+	</td></tr>
+#end
+
+
+
+#macro (showtasks $tasks $workflow) 
+	#foreach ($task in $tasks) 
+		<tr>
+		#set ($atemplate = $task.getActionTemplate())
+		#if (!${atemplate.isRestricted()} || $workflow.hasRole($data.getUser().getName(), $atemplate.getRoleName()) )
+			#set ($showlink = "true")
+		#else #set ($showlink = "false") #end
+		#if ($atemplate.getDescription().length() < 31)
+			#set ($nobr = "true")
+		#else #set ($nobr = "false") #end
+
+		<td>
+		#if ($nobr.equals("true"))<nobr>#end
+		&middot; 
+		#if ($showlink.equals("true")) <a href="$link.setPage("DisplayTask.vm").addPathInfo("taskid", $task.id)">#end
+		$atemplate.getReplacedDescription($workflow.getId())#if ($showlink.equals("true"))</a> #end
+		#if (${task.getRoleName()} && !${task.getRoleName().equals("")})
+			#if (${atemplate.isRestricted()})
+				#set($txt = "This task is restricted and can only be done by users of the group <i>${task.getRoleName()}</i>. <br />")
+			#else 
+			    #set($txt = "")
+			#end
+			#set($txt = "$!{txt}Users of role <i>${task.getRoleName()}</i>: ${task.getUsersForRole()}")
+			
+			#if (${atemplate.isRestricted()})
+				<span onmouseover="Tip('$txt', OFFSETX, -70)" onmouseout="UnTip()"> 
+				<img src="$ui.image("security_16")" valign="middle" />
+				</span>
+				#if ($nobr.equals("true")) </nobr> #end 
+			#end
+			#if (!$showrole || !$showrole.equals("false"))
+				<span onmouseover="Tip('$txt', OFFSETX, -70)" onmouseout="UnTip()"> 
+				(role: ${task.getRoleName()}) 
+				</span>
+			#end 
+		#end
+	    	</td>
+	  	</tr>
+	#end
+#end
+
+
+#macro (buglist $bugidlist) 
+    #if ($bugidlist.getClass().getName().equals("java.lang.String"))
+      #set ($bugids = $bugidlist.split(","))
+    #else 
+      #set ($bugids = $bugidlist)
+    #end
+    #foreach($bugid in $bugids)
+        #set ($pos = $bugid.indexOf('#') + 1)
+        #set ($bugid = $bugid.substring($pos, $bugid.length()) ) 
+        <a href="${bugzilla_url}${bugid}" onmouseover="loadData(${bugid}); Tip(drawpopup(${bugid}));" onmouseout="UnTip()">$bugid</a> #end
+#end
+

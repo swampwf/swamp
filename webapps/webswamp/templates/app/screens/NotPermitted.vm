@@ -1,0 +1,22 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP Not Permitted")
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+    <tr class="error">
+          <td colspan="2" class="error">
+          No Permission
+          </td>
+        </tr>
+	<tr>
+	  	<td>
+	  	Sorry, but you don&#39;t have the permission for the 
+	  	requested action/screen. <br />
+	  	If this is a Bug, please contact your SWAMP admin.	  	
+	  	</td>
+	  	<td align="left" valign="top">
+		 <img src="$ui.image("error")">
+	 	</td>
+     </tr>
+</table>
+<br />

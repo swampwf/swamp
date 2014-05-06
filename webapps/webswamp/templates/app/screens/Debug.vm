@@ -1,0 +1,132 @@
+## SWAMP Workflow Administration and Management Platform
+##
+
+$page.setTitle("WebSWAMP Debug")
+
+
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head">WebSWAMP system information:</td></tr>
+</td></tr>
+<tr class="box_normal"><td>
+
+This SWAMP was build at $buildtime on host $buildhost. <br />
+
+(Re-)Started at $bootdate <br />
+
+total memory: $totalMem Mb<br />
+free memory: $freeMem Mb<br />
+#if ($!freeMem2)
+free memory after gc(): $freeMem2 Mb<br />
+#end
+used memory: $usedMem Mb
+
+
+<form method="post" action="$link.setPage("Debug.vm").setAction("AdminActions")">
+<input type="submit" value="Do a full garbage collection" name="eventSubmit_doFullgc" />
+</form>
+
+</td></tr>
+</table>
+
+
+<br /><br />
+
+
+
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head" colspan="4">Cached Objects: </td></tr>
+</td></tr>
+<form method="GET" action="$link.setPage("Debug.vm").setAction("AdminActions")">
+
+<tr class="box_normal"><td>
+Workflow cache: <br />
+max size: $cacheMaxsize<br />
+actual size: $cachesize<br />
+</td>
+
+<td>
+User cache: <br />
+actual size: $usercachesize<br />
+</td>
+
+<td>
+Task cache: <br />
+actual size: $taskcachesize<br />
+</td>
+
+<td>
+Dataset cache: <br />
+actual size: $datacachesize<br />
+</td>
+
+</tr>
+<tr class="box_normal" colspan="4"><td>
+<input type="submit" value="Empty caches" name="eventSubmit_doEmptycaches" />
+</td></tr></form>
+</table>
+
+
+<br /><br />
+	
+	
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head">Scheduled jobs:</td></tr>
+</td></tr>
+<tr class="box_normal"><td>		
+
+#foreach ($job in $jobs)
+$job.getTask(), scheduled for: $job.getNextRunDate() 
+[<a href="$link.setPage("Debug.vm").setActionEvent("AdminActions", "doRunjob").addPathInfo("job", "$job.getJobId()")">run now</a>]<br/>
+#end
+
+</td></tr>
+</table>
+
+
+<br /><br />	
+
+
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head">Users: </td></tr>
+</td></tr>
+<tr class="box_normal"><td>
+Logged in as: ${data.getUser().getName()} 
+
+<form method="POST" action="$link.setPage($turbineconf.getString("template.homepage")).setAction("AdminActions")">
+Change user to: <input type="text" name="targetuser" />
+<input type="submit" name="eventSubmit_doChangeuser" />
+</form>
+
+</td></tr>
+</table>
+
+
+<br /><br />
+
+
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head">Script: </td></tr>
+</td></tr>
+<tr class="box_normal"><td>
+
+<form method="POST" action="$link.setPage("Debug.vm").setAction("AdminActions")">
+Workflow id: <input type="text" value="$!wfid" name="wfid" />
+Language: <select name="language">
+#if ($language) <option selected>$language</option> #end
+<option>velocity</option><option>groovy</option></select>
+<br/>Script: <br/>
+<textarea name="script" rows="10" cols="75">$!script</textarea>
+<input type="submit" name="eventSubmit_doRunScript" value="Execute script"/>
+</form>
+
+</td></tr>
+</table>
+
+
+<br /><br />
+

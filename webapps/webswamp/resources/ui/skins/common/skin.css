@@ -1,0 +1,170 @@
+/* 
+# Main stylesheet for webSWAMP + SWAMP project homepage
+
+# Colors: 
+# Sand: rgb(247, 244, 212) #f7f4d4
+# dark sand (not mandatory fields, inactive workflows): #cdccbf
+# Dark green: rgb(80, 110, 15) #506e0f
+# Light green: rgb(90, 110, 90)
+
+*/
+
+body {
+  margin: 1pt;
+  padding:0pt;
+  background-color: #ffffff;
+  font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+  text-decoration: none;
+  color:#000000;
+  font-size: 12px;
+}
+
+/* Images */
+img {
+   border-width: 0px; 
+}
+
+img.border {
+   border-width: 1px; 
+   border-style:solid; 
+}
+
+
+
+
+/* Text */
+p, b, td, textarea, input {
+  color:#000000;
+  text-decoration: none;
+  font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+  font-size: 12px;
+}
+h1 {
+	font-size: 12pt;
+	font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+}
+h2 {
+	font-size: 10pt;
+	font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+}
+h3 {
+	font-size: 9pt;
+	font-family: Verdana, Arial, Helvetica, Geneva, sans-serif;
+}
+
+
+/* Links: */
+a {
+  color:#000000;
+  text-decoration: underline;
+}
+
+
+/* Boxes */
+
+.box_login {
+   background-color: rgb(247, 244, 212);
+   border-width: 1pt;
+   border-color: rgb(108, 138, 25);
+   border-style: solid;
+}
+
+.box_head, td.box_head a , tr.box_head td a, tr.box_head td {
+   background-color: rgb(80, 110, 15);
+   color:#ffffff;
+   font-weight: bold;
+}
+
+.box_normal, tr.box_normal td {
+   background-color: rgb(247, 244, 212);
+   color:#000000;
+   font-weight: normal;
+}
+
+
+.box_light, tr.box_light td {
+   background-color: rgb(257, 254, 222);
+   color:#000000;
+   font-weight: normal;
+}
+
+.box_highlight {
+   background-color: rgb(197, 244, 126);
+   font-weight: normal;
+}
+
+
+.box_white {
+   background-color: rgb(255, 255, 255);
+   font-weight: normal;
+}
+
+
+.box_border {
+   background-color: rgb(108, 138, 25);
+}
+
+
+.code, .screen {
+   background-color:#c0c0c0;
+   font-family: Courier, serif;
+   border-style: solid;
+   border-color: #000000;
+   border-width: 1px;
+   padding: 4px;
+}
+
+
+/* area for collapseable workflow tree */
+
+.branch {
+   display: none;
+}
+
+/* display a hand cursor on <div> links */
+.trigger {
+      cursor: pointer;
+}
+
+/* StatusBoxes */
+
+.box_inactive, tr.box_inactive, tr.box_inactive.td  {
+   background-color:#cdccbf;
+}
+
+.success {
+   background-color: rgb(108, 138, 25);
+   font-weight:bold;
+   color:#ffffff;
+}
+.error {
+   background-color:#ff9999;
+   font-weight:bold;
+   color:#000000;
+}
+
+
+
+/* Forms */
+
+textarea, input {
+	background-color:#F0F0F0;
+	border-width: 1pt;
+	border-style:solid;
+	border-color: #336600;
+}
+
+
+select {
+	background-color:#F0F0F0;
+	border-style:solid;
+	border-color: #336600;
+}
+
+
+
+
+
+
+
+

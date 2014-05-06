@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database_3_1.dtd">
+
+
+<!-- ==================================================================== -->
+<!--                                                                      -->
+<!-- B A S E  S W A M P  S E C U R I T Y  S C H E M A                     -->
+<!--                                                                      -->
+<!-- ==================================================================== -->
+<!-- This is the the XML schema used by Torque to generate the necessary  -->
+<!-- sources used to create/initialize the base SWAMP security system.    -->
+<!-- Torque                                                               -->
+<!-- will create the SQL for the database required by SWAMP, and the      -->
+<!-- Peer-based Object Model used by SWAMP internally to manage           -->
+<!-- users and security.                                                  -->
+<!-- ==================================================================== -->
+<!-- @author: <a href="mailto:jvanzyl@periapt.com">Jason van Zyl</a>      -->
+<!-- @version $Id$     -->
+<!-- ==================================================================== -->
+
+<database name="@TORQUE_PROJECT@" defaultIdMethod="native">
+  
+  <table name="dbPermissions" idMethod="native">
+    <column name="PERMISSION_ID" required="true" primaryKey="true" 
+    autoIncrement="true" type="INTEGER"/>
+    <column name="PERMISSION_NAME" required="true" size="99" type="VARCHAR"/>
+    <unique>
+      <unique-column name="PERMISSION_NAME"/>
+    </unique>
+    <index name="dbPermissions_I_PERMISSION_ID">
+    		<index-column name="PERMISSION_ID"/>
+    </index>
+  </table>
+
+
+  <table name="dbGroups">
+    <column name="GROUP_ID" required="true" primaryKey="true" autoIncrement="true"
+    	    type="INTEGER"/>
+    <column name="GROUP_NAME" required="true" type="VARCHAR" size="99"/>
+    <unique>
+      <unique-column name="GROUP_NAME"/>
+    </unique>
+  
+  </table>
+    
+    
+  <table name="dbGroups_Permissions">
+    <column name="GROUP_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="false"/>
+    <column name="PERMISSION_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="false"/>
+    <index name="dbGroups_Permissions_I_Groups_ID">
+    	<index-column name="GROUP_ID"/>
+    </index>
+    <index name="dbGroups_Permissions_I_PERMISSION_ID">
+    	<index-column name="PERMISSION_ID"/>
+    </index>
+    <foreign-key foreignTable="dbGroups" onUpdate="none" onDelete="cascade">
+      <reference local="GROUP_ID" foreign="GROUP_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="dbPermissions" onUpdate="none" onDelete="cascade">
+      <reference local="PERMISSION_ID" foreign="PERMISSION_ID"/>
+    </foreign-key>
+  </table>
+    
+    
+  <table name="dbUsers" idMethod="native">
+    <column name="USER_ID" required="true" primaryKey="true" 
+    	    autoIncrement="true" type="INTEGER" />
+    <column name="LOGIN_NAME" required="true" size="64" type="VARCHAR" javaName="UserName"/>
+    <column name="PASSWORD_MD5" required="false" size="64" type="VARCHAR"/>
+    <column name="FIRST_NAME" required="true" size="64" type="VARCHAR"/>
+    <column name="LAST_NAME" required="true" size="64" type="VARCHAR"/>
+    <column name="EMAIL" size="64" type="VARCHAR"/>
+    <column name="MODIFIED" type="TIMESTAMP"/>
+    <column name="CREATED" type="DATE" javaName="CreateDate"/>
+    <column name="LAST_LOGIN" type="DATE"/>
+    <column name="PERMSTORAGE" type="LONGVARCHAR"/>
+    <unique>
+      <unique-column name="LOGIN_NAME"/>
+    </unique>    
+  </table>
+
+
+  <table name="dbUsers_Groups">
+    <column name="GROUP_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="false"/>
+    <column name="USER_ID" required="true" primaryKey="true" type="INTEGER" autoIncrement="false"/>
+    <index name="dbUsers_Groups_I_Groups_ID">
+    	<index-column name="GROUP_ID"/>
+    </index>
+    <index name="dbUsers_Groups_I_USER_ID">
+    	<index-column name="USER_ID"/>
+    </index>
+    <foreign-key foreignTable="dbGroups" onUpdate="none" onDelete="cascade">
+      <reference local="GROUP_ID" foreign="GROUP_ID"/>
+    </foreign-key>
+    <foreign-key foreignTable="dbUsers" onUpdate="none" onDelete="cascade">
+      <reference local="USER_ID" foreign="USER_ID"/>
+    </foreign-key>
+  </table>
+
+
+
+</database>

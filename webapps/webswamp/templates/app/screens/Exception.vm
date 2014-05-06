@@ -1,0 +1,24 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP Error")
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+  <tr class="error">
+    <td colspan="2" class="error">Internal Error</td>
+  </tr>
+  <tr>
+    <td>
+      An exception occurred:<br/>
+      <br/>
+
+      #foreach ( $e in $exceptions )
+      <em>$!{e.get(0)}</em><br/>
+      <br/>
+      $!{e.get(1)}
+      <br/>
+      <br/>
+      #end
+    
+    </td>
+  </tr>
+</table>
