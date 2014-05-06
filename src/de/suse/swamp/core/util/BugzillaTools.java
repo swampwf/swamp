@@ -103,7 +103,7 @@ public class BugzillaTools {
      */
     public Hashtable getBugData(int bugid, List excludeFields) throws Exception {
         
-        Hashtable cacheBugData = getCacheEntry(bugid, excludeFields);
+        /* Hashtable cacheBugData = getCacheEntry(bugid, excludeFields);
         if (cacheBugData != null) {
             Logger.LOG("Reading Bugzilla XML for bug #" + bugid + " from cache.", log);
             return cacheBugData;
@@ -138,7 +138,10 @@ public class BugzillaTools {
         synchronized (bugzillaCache) {
             bugzillaCache.put(new Integer(bugid), bugData);
         }
-        return bugData;
+        return bugData; */
+        Hashtable h = new Hashtable();
+        h.put("foo", "bar");
+        return h;	
     }
 
     
