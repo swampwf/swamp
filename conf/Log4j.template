@@ -1,0 +1,69 @@
+#
+# Log4j logging configuration file
+#
+# Log-Levels: All, Debug, Info, Warn, Error and Fatal, OFF
+#
+# General logging: #############################
+ 
+log4j.rootLogger=DEBUG, swampconsole
+#log4j.category.default = ALL, defaultfile, swampconsole
+
+# Logging of libs:  #################################################
+
+log4j.category.org.apache.torque = INFO, swampfile
+log4j.category.velocity = ERROR, defaultfile
+log4j.category.org.apache = INFO, defaultfile
+log4j.category.httpclient.wire = INFO, defaultfile
+log4j.category.scheduler = INFO, defaultfile
+log4j.category.net.sf.jmimemagic = WARN, defaultfile
+
+
+# SWAMP Logging:  ################################
+
+log4j.category.de.suse.swamp.modules.actions.ExternalActions = ALL, swampconnectorfile
+log4j.category.de.suse.swamp.util.Logger = ALL, swampfile
+log4j.category.de.suse.swamp.core.container.WorkflowXMLReader = INFO, swampfile
+log4j.category.de.suse.swamp.core.container.Storage = INFO, swampfile
+log4j.category.de.suse.swamp.core.container.TaskManager = INFO, swampfile
+log4j.category.de.suse.swamp.core.container.TaskStorage = INFO, swampfile
+log4j.category.de.suse.swamp.core.util.BugzillaTools = INFO, swampfile
+log4j.category.de.suse.swamp.core.util.Executor = DEBUG, swampfile
+log4j.category.de.suse.swamp.util.I18n = INFO, swampfile
+log4j.category.de.suse.swamp.util.FileUtils = INFO, swampfile
+
+
+# everything to a file:  
+log4j.appender.defaultfile = org.apache.log4j.FileAppender
+log4j.appender.defaultfile.encoding=UTF-8
+log4j.appender.defaultfile.file = @SWAMP_LOGLOCATION@/turbine.log
+log4j.appender.defaultfile.layout = org.apache.log4j.PatternLayout
+log4j.appender.defaultfile.layout.conversionPattern = %d{dd.MM HH:mm:ss} [%-5p] %m%n
+log4j.appender.defaultfile.append = true
+
+
+# swamp logfile: 
+log4j.appender.swampfile = org.apache.log4j.FileAppender
+log4j.appender.swampfile.encoding=UTF-8
+log4j.appender.swampfile.file = @SWAMP_LOGLOCATION@/swamp.log
+log4j.appender.swampfile.layout = org.apache.log4j.PatternLayout
+log4j.appender.swampfile.layout.conversionPattern = %d{dd.MM HH:mm:ss} [%-5p] %m%n
+#log4j.appender.swampfile.append = true
+
+
+# swamp::connector logfile: 
+log4j.appender.swampconnectorfile = org.apache.log4j.FileAppender
+log4j.appender.swampconnectorfile.encoding=UTF-8
+log4j.appender.swampconnectorfile.file = @SWAMP_LOGLOCATION@/swamp-perlconnector.log
+log4j.appender.swampconnectorfile.layout = org.apache.log4j.PatternLayout
+log4j.appender.swampconnectorfile.layout.conversionPattern = %d{dd.MM HH:mm:ss} [%-5p] %m%n
+#log4j.appender.swampconnectorfile.append = true
+
+
+# log to console
+log4j.appender.swampconsole = org.apache.log4j.ConsoleAppender
+log4j.appender.swampconsole.encoding=UTF-8
+log4j.appender.swampconsole.layout = org.apache.log4j.PatternLayout
+log4j.appender.swampconsole.layout.conversionPattern = %d{dd.MM HH:mm:ss} [%-5p] %m%n
+
+
+

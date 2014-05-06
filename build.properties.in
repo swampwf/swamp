@@ -1,0 +1,107 @@
+# General project settings (not set in build.xml because they are
+# needed and included by webapp buildfiles as well. swamp.home is
+# set in each build file
+
+build.home=${swamp.home}/build
+dist.home=${swamp.home}/dist
+docs.home=${swamp.home}/javadocs
+src.home=${swamp.home}/src
+lib.home=${swamp.home}/lib
+conf.home=${swamp.home}/conf
+swamp.conf = @SWAMPCONF@
+
+# local tomcat settings
+catalina.base = @CATALINA_BASE@
+catalina.home = @CATALINA_HOME@
+catalina.commonlibs = @CATALINA_COMMONLIBS@
+catalina.serverlibs = @CATALINA_SERVERLIBS@
+
+# setup db at all?
+torque.setupdb = @TORQUE_SETUPDB@
+
+# which java compiler to use?
+build.compiler=@BUILD_COMPILER@
+compile.debug=@BUILD_DEBUG@
+compile.optimize=@BUILD_OPTIMIZE@
+compile.deprecation=@BUILD_DEPRECATION@
+compile.verbose=@BUILD_VERBOSE@
+compile.target=@BUILD_TARGET@
+compile.source=1.4
+
+# New settings for torque
+torque.home=.
+torque.output.dir=${torque.home}/torque
+torque.schema.dir=${torque.home}/conf/schema
+torque.doc.dir=${torque.output.dir}/doc
+torque.java.dir=${torque.output.dir}/java
+torque.javadoc.dir=${torque.output.dir}/javadoc
+torque.ojb.dir=${torque.output.dir}/ojb
+torque.sql.dir=${torque.output.dir}/sql
+
+torque.project = @TORQUE_PROJECT@
+torque.database = mysql
+torque.targetPackage = de.suse.swamp.om
+torque.database.createUrl = @TORQUE_DATABASE_CREATE_URL@
+torque.database.buildUrl = @TORQUE_DATABASE_BUILD_URL@
+torque.database.url = ${torque.database.buildUrl}
+torque.database.driver = com.mysql.jdbc.Driver
+torque.database.user = @TORQUE_DATABASE_USER@
+torque.database.password = @TORQUE_DATABASE_PASSWORD@
+torque.database.host = @TORQUE_DATABASE_HOST@
+
+# new settings for turbine
+
+turbine.home = .
+
+
+# we want to use torque packaged as jar file. Documentation says that
+# in this case useClasspath has to be set to true, so that torque
+# will load its Velocity templates (???) from there
+
+torque.useClasspath = true
+
+# -------------------------------------------------------------------
+#
+#  T O R Q U E  C O N F I G U R A T I O N
+#
+# -------------------------------------------------------------------
+# These settings will allow you to customize the way your
+# Peer-based object model is created.
+# -------------------------------------------------------------------
+
+torque.buildFile=build-torque.xml
+
+extend=TurbineMapBuilder
+mapname=TurbineMap
+suffix=MapBuilder
+targetPackage=de.suse.swamp.om
+targetDirectory=de/suse/swamp/om
+addSaveMethod=true
+addGetByNameMethod=false
+complexObjectModel=true
+basePrefix=Base
+useManagers=false
+overloadKeySetters=true
+useClasspath=true
+templatePath=use_classpath
+
+# -------------------------------------------------------------------
+#
+#  C O N T R O L  T E M P L A T E S
+#
+# -------------------------------------------------------------------
+
+SQLControlTemplate = sql/base/Control.vm
+OMControlTemplate = om/Control.vm
+idTableControlTemplate = sql/id-table/Control.vm
+securityControlTemplate = sql/security/Control.vm
+DataDTDControlTemplate = data/Control.vm
+DataDumpControlTemplate = data/dump/Control.vm
+DataSQLControlTemplate = sql/load/Control.vm
+
+# -------------------------------------------------------------------------
+# The values for the ID_TABLE_ID column in the ID_TABLE start
+# at 101 for tables used in projects.
+# -------------------------------------------------------------------------
+initialID = 101
+

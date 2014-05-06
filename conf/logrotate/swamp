@@ -1,0 +1,32 @@
+/srv/www/tomcat5/base/logs/swamp.log {
+    compress
+    dateext
+    maxage 365
+    rotate 20
+    size +4096k
+    notifempty
+    missingok
+    copytruncate
+}
+
+/srv/www/tomcat5/base/logs/swamp-perlconnector.log {
+    compress
+    dateext
+    maxage 365
+    rotate 20
+    size +4096k
+    notifempty
+    missingok
+    copytruncate
+}
+
+/srv/www/tomcat5/base/logs/turbine.log {
+    compress
+    dateext
+    maxage 365
+    rotate 20
+    size +4096k
+    notifempty
+    missingok
+    copytruncate
+}

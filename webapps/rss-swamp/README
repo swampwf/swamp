@@ -1,0 +1,14 @@
+SWAMP News Feeds: 
+
+There are different feeds in RSS/Atom format available: 
+
+/rss?action=mytasks (&uname=username) (&format=atom|rss)
+  will generate a feed with your personal tasks. The username can be set, default is the user you authenticated with. 
+  The format can be switched between RSS and Atom, default is RSS 2.0.
+
+/rss?action=query&<filter parameters>
+  Returns a RSS feed for the given filters. 
+  Each workflow list in webswamp has a link at the bottom of the page 
+  that directs you to the associated RSS feed.
+  
+See also http://en.opensuse.org/Swamp/RSS

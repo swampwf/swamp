@@ -1,0 +1,111 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle($ui.tr("WebSWAMP - Available workflow templates", ${data.getUser()}))
+
+
+<table cellpadding="8" cellspacing="0" width="100%" border="1">
+	<tr class="box_head">
+	    <td valign="top" class="box_head">$ui.tr("Name", ${data.getUser()})</td>
+	    <td valign="top" class="box_head">$ui.tr("Description", ${data.getUser()})</td>
+	    <td valign="top" class="box_head">$ui.tr("Versions", ${data.getUser()})</td>
+	</tr>
+	
+	#if ($templateNames.size() == 0)
+	<tr class="box_normal">
+	    <td valign="top" colspan="3">
+	    <h3>$ui.tr("Sorry, no workflow templates available.", ${data.getUser()})</h3>
+	    </td>
+	</tr>
+	#end 
+	
+    #foreach ($templatename in $templateNames)
+    #set ($templateversions = $templateMap.get($templatename))
+    #set ($exampletemplate = $templates.get($templatename))
+	
+	<tr class="box_normal">
+	    <td valign="top">
+	    <div align="center">
+	    #if ($ui.hasConfigValue($exampletemplate, "icon"))
+	    <a href="$link.setActionEvent("UserActions", "doInterface").addPathInfo("interface", $templatename).addPathInfo("wftemplate", $templatename).addPathInfo("template", "WorkflowIndex.vm")">
+		<img src="$ui.getResourcePath($exampletemplate, "icon")" alt="$templatename Icon" /></a><br />
+	    #else
+	    <a href="$link.setActionEvent("UserActions", "doInterface").addPathInfo("interface", $templatename).addPathInfo("wftemplate", $templatename).addPathInfo("template", "WorkflowIndex.vm")">
+		<img src="$ui.image("workflow-std_32")" alt="$templatename Icon" /></a><br />
+	    #end
+	    <b>
+	    <a href="$link.setActionEvent("UserActions", "doInterface").addPathInfo("interface", $templatename).addPathInfo("wftemplate", $templatename).addPathInfo("template", "WorkflowIndex.vm")">
+	    $templatename</a></b>
+	    </div>
+	    </td>
+	    <td valign="top">$ui.newlineEncode($exampletemplate.getTemplateDescription())</td>
+
+	    <td valign="top" width="370">
+	    
+	    <table width="100%" cellspacing="1" cellpadding="1">
+	    #foreach ($templateversion in $templateversions)
+	    <tr>
+	    <td width="25%"><b>$templateversion.getVersion()</b></td>
+	    <td width="25%"> 
+	    (<a href="$link.setPage("WorkflowGraph.vm").addPathInfo("workflowtemplate", $templateversion.getName()).addPathInfo("workflowversion", $templateversion.getVersion())">Graph</a>)
+	    </td>
+	    <td width="25%" align="right">
+	    
+	    <table>
+	    <tr><td>
+	    ## only let them start the latest Template:
+	    #if ($exampletemplate.getVersion().equals($templateversion.getVersion()))
+	    	## is he allowed to start? 
+	    	#if ($exampletemplate.hasRole($data.getUser().getUserName(), "starter"))
+		<form method="GET" 
+		action="$link.setPage("Status.vm").addPathInfo("eventSubmit_doStartnewworkflow", "true").setAction("WorkflowActions")"
+		onSubmit="return submitForm(this.submit)">
+	    	<input type="hidden" name="templatename" value="$templateversion.getName()">
+	    	<input type="hidden" name="templateversion" value="$templateversion.getVersion()">
+	    	<input type="submit" name="submit" value='Start'>
+	    	</form>
+	    	#end
+	    	
+	    	#if ($exampletemplate.hasRole($data.getUser().getUserName(), "admin"))
+	    	</td><td>
+	    	<form method="GET" 
+		action="$link.setPage("WorkflowTemplateEdit.vm")">
+	    	<input type="hidden" name="templatename" value="$templateversion.getName()">
+	    	<input type="submit" name="submit" value="Edit">
+	    	</form>
+	    	#end
+	    #end
+	    </td></tr></table>
+	    
+	    </td></tr>
+	    #end
+	    </table>
+		</td>
+
+	</tr>
+    #end ## end loop
+    </table>
+    
+    <br />
+
+    ##check permission: 
+    #if(${data.getUser().isGroupMember("swampadmins")})
+    <img src="$ui.image("recycle")" alt="reload Templates" align="middle">	
+    <a href="$link.setPage("$data.getScreenTemplate()").addPathInfo("eventSubmit_doTemplreload", "true").setAction("AdminActions")" 
+    class="sidenav" title="Reload Workflow Templates">$ui.tr("Reload all templates", $data.getUser())</a> 
+    #end
+	
+    <br />
+    <form method="POST"  enctype="multipart/form-data" 
+        action="$link.setPage("UploadWorkflowTemplate.vm").setAction("WorkflowActions")">
+
+	$ui.tr("Add/Replace a workflow version: ", $data.getUser())
+		
+    <input type="file" name="filename">
+    <input type="submit" name="eventSubmit_doUploadworkflow" value="--> upload"/> <br />
+    <i>$ui.tr("(Please upload a plain workflow.xml file or a *.zip workflow resource bundle)", $data.getUser())</i>
+    </form>
+	
+	
+	
+	
+	

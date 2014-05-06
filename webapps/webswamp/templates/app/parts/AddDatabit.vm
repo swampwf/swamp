@@ -1,0 +1,136 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+<table cellpadding="3" cellspacing="0" border="1" style="border-style: solid; " width="100%">	
+	
+	<tr class="box_head"><td colspan="2" class="box_head"><b class="box_head">
+	Add a new Databit: 
+	</b></tr>
+	
+	<tr>
+	<td class="box_normal" width="50%">
+	<form method="POST" action="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("dataedit", "true")#data">
+	<table width="100%">
+	<tr><td colspan="3">
+	<b>Please choose: </b>
+	</td></tr>
+	<tr><td>Data-type: </td><td>
+	<select name="datatype">
+	#if (${datatype})
+		<option value="${datatype}" selected="true">${datatype}</option>
+	#end
+	<option value="string">String</option>
+	<option value="number">Number</option>
+	<option value="text">Text</option>
+	<option value="person">Person</option>
+	<option value="boolean">Boolean</option>
+	<option value="date">Date</option>
+	<option value="URL">URL</option>
+	<option value="bugzilla">Bugzilla ID</option>
+	<option value="fileref">File</option>
+	</select> 
+	
+	[<a href="$link.setPage("Documentation.vm").addPathInfo("helpcontext","help.Databit-Datatypes")">help</a>]
+	
+	</td>
+	
+	<td rowspan="5">
+	<input type="hidden" name="action" value="DatapackActions" />
+	<input type="hidden" name="eventSubmit_doCreatedatabit" value="true" />
+	<input type="submit" name="submit" value=">>"/>
+	</td>
+	</tr>
+
+	<tr><td>path: </td><td>
+	<select name="dsetname">
+	#set ($setnames = $rootmap.keySet().toArray())
+	
+	#if (${dsetname})
+		<option value="${dsetname}" selected="true">${dsetname}</option>
+	#end
+	
+	#foreach ($set in $setnames) 
+		<option value="$set">$set</option>
+	#end
+	#foreach ($setmap in $setmaps) 
+	#set ($setnames = $setmap.keySet().toArray())
+		#foreach ($set in $setnames) 
+			<option value="$set">$set</option>
+		#end
+	
+	#end
+	</select>
+	</td></tr>
+	
+	<tr><td>
+	Name: </td><td>
+	<input type="text" name="dbitname" value="$!{dbitname}" />
+	</td></tr>
+	
+	<tr><td>
+	short description: </td><td>
+	<input type="text" name="datashortdesc" value="$!{datashortdesc}" />
+	</td></tr>
+	
+	<tr><td>
+	description: </td><td>
+	<input type="text" name="datadesc" value="$!{datadesc}" />
+	</td></tr>
+		
+	</table>	
+	</form>
+	
+	</td>
+	
+	<td class="box_normal">
+	
+	#if (${dsetname})
+	
+		Adding databit: <b>$dsetname.$dbitname</b><br />
+		<i>$datadesc</i>
+		<form method="POST"  enctype="multipart/form-data" 
+			action="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid",${workflow.id}).addPathInfo("action","DatapackActions")">
+		<input type="hidden" name="wfid" value="${workflow.id}" />
+		<input type="hidden" name="dsetname" value="${dsetname}" />
+		<input type="hidden" name="dbitname" value="${dbitname}" />
+		<input type="hidden" name="datatype" value="${datatype}" />
+		<input type="hidden" name="datadesc" value="${datadesc}" />
+		<input type="hidden" name="datashortdesc" value="${datashortdesc}" />
+		
+		<br />
+		with value: <br />
+		#if (${datatype.equals("boolean")})
+			<select name="dbitvalue">
+				<option value="true">true</option>
+				<option value="false">false</option>
+			</select>
+			
+		#elseif ($datatype.equals("number") || $datatype.equals("string") || $datatype.equals("person") || $datatype.equals("date") || $datatype.equals("URL") || $datatype.equals("bugzilla"))
+			<input type="text" name="dbitvalue" />
+
+
+		#elseif ($datatype.equals("text"))
+			<textarea name="dbitvalue" rows="5" cols="50"></textarea>
+
+		#elseif ($datatype.equals("fileref"))
+			<table><tr>
+			<td valign="middle"><img src="$ui.image("upload_48")" alt="file upload" /></td>
+			<td valign="middle">
+			<input type="file" name="filename">
+			</td></tr></table>
+		
+		#else
+			<i>Sorry, but adding databits of type: ${datatype} is not yet supported.
+		#end
+		
+		<br /><br />
+		<input type="submit" name="eventSubmit_doSavedatabit" value="--> Add Databit"/>
+		</form>
+	
+	
+	
+	
+	#end
+	</td></tr>
+
+</table>

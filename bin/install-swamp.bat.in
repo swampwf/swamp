@@ -1,0 +1,14 @@
+@echo off
+
+set SWAMP_HOME=@SWAMP_HOME@
+cd %SWAMP_HOME%\bin
+
+call "%SWAMP_HOME%\bin\install-webswamp.bat" 
+
+cd %SWAMP_HOME%\webapps\soapswamp
+call "ant" install 
+
+cd %SWAMP_HOME%\webapps\rss-swamp
+call "ant" install
+
+cd %SWAMP_HOME%

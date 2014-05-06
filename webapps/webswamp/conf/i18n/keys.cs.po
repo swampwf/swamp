@@ -1,0 +1,756 @@
+# translation of keys2.po to cs_CZ
+# This file is distributed under the same license as the SWAMP package.
+#
+# tom <tschmidt æŧ suse.de>, 2006.
+# Klara Cihlarova <koty@seznam.cz>, 2006.
+msgid ""
+msgstr ""
+"Project-Id-Version: keys2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-18 11:58+0200\n"
+"PO-Revision-Date: 2006-10-20 14:28+0200\n"
+"Last-Translator: Klara Cihlarova <koty@seznam.cz>\n"
+"Language-Team: cs_CZ <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.2\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:65
+msgid "German"
+msgstr "Německy"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:66
+msgid "Czech"
+msgstr "Česky"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:67
+msgid "English"
+msgstr "Anglicky"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:68
+msgid "Spanish"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:79
+msgid "Fields are automatically synced from %1"
+msgstr "Pole jsou automaticky synchronizována z %1"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:82
+msgid "Fields are locked because this is a test system."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:82
+msgid "No Task could be found for TaskId: "
+msgstr "Pro zdané ID nebylo možné najít žádnou úlohu:"
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:99
+msgid "This Task is not active."
+msgstr "Tato úloha není aktivní:"
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:102
+msgid "History of this Task:"
+msgstr "Historie úlohy:"
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:108
+msgid "done by: "
+msgstr "dokončil:"
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:117
+msgid "DisplayTask is not supported for showing SystemActions"
+msgstr "DisplayTask není pro zobrazení SystemActions podporována"
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:213
+msgid "in DisplayTask: no task id."
+msgstr "v DisplayTask: neptat se na ID."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:100
+msgid "Changed language."
+msgstr "Jazyk změněn."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:123
+msgid "The passwords you entered do not match."
+msgstr "Zadaná hesla se neshodují."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:128
+msgid "Changed password."
+msgstr "Heslo změněno."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:135
+msgid "Changed firstname."
+msgstr "Jméno změněno."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:140
+msgid "Changed lastname."
+msgstr "Příjmení změněno."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:145
+msgid "Changed email."
+msgstr "Email změněn."
+
+#: templates/app/parts/WorkflowFilter.vm:7
+msgid "Show %1 of %2 workflows"
+msgstr "Zobrazit %1 z %2 průběhů"
+
+#: templates/app/parts/WorkflowFilter.vm:32
+msgid "Filtered view:"
+msgstr "Filtrovaný pohled:"
+
+#: templates/app/parts/WorkflowFilter.vm:33
+msgid "Show"
+msgstr "Zobrazit"
+
+#: templates/app/parts/messages.vm:1
+#, fuzzy
+msgid "Welcome to the web interface of SWAMP."
+msgstr "Vítejte v první veřejné verzi aplikace SWAMP."
+
+#: templates/app/parts/messages.vm:2
+#, fuzzy
+msgid ""
+"The README file for SWAMP %1 can be found <a href='/webswamp/README'>here</"
+"a>."
+msgstr ""
+"Soubor README pro SWAMP %1 naleznete<a href='/webswamp/README'> zde</a>."
+
+#: templates/app/parts/messages.vm:6
+msgid "This is a SWAMP Testsystem. "
+msgstr ""
+
+#: templates/app/parts/messages.vm:7
+msgid ""
+"Please be aware that you can test everything here and no mails etc will be "
+"sent out. "
+msgstr ""
+
+#: templates/app/parts/messages.vm:11
+msgid "Please test and check the system out by:"
+msgstr "Prosím otestujte a překontrolujte systém:"
+
+#: templates/app/parts/messages.vm:13
+msgid "browse installed templates in the left navigation"
+msgstr ""
+
+#: templates/app/parts/messages.vm:14
+msgid "create new Workflows"
+msgstr "vytvořit nový průběh práce"
+
+#: templates/app/parts/messages.vm:15
+msgid "view already existing workflows"
+msgstr "zobrazit již existující práce"
+
+#: templates/app/parts/messages.vm:16
+msgid "use the workflows"
+msgstr "použít práce"
+
+#: templates/app/parts/messages.vm:19
+msgid "Please visit our project homepage at"
+msgstr ""
+
+#: templates/app/parts/messages.vm:21
+msgid "for more information."
+msgstr ""
+
+#: templates/app/parts/MyTasks.vm:27 templates/app/parts/Mytasks.content.vm:6
+msgid "Open tasks for user %1:"
+msgstr ""
+
+#: templates/app/parts/MyTasks.vm:35
+msgid "Loading your tasks..."
+msgstr ""
+
+#: templates/app/parts/StatusMessage.vm:34
+#: templates/app/screens/DisplayWorkflow.vm:245
+msgid "What has happened: "
+msgstr "Co se přihodilo:"
+
+#: templates/app/parts/WorkflowHistory.vm:10
+msgid "Workflow History"
+msgstr "Historie průběhu práce"
+
+#: templates/app/parts/WorkflowHistory.vm:11
+msgid "choose a category to display: "
+msgstr "zvolte kategorii k zobrazení:"
+
+#: templates/app/parts/menutop.vm:36
+msgid "Start Workflow"
+msgstr "Průběh práce"
+
+#: templates/app/parts/menutop.vm:48
+msgid "open Tasks:"
+msgstr "otevřít úlohy:"
+
+#: templates/app/parts/menutop.vm:50
+msgid "my tasks"
+msgstr "mé úlohy"
+
+#: templates/app/parts/menutop.vm:52
+msgid "all tasks"
+msgstr "všechny úlohy"
+
+#: templates/app/parts/menutop.vm:64 templates/app/macros/WfList.vm:62
+#: templates/app/macros/WfList.vm:66 templates/app/macros/WfList.vm:70
+msgid "all"
+msgstr "vše"
+
+#: templates/app/parts/menutop.vm:66
+msgid "running"
+msgstr "běžící"
+
+#: templates/app/parts/menutop.vm:68
+msgid "closed"
+msgstr "uzavřené"
+
+#: templates/app/parts/TemplateDescriptions.vm:26
+#, fuzzy
+msgid "Please choose your workflow:"
+msgstr "použít práce"
+
+#: templates/app/parts/Mytasks.content.vm:63
+#, fuzzy
+msgid "No open tasks."
+msgstr "otevřít úlohy:"
+
+#: templates/app/screens/Templates.vm:3
+msgid "WebSWAMP - Available workflow templates"
+msgstr "WebSWAMP - Dostupné šablony průběhu práce"
+
+#: templates/app/screens/Templates.vm:8
+#: templates/app/screens/DisplayWorkflow.vm:20
+#: templates/app/macros/WfList.vm:92
+msgid "Name"
+msgstr "Název"
+
+#: templates/app/screens/Templates.vm:9 templates/app/macros/WfList.vm:94
+msgid "Description"
+msgstr "Popis"
+
+#: templates/app/screens/Templates.vm:10
+msgid "Versions"
+msgstr "Verze"
+
+#: templates/app/screens/Templates.vm:16
+msgid "Sorry, no workflow templates available."
+msgstr "Bohužel není dostupná žádná šablona průběhu práce."
+
+#: templates/app/screens/Templates.vm:94
+msgid "Reload all templates"
+msgstr "Obnovit všechny šablony"
+
+#: templates/app/screens/Templates.vm:101
+msgid "Add/Replace a workflow version: "
+msgstr "Vložit/nahradit verzi průběhu:"
+
+#: templates/app/screens/Templates.vm:105
+msgid ""
+"(Please upload a plain workflow.xml file or a *.zip workflow resource bundle)"
+msgstr ""
+"(Prosím odešlete čistý soubor workflow.xml nebo archiv *.zip s průběhem)"
+
+#: templates/app/screens/Workflows.vm:50
+msgid "No Workflows could be found for your current Filter-Configuration."
+msgstr "Aktuálnímu nastavení filtru nevyhovuje žádný průběh práce."
+
+#: templates/app/screens/Status.vm:8
+#, fuzzy
+msgid "Workflow state: "
+msgstr "Historie průběhu práce"
+
+#: templates/app/screens/Status.vm:20
+msgid "current Tasks in this Workflow: "
+msgstr "aktuální úkoly této práce: "
+
+#: templates/app/screens/Status.vm:29
+#, fuzzy
+msgid "current optional Tasks in this Workflow: "
+msgstr "aktuální úkoly této práce: "
+
+#: templates/app/screens/Statistics.vm:5
+msgid "Statistics: "
+msgstr "Statistiky:"
+
+#: templates/app/screens/DisplayWorkflow.vm:23
+msgid "Image"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:27
+#: templates/app/screens/WorkflowIndex.vm:145
+#, fuzzy
+msgid "History"
+msgstr "Historie průběhu práce"
+
+#: templates/app/screens/DisplayWorkflow.vm:31
+msgid "Data"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:44
+#, fuzzy
+msgid "Admin"
+msgstr "Administrátorská oblast"
+
+#: templates/app/screens/DisplayWorkflow.vm:52
+#, fuzzy
+msgid "generate Graph"
+msgstr "Zobrazit graf průběhu práce %1"
+
+#: templates/app/screens/DisplayWorkflow.vm:56
+#: templates/app/screens/DisplayWorkflow.vm:162
+#: templates/app/screens/WorkflowIndex.vm:133
+msgid "Edit"
+msgstr "Upravit"
+
+#: templates/app/screens/DisplayWorkflow.vm:58
+#: templates/app/screens/DisplayWorkflow.vm:164
+msgid "View"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:62
+#, fuzzy
+msgid "Admin console"
+msgstr "Administrátorská oblast"
+
+#: templates/app/screens/DisplayWorkflow.vm:71
+#: templates/app/screens/WorkflowIndex.vm:28
+msgid "Description:"
+msgstr "Popis:"
+
+#: templates/app/screens/DisplayWorkflow.vm:84
+#, fuzzy
+msgid "Workflow state:"
+msgstr "Historie průběhu práce"
+
+#: templates/app/screens/DisplayWorkflow.vm:95
+msgid "Currently Active Tasks:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:101
+#, fuzzy
+msgid "optional tasks:"
+msgstr "otevřít úlohy:"
+
+#: templates/app/screens/DisplayWorkflow.vm:110
+msgid "active time triggers:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:123
+msgid "<i>Not yet set</i>"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:129
+msgid "scheduled for:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:131
+msgid "only weekdays"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:134
+#, fuzzy
+msgid "edit"
+msgstr "Upravit"
+
+#: templates/app/screens/DisplayWorkflow.vm:159
+#, fuzzy
+msgid "Workflow Data:"
+msgstr "Historie průběhu práce"
+
+#: templates/app/screens/DisplayWorkflow.vm:203
+msgid "Add"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:203
+msgid "a Databit."
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:269
+msgid "Node states:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:269
+msgid "display graph"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:3
+#, fuzzy
+msgid "WebSWAMP Documentation"
+msgstr "Dokumentace"
+
+#: templates/app/screens/Documentation.vm:20
+msgid "Can this help text be improved?"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:22
+msgid ""
+"You can contribute to SWAMP by <a href='%1'>editing the help text now</a>."
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:33
+msgid "Help for %1"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:40
+msgid "There is no help for this context yet. "
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:42
+msgid ""
+"You can contribute to SWAMP by <a href='%1'>writing a help text now</a>."
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:59
+#, fuzzy
+msgid "SWAMP Main Documentation"
+msgstr "Dokumentace"
+
+#: templates/app/screens/Documentation.vm:64
+#, fuzzy
+msgid "SWAMP Adminguide"
+msgstr "SWAMP domů"
+
+#: templates/app/screens/Documentation.vm:66
+msgid "SWAMP Installguide"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:68
+msgid ""
+"More Documents can be found on the <a href='http://swamp.sourceforge.net/"
+"index.php?seite=docs'>SWAMP Project-Homepage</a>."
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:20
+msgid "Startpage for Workflow:"
+msgstr "Počáteční stránka průběhu:"
+
+#: templates/app/screens/WorkflowIndex.vm:36
+msgid "Roles:"
+msgstr "Role:"
+
+#: templates/app/screens/WorkflowIndex.vm:48
+msgid "Role is inherited from:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:58
+msgid "This workflow does not implement any role restrictions."
+msgstr "Tento průběh práce neobsahuje žádné omezené rolí."
+
+#: templates/app/screens/WorkflowIndex.vm:67
+msgid "Search"
+msgstr "Hledat"
+
+#: templates/app/screens/WorkflowIndex.vm:69
+msgid "Display all %1 Workflows"
+msgstr "Zobrazit všechny průběhy %1"
+
+#: templates/app/screens/WorkflowIndex.vm:72
+msgid "where I (%1) am the owner"
+msgstr "kde jsem (%1) vlastníkem"
+
+#: templates/app/screens/WorkflowIndex.vm:76
+msgid "Show the %1 Workflows Help page "
+msgstr "Zobrazit nápovědu průběhů %1"
+
+#: templates/app/screens/WorkflowIndex.vm:81
+#, fuzzy
+msgid "Display %1 Workflows with (regexp) value of "
+msgstr "Zobrazit průběhy %1 s hodnotou "
+
+#: templates/app/screens/WorkflowIndex.vm:83
+msgid "in field "
+msgstr "v poli"
+
+#: templates/app/screens/WorkflowIndex.vm:85
+msgid "Please choose..."
+msgstr "prosím zvolte"
+
+#: templates/app/screens/WorkflowIndex.vm:106
+msgid "Actions:"
+msgstr "Akce:"
+
+#: templates/app/screens/WorkflowIndex.vm:114
+msgid "Start new %1 Workflow instance"
+msgstr "Spustit novou instanci %1"
+
+#: templates/app/screens/WorkflowIndex.vm:123
+msgid "Generate %1 Workflow Graph"
+msgstr "Zobrazit graf průběhu práce %1"
+
+#: templates/app/screens/WorkflowIndex.vm:124
+msgid "Draw"
+msgstr "Vyhlreslit"
+
+#: templates/app/screens/WorkflowIndex.vm:131
+msgid "Administrate workflow template"
+msgstr "Správa šablon průběhů práce"
+
+#: templates/app/screens/WorkflowIndex.vm:149
+#, fuzzy
+msgid "latest Workflows:"
+msgstr "poslední průbeh práce:"
+
+#: templates/app/screens/WorkflowIndex.vm:154
+msgid "started by:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:155
+msgid "at:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:169
+msgid "Statistics"
+msgstr "Statistiky"
+
+#: templates/app/screens/WorkflowIndex.vm:176
+msgid "currently running/closed Workflows:"
+msgstr "aktuálně probíhající/uzavřené práce:"
+
+#: templates/app/screens/Preferences.vm:3
+#: templates/app/screens/Preferences.vm:9
+msgid "WebSWAMP User Preferences"
+msgstr "Uživatelské nastavení aplikace WebSWAMP"
+
+#: templates/app/screens/Preferences.vm:17
+#, fuzzy
+msgid "Username: "
+msgstr "username"
+
+#: templates/app/screens/Preferences.vm:25
+msgid "Choose your language: "
+msgstr "Zvolte jazyk:"
+
+#: templates/app/screens/Preferences.vm:51
+msgid "Firstname: "
+msgstr "Jméno: "
+
+#: templates/app/screens/Preferences.vm:62
+msgid "Lastname: "
+msgstr "Příjmení: "
+
+#: templates/app/screens/Preferences.vm:73
+msgid "Email: "
+msgstr "Email: "
+
+#: templates/app/screens/Preferences.vm:84
+#, fuzzy
+msgid "Current password: "
+msgstr "nové heslo:"
+
+#: templates/app/screens/Preferences.vm:96
+#, fuzzy
+msgid "new password: "
+msgstr "nové heslo:"
+
+#: templates/app/screens/Preferences.vm:103
+#, fuzzy
+msgid "repeat new password: "
+msgstr "opakujte nové heslo: "
+
+#: templates/app/screens/Preferences.vm:112
+msgid "Change"
+msgstr "Změnit"
+
+#: templates/app/navigations/DefaultTop.vm:39
+msgid "available Help topics: "
+msgstr "Dostupná témata nápovědy: "
+
+#: templates/app/navigations/Menu.vm:31
+msgid "SWAMP Home"
+msgstr "SWAMP domů"
+
+#: templates/app/navigations/Menu.vm:33
+msgid "Login"
+msgstr "Přihlásit se"
+
+#: templates/app/navigations/Menu.vm:37
+msgid "Documentation"
+msgstr "Dokumentace"
+
+#: templates/app/navigations/Menu.vm:42
+msgid "Preferences"
+msgstr "Nastavení"
+
+#: templates/app/navigations/Menu.vm:53
+msgid "Go"
+msgstr "Start"
+
+#: templates/app/navigations/Menu.vm:60
+msgid "Logout (%1)"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:81
+msgid "Admin Area"
+msgstr "Administrátorská oblast"
+
+#: templates/app/navigations/Menu.vm:97
+msgid "Objects"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:98
+#, fuzzy
+msgid "Workflow Templates"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:55
+#, fuzzy
+msgid "Display Subworkflows:"
+msgstr "Zobrazit všechny průběhy %1"
+
+#: templates/app/macros/WfList.vm:63 templates/app/macros/WfList.vm:67
+#: templates/app/macros/WfList.vm:71
+msgid "active"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:64 templates/app/macros/WfList.vm:68
+#: templates/app/macros/WfList.vm:72
+msgid "none"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:88
+msgid "ID"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:96
+msgid "Task"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:98 templates/app/macros/WfList.vm:313
+#, fuzzy
+msgid "Assigned Users"
+msgstr "Přiděleno:"
+
+#: templates/app/macros/WfList.vm:100 templates/app/macros/WfList.vm:315
+#, fuzzy
+msgid "Next Tasks"
+msgstr "otevřít úlohy:"
+
+#: templates/app/macros/WfList.vm:102
+msgid "State"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:106
+msgid "Progress"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:293 templates/app/macros/WfList.vm:360
+#, fuzzy
+msgid "Workflow-Template"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:305
+msgid "Choose Column"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:306
+#, fuzzy
+msgid "Workflow ID"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:307
+#, fuzzy
+msgid "Workflow name"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:308
+#, fuzzy
+msgid "Workflow description"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:309
+msgid "Progress-bar"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:311
+msgid "Task ID"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:312
+#, fuzzy
+msgid "Task Description"
+msgstr "Popis"
+
+#: templates/app/macros/WfList.vm:316
+#, fuzzy
+msgid "Workflow State"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:317
+msgid "Icon"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:361
+msgid "configure columns"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:460
+#, fuzzy
+msgid "Workflow Colours:"
+msgstr "Historie průběhu práce"
+
+#: templates/app/macros/WfList.vm:461
+msgid "inactive"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:473
+msgid "printable View"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:475
+msgid "switch back to normal view"
+msgstr ""
+
+#~ msgid "webswamp.home"
+#~ msgstr "webswamp.home"
+
+#~ msgid "swamp.conf"
+#~ msgstr "swamp.conf"
+
+#~ msgid "webswamp.hostname"
+#~ msgstr "webswamp.hostname"
+
+#~ msgid "webswamp.sslport"
+#~ msgstr "webswamp.sslport"
+
+#~ msgid "webswamp.port"
+#~ msgstr "webswamp.port"
+
+#~ msgid "webswamp.path"
+#~ msgstr "webswamp.path"
+
+#~ msgid "password"
+#~ msgstr "password"
+
+#~ msgid "screen.login"
+#~ msgstr "screen.login"
+
+#~ msgid "template.login"
+#~ msgstr "template.login"
+
+#~ msgid "systemfilter_wftemplate"
+#~ msgstr "systemfilter_wftemplate"
+
+#~ msgid "webswamp.testserver"
+#~ msgstr "webswamp.testserver"
+
+#~ msgid "template.homepage"
+#~ msgstr "template.homepage"
+
+#~ msgid "static"
+#~ msgstr "statické"
+
+#~ msgid "default"
+#~ msgstr "výchozí"
+
+#~ msgid "was started at %1 by %2"
+#~ msgstr "začal/a %2 v %1"
+
+#~ msgid "What to do now: "
+#~ msgstr "Co nyní dělat:"
+
+#~ msgid "Go Back to the <a href='%1'>Workflow</a>"
+#~ msgstr "Přejít zpět na <a href='%1'>Průběh práce</a>"
+
+#~ msgid "There are no active Tasks in this Workflow."
+#~ msgstr "V průběhu práce nejsou žádné aktivní úlohy."
+
+#~ msgid "Please send us your feedback to swamp@suse.de!"
+#~ msgstr "Zašlete nám prosím své názory na swamp@suse.de."

@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database_3_1.dtd">
+
+<!-- ==================================================================== -->
+<!--                                                                      -->
+<!-- T U R B I N E  P R O J E C T  S C H E M A                            -->
+<!--                                                                      -->
+<!-- ==================================================================== -->
+<!-- This is the SWAMP Turbine project schema.                            -->
+<!-- ==================================================================== -->
+<!-- $Id: swamp-schema.xml.in 7105 2006-02-02 14:31:31Z tschmidt $ -->
+
+
+<database name="@TORQUE_PROJECT@" defaultIdMethod="native">
+
+
+  <table name="dbWorkflows">
+    <column name="wfid" autoIncrement="true" primaryKey="true" type="INTEGER"/>
+    <column name="parentwfid" required="false" type="INTEGER" />
+    <column name="templatename" required="true" size="64" type="VARCHAR"/>
+	<column name="version" required="true" size="200" type="VARCHAR"/> 
+	<index name="wfstore_I_parentwfid">
+      <index-column name="parentwfid"/>
+    </index> 
+	<index name="wfstore_I_templatename">
+      <index-column name="templatename"/>
+    </index>
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade" >
+		<reference local="wfid" foreign="wfid"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbNodes">
+    <column name="nodeid" primaryKey="true" autoIncrement="true" type="INTEGER" />
+    <column name="workflowid" required="true" type="INTEGER" />
+    <column name="name" size="255" required="true" type="VARCHAR" />
+    <column name="activity" required="true" type="TINYINT" default="0"/>
+    <!-- the field isendnode is only needed for filtering -->
+    <column name="isendnode" required="false" type="TINYINT" default="0"/>
+    <unique>
+      <unique-column name="workflowid"/>
+      <unique-column name="name"/>
+    </unique>
+    <index name="nodestore_I_workflowid">
+      <index-column name="workflowid"/>
+    </index>
+    <index name="nodestore_I_isendnode">
+      <index-column name="isendnode"/>
+    </index>   
+    <index name="nodestore_I_activity">
+      <index-column name="activity"/>
+    </index>
+    <index name="nodestore_I_name">
+      <index-column name="name"/>
+    </index> 
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade" >
+		<reference local="workflowid" foreign="wfid"/>
+    </foreign-key>
+  </table>
+
+
+
+  <table name="dbMilestones">
+    <column name="milestoneid" primaryKey="true" autoIncrement="true" type="INTEGER" />
+    <column name="nodeid" required="true" type="INTEGER" />
+    <column name="displayed" required="true" type="TINYINT" default="1"/>
+    <index name="dbMilestones_I_nodeID">
+      <index-column name="nodeid"/>
+    </index>
+    <foreign-key foreignTable="dbNodes" onUpdate="none" onDelete="cascade" >
+		<reference local="nodeid" foreign="nodeid"/>
+    </foreign-key>
+  </table>
+  
+
+  <!-- Edges need to be stored in DB for having an ID for conditions -->
+  <table name="dbEdges">
+    <column name="edgeID" primaryKey="true"  autoIncrement="true" type="INTEGER"/>
+    <column name="nodeID" required="true" type="INTEGER"/>
+    <column name="nodeTo" required="true" type="INTEGER"/>
+    <index name="edgeStore_I_nodeID">
+      <index-column name="nodeID"/>
+    </index>
+    <index name="edgeStore_I_nodeTo">
+    	<index-column name="nodeTo"/>
+    </index>
+    <foreign-key foreignTable="dbNodes" onUpdate="none" onDelete="cascade">
+		<reference local="nodeID" foreign="nodeid"/>
+    </foreign-key>
+    <foreign-key foreignTable="dbNodes" onUpdate="none" onDelete="cascade" >
+		<reference local="nodeTo" foreign="nodeid"/>
+    </foreign-key>
+  </table>
+
+
+
+<!-- ============================================================= -->
+<!-- Conditions and Condition Nesting                                     -->
+<!-- ============================================================= -->
+
+  <table name="dbConditions">
+    <column name="condID" required="true" primaryKey="true" autoIncrement="true" type="INTEGER"/>
+    <column name="edgeID" required="true" type="INTEGER"/>
+    <column name="type" required="true" type="VARCHAR" size="64"/>
+    <column name="parent" required="true" type="INTEGER" default="0"/>
+    <index name="conditions_I_edgeID">
+      <index-column name="edgeID"/>
+    </index>
+    <foreign-key foreignTable="dbEdges" onUpdate="none" onDelete="cascade">
+		<reference local="edgeID" foreign="edgeID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbDataconditions">
+    <column name="condID" primaryKey="true"  required="true" type="INTEGER"/>
+    <column name="field" required="true" size="255" type="VARCHAR"/>
+    <column name="condCheck" required="true"  size="255" type="VARCHAR"/>
+    <column name="condValue" required="true" type="LONGVARCHAR"/>
+    <column name="state" required="true" type="TINYINT" />
+    <foreign-key foreignTable="dbConditions" onUpdate="none" onDelete="cascade">
+		<reference local="condID" foreign="condID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbEventconditions">
+    <column name="condID" primaryKey="true"  required="true" type="INTEGER" />
+    <column name="eventType" required="true" size="255" type="VARCHAR" />
+    <column name="state" required="true" type="TINYINT" />
+    <foreign-key foreignTable="dbConditions" onUpdate="none" onDelete="cascade">
+		<reference local="condID" foreign="condID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbSubsfinishedconditions">
+    <column name="condID" primaryKey="true" required="true" type="INTEGER" />
+    <column name="subname" required="true" size="100" type="VARCHAR" />
+    <column name="subversion" required="true" size="100" type="VARCHAR" />
+    <column name="state" required="true" type="TINYINT" />
+    <foreign-key foreignTable="dbConditions" onUpdate="none" onDelete="cascade">
+		<reference local="condID" foreign="condID"/>
+    </foreign-key>
+  </table>
+  
+
+<!-- ============================================================= -->
+<!-- Actions                                                              -->
+<!-- ============================================================= -->
+
+
+<!-- actions are fetched from the corresponding Workflowtemplate version, 
+and don't need to be stored everytime -->
+
+
+<!-- ==================================================================== -->
+<!-- Tasks                                                                -->
+<!-- ==================================================================== -->
+  <table name="dbTasks">
+    <column name="taskID" primaryKey="true" autoIncrement="true" type="INTEGER"/>
+    <column name="actionName" required="true" type="VARCHAR" size="255"/>
+    <column name="workflowID" required="true" type="INTEGER"/>
+    <column name="nodeID" required="true" type="INTEGER"/>
+    <column name="state" required="true" type="INTEGER" size="4"/>
+    <index name="dbTasks_I_workflowID">
+	    <index-column name="workflowID"/>
+	</index>
+	<index name="dbTasks_I_nodeID">
+		<index-column name="nodeID"/>
+	</index>
+	<index name="dbTasks_I_state">
+		<index-column name="state"/>
+	</index>
+	<index name="dbTasks_I_actionName">
+		<index-column name="actionName"/>
+	</index>
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade">
+		<reference local="workflowID" foreign="wfid"/>
+    </foreign-key>
+    <foreign-key foreignTable="dbNodes" onUpdate="none" onDelete="cascade">
+		<reference local="nodeID" foreign="nodeid"/>
+    </foreign-key>
+  </table>
+
+
+<!-- ==================================================================== -->
+<!-- History and Logging                                                  -->
+<!-- ==================================================================== -->
+
+  <table name="dbEventhistory">
+    <column name="eventhistID" type="INTEGER" primaryKey="true" autoIncrement="true" />
+    <column name="eventtype" required="true" type="VARCHAR" size="64"/>
+    <column name="datetime" required="false" type="TIMESTAMP"/>
+    <column name="sourceWFId" required="true" type="INTEGER" default="0" />
+    <column name="targetWFId" required="true" type="INTEGER" default="0" />
+    <index name="dbEventhistory_I_sourceWFId">
+      <index-column name="sourceWFId"/>
+    </index>
+	<!-- cannot add foreign keys here, because we have events with no 
+	source/target workflow -->
+  </table>
+
+
+  <table name="dbHistory">
+    <column name="historyID" type="INTEGER" primaryKey="true" autoIncrement="true" />
+	<column name="workflowID" required="false" type="INTEGER" />
+    <column name="itemID" required="true" type="INTEGER" />
+    <column name="userName" required="false" size="64" type="VARCHAR" />
+    <column name="type" required="true" size="64" type="VARCHAR" />
+    <column name="datetime" required="false" type="TIMESTAMP" />
+    <column name="data" required="false" size="255" type="LONGVARCHAR" />
+    <index name="dbHistory_I_workflowID">
+      <index-column name="workflowID"/>
+    </index>
+    <index name="dbHistory_I_itemID">
+      <index-column name="itemID"/>
+    </index>
+    <index name="dbHistory_I_userID">
+      <index-column name="userName"/>
+    </index>
+    <index name="dbHistory_I_type">
+      <index-column name="type"/>
+    </index>
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade">
+		<reference local="workflowID" foreign="wfid"/>
+    </foreign-key>
+    <!-- FIXME: Not possible because of alphabetical db-creation of torque -->
+    <!-- 
+    <foreign-key foreignTable="userStore" onUpdate="none" onDelete="cascade">
+		<reference local="userID" foreign="userID"/>
+    </foreign-key>
+    -->
+  </table>
+
+
+<!-- ==================================================================== -->
+<!-- Data                                                                 -->
+<!-- ==================================================================== -->
+
+  <table name="dbDatasets">
+    <column name="datasetID" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="name" required="true" type="VARCHAR" size="100"/>
+    <column name="description" required="true" type="LONGVARCHAR"/>
+    <column name="state" required="true" type="INTEGER" size="6" />
+    <index name="dbDataset_I_name">
+      <index-column name="name"/>
+    </index>
+  </table>
+
+  
+  <table name="dbDataset_Workflow">
+  	<column name="workflowID" type="INTEGER" primaryKey="true" autoIncrement="false" />
+  	<column name="datasetID" type="INTEGER" primaryKey="true" autoIncrement="false" />
+    <index name="dbDataset_Workflow_I_workflowID">
+      <index-column name="workflowID"/>
+    </index>
+    <index name="dbDataset_Workflow_I_datasetID">
+      <index-column name="datasetID"/>
+    </index>
+    <!-- <foreign-key foreignTable="dbDatasets" onUpdate="none" onDelete="cascade">
+		<reference local="datasetID" foreign="datasetID"/>
+    </foreign-key> -->
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade">
+		<reference local="workflowID" foreign="wfid"/>
+    </foreign-key>
+  </table>
+
+  <table name="dbDataset_Dataset">
+  	<column name="rootDatasetId" type="INTEGER" primaryKey="true" autoIncrement="false"/>
+  	<column name="datasetID" type="INTEGER" primaryKey="true" autoIncrement="false"/>
+    <index name="dbDataset_Dataset_I_rootDatasetId">
+      <index-column name="rootDatasetId"/>
+    </index>
+    <index name="dbDataset_Dataset_I_datasetID">
+      <index-column name="datasetID"/>
+    </index>
+    <foreign-key foreignTable="dbDatasets" onUpdate="none" onDelete="cascade">
+		<reference local="rootDatasetId" foreign="datasetID"/>
+    </foreign-key>
+    <foreign-key foreignTable="dbDatasets" onUpdate="none" onDelete="cascade">
+		<reference local="datasetID" foreign="datasetID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbDatabits">
+    <column name="databitID" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="datasetID" required="true" type="INTEGER" />
+    <column name="value" required="true" type="LONGVARCHAR" />
+    <column name="name" required="true" type="VARCHAR" size="100" />
+    <column name="datatype" required="true" type="VARCHAR" size="50"/>
+    <column name="description" required="false" type="LONGVARCHAR" />
+    <column name="state" required="true" type="INTEGER" size="6"/>
+    
+    <!-- Need an Index on a binary field here. Torque cannot do it. 
+    Need to do it by an extra .sql file on installation. -->
+    <!-- 
+    <unique>
+      <unique-column name="datasetID"/>
+      <unique-column name="name"/>
+    </unique>
+    <index>
+      <index-column name="name" size="15"/>
+    </index>
+    -->
+
+    <index>
+      <index-column name="datasetID"/>
+    </index>
+    <foreign-key foreignTable="dbDatasets" onUpdate="none" onDelete="cascade">
+		<reference local="datasetID" foreign="datasetID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbComments">
+	<column name="databitID" type="INTEGER" primaryKey="true"/>
+	<column name="userName" required="true" type="VARCHAR" size="255" />
+	<column name="date" type="DATE" required="false" />
+	
+    <foreign-key foreignTable="dbDatabits" onUpdate="none" onDelete="cascade">
+		<reference local="databitID" foreign="databitID"/>
+    </foreign-key>
+  </table>
+
+
+  <!-- Storage of edit information for databits -->
+  <table name="dbEditinfos">
+    <column name="editInfoID" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="databitID" required="true" type="INTEGER" primaryKey="false"/>
+    <column name="type" required="true" type="VARCHAR" size="255"/>
+    <column name="xsize" required="true" type="INTEGER" />
+    <column name="ysize" required="true" type="INTEGER" />
+    <index>
+      <index-column name="databitID"/>
+    </index>
+    <foreign-key foreignTable="dbDatabits" onUpdate="none" onDelete="cascade">
+		<reference local="databitID" foreign="databitID"/>
+    </foreign-key>
+  </table>
+
+
+  <table name="dbDatabitenums">
+  	<column name="id" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="databitID" required="true" type="INTEGER" />
+    <!-- <column name="type" required="true" type="VARCHAR" size="60"/> -->
+    <column name="value" required="true" type="LONGVARCHAR"/>
+    <index>
+      <index-column name="databitID"/>
+    </index>
+    <foreign-key foreignTable="dbDatabits" onUpdate="none" onDelete="cascade">
+		<reference local="databitID" foreign="databitID" />
+    </foreign-key>
+  </table>
+
+    
+<!-- ==================================================================== -->
+<!-- Notifications                                                                 -->
+<!-- ==================================================================== -->
+
+
+  <!-- Notification-Queue-->
+  <table name="dbNotifications">
+    <column name="id" required="true" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="rc_name" required="false" type="VARCHAR" size="255" description="Name of Recipient" />
+    <column name="rc_mail" required="true" type="VARCHAR" size="255" description="Mail Adress of Recipient" />
+    <column name="rc_role" required="false" type="VARCHAR" size="255" description="Send Mail to a role of a Workflow eg. owner" />
+    <column name="replyTo" required="false" type="VARCHAR" size="255" description="Optional replyTo setting" />
+    <column name="notifytype" required="false" type="VARCHAR" size="255" description="Typ der Not. z.B. sofort, digest... " />
+    <column name="notifymethod" required="false" type="VARCHAR" size="255" description="Typ, z.B. Mail, Web, Irc" />
+    <column name="templatefile" required="false" type="VARCHAR" size="255" description="filename of the content-template" />
+    <column name="workflowid" required="false" type="INTEGER" />
+    <column name="messageid" required="false" type="VARCHAR" size="60" />
+    <column name="taskid" required="false" type="INTEGER" />
+    <column name="created" required="false" type="DATE" description="EntstehungsZeitpunkt dieser Not." />
+    <column name="delivered" required="false" type="DATE" description="Zeitpunkt der Auslieferung" />
+    <unique name="dbNotifications_U_messageid">
+      <unique-column name="messageid"/>
+    </unique>
+    <foreign-key foreignTable="dbWorkflows" onUpdate="none" onDelete="cascade">
+		<reference local="workflowid" foreign="wfid" />
+    </foreign-key>
+    <foreign-key foreignTable="dbTasks" onUpdate="none" onDelete="cascade">
+		<reference local="taskid" foreign="taskID" />
+    </foreign-key>
+    <index>
+      <index-column name="workflowid"/>
+    </index>
+  </table>
+
+
+
+<!-- ==================================================================== -->
+<!-- Help                                                               -->
+<!-- ==================================================================== -->
+
+
+  <table name="dbContexthelp">
+    <column name="id" required="true" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="context" required="true" type="VARCHAR" size="200" description="Help Context"/>
+    <column name="text" required="true" type="LONGVARCHAR" description="Help Text"/>
+    <column name="title" required="true" type="VARCHAR" size="200" description="Help Title"/>
+    <unique>
+      <unique-column name="context"/>
+    </unique>
+  </table>
+  
+  
+<!-- ==================================================================== -->
+<!-- Statistics                                                           -->
+<!-- ==================================================================== -->
+
+  <table name="dbStatistics">
+    <column name="id" required="true" type="INTEGER" autoIncrement="true" primaryKey="true"/>
+    <column name="wftype" required="true" type="VARCHAR" size="100" description="template name"/>
+    <column name="date" required="true" type="DATE" description="date of value"/>
+    <column name="runningcount" required="true" type="INTEGER" description="amount of running wfs"/>
+    <column name="avgage" required="true" type="BIGINT" description="avg age of the running wfs"/>
+
+  </table>
+
+
+</database>

@@ -1,0 +1,662 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-10-18 12:08+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:65
+msgid "German"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:66
+msgid "Czech"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:67
+msgid "English"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:68
+msgid "Spanish"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:79
+msgid "Fields are automatically synced from %1"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:82
+msgid "Fields are locked because this is a test system."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:82
+msgid "No Task could be found for TaskId: "
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:99
+msgid "This Task is not active."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:102
+msgid "History of this Task:"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:108
+msgid "done by: "
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:117
+msgid "DisplayTask is not supported for showing SystemActions"
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:213
+msgid "in DisplayTask: no task id."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:100
+msgid "Changed language."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:123
+msgid "The passwords you entered do not match."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:128
+msgid "Changed password."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:135
+msgid "Changed firstname."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:140
+msgid "Changed lastname."
+msgstr ""
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:145
+msgid "Changed email."
+msgstr ""
+
+#: templates/app/parts/WorkflowFilter.vm:7
+msgid "Show %1 of %2 workflows"
+msgstr ""
+
+#: templates/app/parts/WorkflowFilter.vm:32
+msgid "Filtered view:"
+msgstr ""
+
+#: templates/app/parts/WorkflowFilter.vm:33
+msgid "Show"
+msgstr ""
+
+#: templates/app/parts/messages.vm:1
+msgid "Welcome to the web interface of SWAMP."
+msgstr ""
+
+#: templates/app/parts/messages.vm:2
+msgid ""
+"The README file for SWAMP %1 can be found <a href='/webswamp/README'>here</"
+"a>."
+msgstr ""
+
+#: templates/app/parts/messages.vm:6
+msgid "This is a SWAMP Testsystem. "
+msgstr ""
+
+#: templates/app/parts/messages.vm:7
+msgid ""
+"Please be aware that you can test everything here and no mails etc will be "
+"sent out. "
+msgstr ""
+
+#: templates/app/parts/messages.vm:11
+msgid "Please test and check the system out by:"
+msgstr ""
+
+#: templates/app/parts/messages.vm:13
+msgid "browse installed templates in the left navigation"
+msgstr ""
+
+#: templates/app/parts/messages.vm:14
+msgid "create new Workflows"
+msgstr ""
+
+#: templates/app/parts/messages.vm:15
+msgid "view already existing workflows"
+msgstr ""
+
+#: templates/app/parts/messages.vm:16
+msgid "use the workflows"
+msgstr ""
+
+#: templates/app/parts/messages.vm:19
+msgid "Please visit our project homepage at"
+msgstr ""
+
+#: templates/app/parts/messages.vm:21
+msgid "for more information."
+msgstr ""
+
+#: templates/app/parts/MyTasks.vm:27 templates/app/parts/Mytasks.content.vm:6
+msgid "Open tasks for user %1:"
+msgstr ""
+
+#: templates/app/parts/MyTasks.vm:35
+msgid "Loading your tasks..."
+msgstr ""
+
+#: templates/app/parts/StatusMessage.vm:34
+#: templates/app/screens/DisplayWorkflow.vm:245
+msgid "What has happened: "
+msgstr ""
+
+#: templates/app/parts/WorkflowHistory.vm:10
+msgid "Workflow History"
+msgstr ""
+
+#: templates/app/parts/WorkflowHistory.vm:11
+msgid "choose a category to display: "
+msgstr ""
+
+#: templates/app/parts/menutop.vm:36
+msgid "Start Workflow"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:48
+msgid "open Tasks:"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:50
+msgid "my tasks"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:52
+msgid "all tasks"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:64 templates/app/macros/WfList.vm:62
+#: templates/app/macros/WfList.vm:66 templates/app/macros/WfList.vm:70
+msgid "all"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:66
+msgid "running"
+msgstr ""
+
+#: templates/app/parts/menutop.vm:68
+msgid "closed"
+msgstr ""
+
+#: templates/app/parts/TemplateDescriptions.vm:26
+msgid "Please choose your workflow:"
+msgstr ""
+
+#: templates/app/parts/Mytasks.content.vm:63
+msgid "No open tasks."
+msgstr ""
+
+#: templates/app/screens/Templates.vm:3
+msgid "WebSWAMP - Available workflow templates"
+msgstr ""
+
+#: templates/app/screens/Templates.vm:8
+#: templates/app/screens/DisplayWorkflow.vm:20
+#: templates/app/macros/WfList.vm:92
+msgid "Name"
+msgstr ""
+
+#: templates/app/screens/Templates.vm:9 templates/app/macros/WfList.vm:94
+msgid "Description"
+msgstr ""
+
+#: templates/app/screens/Templates.vm:10
+msgid "Versions"
+msgstr ""
+
+#: templates/app/screens/Templates.vm:16
+msgid "Sorry, no workflow templates available."
+msgstr ""
+
+#: templates/app/screens/Templates.vm:94
+msgid "Reload all templates"
+msgstr ""
+
+#: templates/app/screens/Templates.vm:101
+msgid "Add/Replace a workflow version: "
+msgstr ""
+
+#: templates/app/screens/Templates.vm:105
+msgid ""
+"(Please upload a plain workflow.xml file or a *.zip workflow resource bundle)"
+msgstr ""
+
+#: templates/app/screens/Workflows.vm:50
+msgid "No Workflows could be found for your current Filter-Configuration."
+msgstr ""
+
+#: templates/app/screens/Status.vm:8
+msgid "Workflow state: "
+msgstr ""
+
+#: templates/app/screens/Status.vm:20
+msgid "current Tasks in this Workflow: "
+msgstr ""
+
+#: templates/app/screens/Status.vm:29
+msgid "current optional Tasks in this Workflow: "
+msgstr ""
+
+#: templates/app/screens/Statistics.vm:5
+msgid "Statistics: "
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:23
+msgid "Image"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:27
+#: templates/app/screens/WorkflowIndex.vm:145
+msgid "History"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:31
+msgid "Data"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:44
+msgid "Admin"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:52
+msgid "generate Graph"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:56
+#: templates/app/screens/DisplayWorkflow.vm:162
+#: templates/app/screens/WorkflowIndex.vm:133
+msgid "Edit"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:58
+#: templates/app/screens/DisplayWorkflow.vm:164
+msgid "View"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:62
+msgid "Admin console"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:71
+#: templates/app/screens/WorkflowIndex.vm:28
+msgid "Description:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:84
+msgid "Workflow state:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:95
+msgid "Currently Active Tasks:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:101
+msgid "optional tasks:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:110
+msgid "active time triggers:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:123
+msgid "<i>Not yet set</i>"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:129
+msgid "scheduled for:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:131
+msgid "only weekdays"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:134
+msgid "edit"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:159
+msgid "Workflow Data:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:203
+msgid "Add"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:203
+msgid "a Databit."
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:269
+msgid "Node states:"
+msgstr ""
+
+#: templates/app/screens/DisplayWorkflow.vm:269
+msgid "display graph"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:3
+msgid "WebSWAMP Documentation"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:20
+msgid "Can this help text be improved?"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:22
+msgid ""
+"You can contribute to SWAMP by <a href='%1'>editing the help text now</a>."
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:33
+msgid "Help for %1"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:40
+msgid "There is no help for this context yet. "
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:42
+msgid ""
+"You can contribute to SWAMP by <a href='%1'>writing a help text now</a>."
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:59
+msgid "SWAMP Main Documentation"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:64
+msgid "SWAMP Adminguide"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:66
+msgid "SWAMP Installguide"
+msgstr ""
+
+#: templates/app/screens/Documentation.vm:68
+msgid ""
+"More Documents can be found on the <a href='http://swamp.sourceforge.net/"
+"index.php?seite=docs'>SWAMP Project-Homepage</a>."
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:20
+msgid "Startpage for Workflow:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:36
+msgid "Roles:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:48
+msgid "Role is inherited from:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:58
+msgid "This workflow does not implement any role restrictions."
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:67
+msgid "Search"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:69
+msgid "Display all %1 Workflows"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:72
+msgid "where I (%1) am the owner"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:76
+msgid "Show the %1 Workflows Help page "
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:81
+msgid "Display %1 Workflows with (regexp) value of "
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:83
+msgid "in field "
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:85
+msgid "Please choose..."
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:106
+msgid "Actions:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:114
+msgid "Start new %1 Workflow instance"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:123
+msgid "Generate %1 Workflow Graph"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:124
+msgid "Draw"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:131
+msgid "Administrate workflow template"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:149
+msgid "latest Workflows:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:154
+msgid "started by:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:155
+msgid "at:"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:169
+msgid "Statistics"
+msgstr ""
+
+#: templates/app/screens/WorkflowIndex.vm:176
+msgid "currently running/closed Workflows:"
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:3
+#: templates/app/screens/Preferences.vm:9
+msgid "WebSWAMP User Preferences"
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:17
+msgid "Username: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:25
+msgid "Choose your language: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:51
+msgid "Firstname: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:62
+msgid "Lastname: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:73
+msgid "Email: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:84
+msgid "Current password: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:96
+msgid "new password: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:103
+msgid "repeat new password: "
+msgstr ""
+
+#: templates/app/screens/Preferences.vm:112
+msgid "Change"
+msgstr ""
+
+#: templates/app/navigations/DefaultTop.vm:39
+msgid "available Help topics: "
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:31
+msgid "SWAMP Home"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:33
+msgid "Login"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:37
+msgid "Documentation"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:42
+msgid "Preferences"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:53
+msgid "Go"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:60
+msgid "Logout (%1)"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:81
+msgid "Admin Area"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:97
+msgid "Objects"
+msgstr ""
+
+#: templates/app/navigations/Menu.vm:98
+msgid "Workflow Templates"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:55
+msgid "Display Subworkflows:"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:63 templates/app/macros/WfList.vm:67
+#: templates/app/macros/WfList.vm:71
+msgid "active"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:64 templates/app/macros/WfList.vm:68
+#: templates/app/macros/WfList.vm:72
+msgid "none"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:88
+msgid "ID"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:96
+msgid "Task"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:98 templates/app/macros/WfList.vm:313
+msgid "Assigned Users"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:100 templates/app/macros/WfList.vm:315
+msgid "Next Tasks"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:102
+msgid "State"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:106
+msgid "Progress"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:293 templates/app/macros/WfList.vm:360
+msgid "Workflow-Template"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:305
+msgid "Choose Column"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:306
+msgid "Workflow ID"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:307
+msgid "Workflow name"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:308
+msgid "Workflow description"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:309
+msgid "Progress-bar"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:311
+msgid "Task ID"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:312
+msgid "Task Description"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:316
+msgid "Workflow State"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:317
+msgid "Icon"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:361
+msgid "configure columns"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:460
+msgid "Workflow Colours:"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:461
+msgid "inactive"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:473
+msgid "printable View"
+msgstr ""
+
+#: templates/app/macros/WfList.vm:475
+msgid "switch back to normal view"
+msgstr ""

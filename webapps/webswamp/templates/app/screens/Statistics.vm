@@ -1,0 +1,14 @@
+#if ($statsImage)
+
+<table width="100%" cellpadding="2" cellspacing="3">
+<tr class="box_head">
+<td class="box_head" colspan="2">$ui.tr("Statistics: ", $data.getUser())</td></tr>
+
+
+<tr>
+<td valign="top" colspan="2">
+<img src="$statsImage" alt="Statistic image" />
+</td></tr>
+</table>
+
+#end

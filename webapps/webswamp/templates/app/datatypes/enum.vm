@@ -1,0 +1,56 @@
+#if ($rendertype.equals("wflist")) 
+    $content
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+        $content
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+
+    ## if we have long enumvalues, we switch from dropdown to text fields
+    #set ($mode = "select")
+    #foreach ($value in $field.getEnumvalues())
+        #if ($value.length() > 50)
+            #set ($mode = "list")
+        #end
+    #end
+
+    #if (${field.getEditInfo().getType().equals("list")})
+        #set ($mode = "list")
+    #elseif (${field.getEditInfo().getType().equals("select")})
+        #set ($mode = "select")
+    #end
+
+    #if ($mode.equals("select"))
+        <input type="hidden" name="select_$field.getPath()" value="true">
+        <select name="field_$field.getPath()" #if($field.getDatatype().equals("multienum")) multiple #end >
+        #foreach ($value in $field.getEnumvalues())
+        #set ($value = $ui.htmlEncode($value))
+        ## do not show empty field in multi-enums
+        #if (!$field.getDatatype().equals("multienum") || !$value.trim().equals(""))
+            #if ($field.getInitValues().contains($value))
+            <option selected value="$value">$value</option>
+            #else
+            <option value="$value">$value</option>
+            #end
+        #end
+        #end
+    </select>
+    #else 
+    #foreach ($value in $field.getEnumvalues())
+        #set ($formvalue = $ui.htmlEncode($value))
+        <table><tr><td valign="top">
+        <input type="radio" name="field_$field.getPath()" value="$formvalue" #if ($formvalue.equals($initval)) checked #end ></td>
+        <td valign="top">$value</td></tr></table>
+    #end
+    #end
+
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end

@@ -1,0 +1,78 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle($ui.tr("WebSWAMP Documentation", $data.getUser()))
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+
+  #if ( $!help && $!helpContext)
+
+  <tr class="nav_head">
+    <td class="box_head">$help.getTitle()</td>
+  </tr>
+
+  <tr>
+    <td>
+      <br/>
+		$help.getText()
+        <br/>
+        <hr>
+        <p><em>
+        $ui.tr("Can this help text be improved?", $data.getUser())
+        #set ($mylink = $link.setPage("EditDocumentation.vm").addPathInfo("helpcontext",$helpContext))
+        $ui.tr("You can contribute to SWAMP by <a href='%1'>editing the help text now</a>.", $data.getUser(), $mylink)
+        </em></p>
+    </td>
+  </tr>
+
+  <tr><td>&nbsp;</td></tr>
+
+
+   #elseif ($!helpContext)
+        
+   <tr class="nav_head">
+    <td class="box_head">$ui.tr("Help for %1", $data.getUser(), $helpContext)</td>
+   </tr>
+
+   <tr>
+   	 <td>
+      <br/>
+        <p><em>
+        $ui.tr("There is no help for this context yet. ", $data.getUser())
+        #set ($mylink = $link.setPage("EditDocumentation.vm").addPathInfo("helpcontext",$helpContext))
+        $ui.tr("You can contribute to SWAMP by <a href='%1'>writing a help text now</a>.", $data.getUser(), $mylink)
+        </em></p>
+    </td>
+  </tr>
+
+  <tr><td>&nbsp;</td></tr>
+
+  #end
+
+  <tr><td>
+  
+  <table width="100%" class="box_head" cellspacing="3" cellpadding="3">
+  <tr class="box_head">
+    <td class="box_head" valign="middle" width="25">
+    <img src="$ui.image("help_22")" alt="" valign="middle" />
+    </td>
+    <td class="box_head" valign="middle">
+    $ui.tr("SWAMP Main Documentation", $data.getUser())
+    </td>
+  </tr></table>
+  <br />
+  - <a href="http://swamp.sourceforge.net/index.php?seite=doc2html&docpage=html-adminguide/swamp-adminguide.html">
+  $ui.tr("SWAMP Adminguide", $data.getUser())</a> <i>(on sf.net)</i><br />
+  - <a href="http://swamp.sourceforge.net/index.php?seite=doc2html&docpage=html-installguide/swamp-installguide.html">
+  $ui.tr("SWAMP Installguide", $data.getUser())</a> <i>(on sf.net)</i><br /><br />
+  
+  $ui.tr("More Documents can be found on the <a href='http://swamp.sourceforge.net/index.php?seite=docs'>SWAMP Project-Homepage</a>.", $data.getUser())<br />
+  </td></tr>  
+  
+  </td></tr>
+  
+  <tr>
+    <td>
+	#parse("docs/inhalt.vm")
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,38 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP Error")
+
+    <table cellpadding="4" cellspacing="0" border="0" width="100%">
+        <tr class="error">
+          <td colspan="2" class="error">WebSWAMP Error</td>
+        </tr>
+	<tr>
+	  <td>
+      Sorry, but your request couldn&#39;t be handled.<br />
+      <br/>
+		
+		
+	#if ($!{errormsg})
+		<b>Additional Information:</b> <br /> 
+		<br />
+		$errormsg.replaceAll("\n", "<br />")
+		<br />
+        #end
+		
+        <br />
+        #if ($!processingException)
+        <b>Cause: </b><br />
+	<em>$!processingException</em>
+	<br />
+	#end
+        <br />
+	
+	## $!stackTrace
+		
+		
+	</td>
+	  <td align="left" valign="top">
+	  <img src="$ui.image("error")">
+	 </td>
+        </tr>
+    </table>

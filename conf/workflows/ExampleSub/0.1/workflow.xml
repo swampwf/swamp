@@ -1,0 +1,73 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "../../../dtds/workflow.dtd">
+<workflow name="ExampleSub" 
+          version="0.1" 
+          leastSWAMPVersion="1.5.4"
+          parentwf="Example"
+          parentwfversion="0.2">
+
+	<metadata>
+		<templatedescription>Workflow for testing subworkflows</templatedescription>
+		<description>Workflow for testing subworkflows</description>
+		<creator>Thomas Schmidt</creator>
+		
+		<roles>
+			<role name="owner" restricted="true" type="databit">
+				<rolevalue>testdataset.roles.owner</rolevalue>
+			</role>
+			<role name="admin" restricted="true">
+				<description>Admins</description>
+				<rolevalue>swamp_admin</rolevalue>
+			</role>
+			<role name="starter" restricted="true">
+				<description>Who can start an example workflow</description>
+				<rolevalue>swamp_user</rolevalue>
+			</role>
+			<role name="user" restricted="false" type="databit">
+				<rolevalue>testdataset.roles.user</rolevalue>
+			</role>
+		</roles>
+			
+	</metadata>
+
+
+	<!-- node start -->
+	<node type="start" name="start">
+	<description>Startnode</description>
+		<manualtask name="sub1_task" eventtype="sub1_task_done">
+			<description>SUBWORKFLOW TASK</description>
+		</manualtask>
+	
+	<edge to="tmp" event="sub1_task_done"/>
+	<!-- handle standard event -->
+	<edge to="end" event="PARENTWORKFLOW_FINISHED"/>
+	</node>
+	
+	
+	<node name="tmp">
+	<description>TMP node</description>
+	<!-- DATA Edit -->
+	<dataedit name="flag_edit" eventtype="set_flag">
+	<description>Editing a databit of the parents workflow</description>
+	
+	<!-- Fields... -->
+	<field path="testdataset.flag" mandatory="yes" />
+	</dataedit>
+	
+	<edge to="end">
+	<data check="regexp" field="testdataset.flag" value="true"/>
+	</edge>
+	
+	</node>
+	
+	
+	<!-- node END -->
+	<node type="end" name="end">
+	<description>Subworkflow is finished</description>
+	</node>
+    
+    
+    <dataset name="subtestdataset" description="Dataset for Subworkflow">
+    </dataset>
+    
+</workflow>

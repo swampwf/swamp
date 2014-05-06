@@ -1,0 +1,86 @@
+
+## only display it if the user is in the group "users" or template has 
+## unrestricted access
+
+
+#set ($mylink = $link.setAction("UserActions").addPathInfo("eventSubmit_doInterface", "change").addPathInfo("interface", $template).addPathInfo("wftemplate", $template).setPage("WorkflowIndex.vm").toString())
+
+#if ($ui.hasConfigValue($template, "icon"))
+   #set ($image = $ui.getResourcePath($template, "icon"))
+#else 
+   ## set default icon: 
+    #set ($image = $ui.image("workflow-std_32"))
+#end
+
+#navhead ($image $mylink $template)
+
+#if ($ui.getInterface().equals($template))
+<table cellpadding="0" cellspacing="0" border="0" width="190" class="box_normal">
+<tr>
+  <td width="10" align="left" valign="top">
+    <img src="$ui.image("clearpix")" height="1" width="10" alt=" " border="0">
+  </td>
+  <td align="left">
+    <table cellspacing="0" cellpadding="5" border="0">
+	
+	## show button only if in role "starter"
+	#if (${data.getUser().hasRoleInWorkflow("starter", $template)})
+	     <tr>
+      		 <td align="right" valign="top" class="box_normal">
+         	<img src="$ui.image("olivebullet")" width="8" height="8" 
+            	alt="*" vspace="3" border="0" />
+       		</td>
+       		<td align="left" class="box_normal" valign="top">
+        	 <form method="post" 
+        	 action="$link.setPage("Status.vm").addPathInfo("templatename", $template).setAction("WorkflowActions")">
+        	 #set ($txt = $ui.tr("Start Workflow", $data.getUser()))
+        	 <input type="submit" name="eventSubmit_doStartnewworkflow" value="$txt"/></form>
+      		 </td>
+     	    </tr>
+	#end
+	 
+       <tr>
+        <td align="left" valign="top" class="navbox_light">
+          <img src="$ui.image("olivebullet")" width="8" height="8" 
+      		alt="*" vspace="3" border="0">
+        </td>
+        <td align="left" class="navbox_light">
+        $ui.tr("open Tasks:", $data.getUser()) <br />
+        &middot; <a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $template).addPathInfo("systemfilter_taskowner", ${data.getUser().getName()}).addPathInfo("systemfilter_columns_$template", "column_workflowdescription,column_nexttasks").addPathInfo("systemfilter_displaysubwfs_$template", "none").addPathInfo("systemfilter_hasactivetasks", "true")" 
+        	class="sidenav" title="my tasks">$ui.tr("my tasks", $data.getUser())</a> <br />
+        &middot; <a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $template).addPathInfo("systemfilter_columns_$template", "column_workflowdescription,column_nexttasks").addPathInfo("systemfilter_displaysubwfs_$template", "none").addPathInfo("systemfilter_hasactivetasks", "true")" 
+        	class="sidenav" title="all tasks">$ui.tr("all tasks", $data.getUser())</a> <br />
+	</td>
+      </tr>
+	 
+      <tr>
+        <td align="left" valign="top" class="navbox_light">
+          <img src="$ui.image("olivebullet")" width="8" height="8" 
+      		alt="*" vspace="3" border="0">
+        </td>
+        <td align="left" class="navbox_light">
+          $template Workflows: <br />
+        &middot; <a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $template)" class="sidenav" 
+			title="all Workflows">$ui.tr("all", $data.getUser())</a> <br />
+        &middot; <a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $template).addPathInfo("systemfilter_wfclosed", "false")" class="sidenav" 
+			title="running Workflows">$ui.tr("running", $data.getUser())</a> <br />
+        &middot; <a href="$link.setPage("Workflows.vm").addPathInfo("systemfilter_wftemplate", $template).addPathInfo("systemfilter_wfclosed", "true")" class="sidenav" 
+			title="closed Workflows">$ui.tr("closed", $data.getUser())</a> <br />
+	
+	</td>
+      </tr>
+	 
+	  
+    </table>
+  </td>
+  <td width="6" align="right" valign="top"><img src="$ui.image("clearpix")" height="1" width="6" alt=" " border="0"></td>
+  <td width="1" align="right" valign="top" class="box_border"><img src="$ui.image("clearpix")" height="1" width="1" alt=" " border="0"></td>
+</tr>
+</table>
+#end
+    
+#navbottom()
+<br/>
+	
+
+	

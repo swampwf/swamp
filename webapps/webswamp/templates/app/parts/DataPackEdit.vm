@@ -1,0 +1,89 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+## 
+##     Part that only requires the Datapack in the context. Note that the including 
+##     vm needs to set a proper form frame around.
+##
+##    Context:
+##      setnames - a stringlist of sets in the datapack
+##      setmap   - a hashmap of sets containing fields per setname
+##      workflow - (mandatory) related workflow (used to fetch dataset description)
+
+
+#macro (showField $field $initval) 
+    
+    ## show databitid for debugging
+    <!-- id: $workflow.getDatabit($field.getPath()).getId() -->
+
+    #set ($initval = $ui.htmlEncode($initval))
+    #set ($rendertype = "edit")
+    #parse( "datatypes/${type}.vm" )
+         
+#end
+
+
+
+#macro (showFieldRow $field $initval) 
+	#if (!$field.getState().equals($datastates.HIDDEN) || ${data.getUser().isGroupMember("swampadmins")} || ${showhidden})
+	        #set ( $cntent = "$!{field.getInitValue()}" )
+	        #set ($type = $field.getDatatype())
+		#if ($field.getState().equals($datastates.ERROR))
+			<tr class="error">
+		#elseif (!$field.isMandatory() && $!taskview)
+			<tr class="box_inactive">
+		#else
+			<tr class="box_normal">
+		#end
+
+		#set($label = $field.getLabel().replaceAll("\\n", "<br />"))
+		<td align="right" valign="top" width="30%">$label
+		
+		#if($workflow.getTemplate().containsDatabitTemplate($field.getPath()))
+			#set ($bittemplate = $!workflow.getDatabitTemplate($field.getPath()))
+		#if ($!bittemplate && $!bittemplate.getLongDescription())
+			#set ($tooltip = $ui.tooltipEncode($!bittemplate.getLongDescription()) )
+			<img src="$ui.image("info_16")" onmouseover="Tip('$tooltip', OFFSETX, -70)" onmouseout="UnTip()"/>
+		#end
+		#end
+		</td>
+		<td valign="top" width="50%">
+		#if($field.getState().equals($datastates.READONLY) && !${data.getUser().isGroupMember("swampadmins")} )
+			#if ($!cntent.length() > 0)
+				$!{cntent.replaceAll("\n", "<br />")}
+				## enable Bugzilla refresh also on readonly id
+				#if ($field.getDatatype().equals("bugzilla") && $showdata)
+				<input type="hidden" name="field_$field.getPath()" value="$!cntent" />
+				#end
+			#else 
+				<i>empty</i>
+			#end
+		#else
+			#showField($field $!cntent)
+		#end
+		</td>
+		<td width="250">
+		#set ($rendertype = "flags")
+                #parse( "datatypes/${type}.vm" )
+                </td></tr>
+	#end ## end display field
+#end
+
+
+
+<table cellpadding="3" cellspacing="0" border="1" style="border-style: solid; " width="100%">	
+	#foreach( $setname in $setnames )
+		##// don't show hidden fields: 
+		#if (!($workflow.getDataset($setname).getState().equals($datastates.HIDDEN)) || ${data.getUser().isGroupMember("swampadmins")} || ${showhidden})
+		
+		<tr class="box_head"><td colspan="3" class="box_head"><b class="box_head">
+		$!{workflow.getDataset($setname).getDescription()}
+		</b></tr>
+		
+			#set ($set = $setmap.get($setname))
+			#foreach( $field in $set )
+				#showFieldRow($field $initval)	
+			#end 
+		#end ## end if set is hidden
+	#end ## end foreach set
+</table>

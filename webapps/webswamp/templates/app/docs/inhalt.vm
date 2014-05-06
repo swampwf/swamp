@@ -1,0 +1,20 @@
+## SWAMP Workflow Administration and Management Platform
+## 
+
+<br />
+
+#foreach ($helpfolder in $helpfiles.keySet())
+
+	<a name="${helpfolder}"></a>
+	#parse("docs/${helpfolder}/head")
+
+	#foreach ($helpfile in $helpfiles.get($helpfolder))
+
+	- <a href="$link.setPage("Documentation.vm").addPathInfo("helpcontext", ${helpfile.getContext()})">${helpfile.getTitle()}</a>
+	<br />
+
+	#end
+	<br /><br />
+#end
+
+

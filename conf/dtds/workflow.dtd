@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT workflow (metadata, node+, dataset)>
+<!ATTLIST workflow 	name	    	ID 	#REQUIRED
+				  	version	    	CDATA 	#REQUIRED
+				  	leastSWAMPVersion 	CDATA 	#REQUIRED
+				  	parentwf 	    CDATA 	#IMPLIED
+				  	parentwfversion	CDATA 	#IMPLIED>
+
+
+<!ELEMENT metadata 	(templatedescription, description, helpcontext?, creator?, 
+					history?, roles)>
+<!ELEMENT templatedescription 	(#PCDATA)>
+<!ELEMENT description 	(#PCDATA)>
+<!ELEMENT creator 	(#PCDATA)>
+<!ELEMENT history 	(change+)>
+<!ELEMENT change 	(#PCDATA)>
+<!ATTLIST change    who         CDATA   #REQUIRED
+                    when        CDATA   #REQUIRED>              
+
+<!ELEMENT roles (role+)>
+<!ELEMENT role (description?,rolevalue*)>
+<!ATTLIST role name CDATA #REQUIRED
+		       restricted (true|false)   #REQUIRED
+		       type (databit|value|reference|dbreference) #IMPLIED>
+<!ELEMENT rolevalue 	(#PCDATA)>
+
+
+<!ELEMENT node  (description, longdesc?, helpcontext?, milestone?, duedate?, 
+(dataedit|manualtask|decision|notification|customtask|startsubworkflow|sendevent|scriptaction)*, edge*)>
+<!ATTLIST node name		ID     		   #REQUIRED
+               type		(start|end)    #IMPLIED>
+
+
+<!ELEMENT milestone (description?)>
+<!ATTLIST milestone   name        ID    	#REQUIRED
+					weight      CDATA    	#IMPLIED>
+
+<!ELEMENT duedate EMPTY>
+<!ATTLIST duedate databit CDATA #REQUIRED>
+
+<!ELEMENT edge (event|data|subsfinished|and|not|or)*>
+<!ATTLIST edge to           IDREF     #REQUIRED
+               event        CDATA     #IMPLIED>
+
+<!ELEMENT event (#PCDATA)>
+<!ATTLIST event type       CDATA     #REQUIRED>
+
+<!ELEMENT data EMPTY>
+<!ATTLIST data field	CDATA	  #REQUIRED
+	           check	(regexp|changed)  #REQUIRED
+	           value	CDATA	  #IMPLIED>
+	           
+<!ELEMENT subsfinished EMPTY>
+<!ATTLIST subsfinished subname CDATA #REQUIRED>
+<!ATTLIST subsfinished subversion CDATA #REQUIRED>
+
+<!ELEMENT not (event|data|not|or|and|subsfinished)>
+
+<!ELEMENT or  ((event|data|not|or|and|subsfinished),(event|data|not|or|and|subsfinished))>
+
+<!ELEMENT and ((event|data|not|or|and|subsfinished),(event|data|not|or|and|subsfinished))>
+
+<!ELEMENT longdesc (#PCDATA)>
+<!ELEMENT helpcontext (#PCDATA)>
+
+
+<!ELEMENT manualtask (description, longdesc?, helpcontext?)>
+<!ATTLIST manualtask name       	ID       #REQUIRED
+		             role			CDATA	#IMPLIED
+		             eventtype	CDATA	#REQUIRED
+		             notificationtemplate	CDATA	#IMPLIED
+		             mandatory	(true|false)	#IMPLIED
+		             restricted	(true|false)	#IMPLIED>
+
+<!ELEMENT decision (description, longdesc?, helpcontext?, question, answer+)>
+<!ATTLIST decision name			ID	#REQUIRED
+		           role			CDATA	#IMPLIED
+		           notificationtemplate	CDATA	#IMPLIED
+		           mandatory	(true|false)	#IMPLIED
+		           restricted	(true|false)	#IMPLIED>
+
+<!ELEMENT question (#PCDATA)>
+
+<!ELEMENT answer (#PCDATA)>
+<!ATTLIST answer eventtype	CDATA	#REQUIRED>
+
+<!ELEMENT dataedit (description, longdesc?, helpcontext?, field+, script?)>
+<!ATTLIST dataedit name         	ID   	#REQUIRED
+                   role		     CDATA	#IMPLIED
+                   eventtype    	CDATA   	#REQUIRED
+                   notificationtemplate	CDATA	#IMPLIED
+                   mandatory	(true|false)	#IMPLIED
+                   restricted	(true|false)	#IMPLIED>
+
+<!ELEMENT field EMPTY>
+<!ATTLIST field path	CDATA	#REQUIRED
+		mandatory	    (true|yes|false|no)	#REQUIRED>
+
+
+<!ELEMENT notification (recipient, description?)+>
+<!ATTLIST notification    	name 		ID		#REQUIRED
+							msgtemplate	CDATA	#IMPLIED 
+			             	msgtext		CDATA	#IMPLIED>
+			
+<!ELEMENT recipient EMPTY>
+<!ATTLIST recipient	dbit      		CDATA   #IMPLIED
+			        recipientname   CDATA   #IMPLIED
+			        recipientemail	CDATA   #IMPLIED
+			        recipientrole  	CDATA   #IMPLIED>
+
+
+<!ELEMENT customtask (description)>
+<!ATTLIST customtask name         ID    #REQUIRED
+                     eventtype    CDATA    #REQUIRED
+                     class        CDATA    #REQUIRED
+                     function     CDATA    #REQUIRED>  
+                     
+<!ELEMENT scriptaction (description, script)>
+<!ATTLIST scriptaction name         ID    #REQUIRED>
+<!ELEMENT script (#PCDATA)>
+<!ATTLIST script language     CDATA #IMPLIED>
+
+
+<!ELEMENT startsubworkflow (description)>
+<!ATTLIST startsubworkflow 	name			  ID		  #REQUIRED
+							subname		  CDATA    #REQUIRED
+						 	subversion	  CDATA    #REQUIRED>  
+
+
+<!ELEMENT sendevent (description?, triggerdate?, targetwfs?)>
+<!ATTLIST sendevent    name    ID    #REQUIRED 
+					   eventtype CDATA #REQUIRED> 
+
+<!ELEMENT triggerdate (#PCDATA)>
+<!ATTLIST triggerdate    databit CDATA    #REQUIRED
+						 offset  CDATA    #REQUIRED
+					     onlyweekdays (true|false) #IMPLIED> 
+
+<!ELEMENT targetwfs (#PCDATA)>
+
+<!ELEMENT dataset   (dataset|databit)*>
+<!ATTLIST dataset    name           CDATA #REQUIRED
+                     description    CDATA #REQUIRED
+                     state ( hidden | read-only | read-write ) #IMPLIED>
+
+<!ELEMENT databit    (description?,longdesc?,defaultvalue?,dbedit?,value*)>
+<!ATTLIST databit   name          CDATA    #REQUIRED
+					shortdesc     CDATA 	#IMPLIED
+					description   CDATA 	#IMPLIED
+					type          CDATA 	#REQUIRED
+					state ( hidden | read-only | read-write ) #IMPLIED>
+
+
+<!ELEMENT defaultvalue (#PCDATA)>
+
+
+<!ELEMENT dbedit EMPTY>
+<!ATTLIST dbedit type (list|text|select|checkbox) #REQUIRED
+                 xsize CDATA #IMPLIED
+		         ysize CDATA #IMPLIED>
+
+
+<!-- values of enum lists -->
+<!ELEMENT value (#PCDATA)>
+<!ATTLIST value type CDATA 	 #REQUIRED>
+
+
+

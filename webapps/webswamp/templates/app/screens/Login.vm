@@ -1,0 +1,75 @@
+## SWAMP Workflow Administration and Management Platform
+
+#**
+
+@author <a href="mailto:jvanzyl@periapt.com">Jason van Zyl</a>
+@version $Id$
+
+*#
+
+$page.setTitle("WebSWAMP - Please Login")
+$page.setBgColor($ui.bgcolor)
+
+<br />
+
+<div align="center">
+
+
+## This is the page the user wanted to see.
+## so let him log in, and redirect there.
+## #set ($screen = $data.getUser().getTemp("reqscreen"))
+#if ($!{data.getUser().getTemp("query")})
+	#set ($query = $data.getUser().getTemp("query").toString())
+#end 
+
+<table><tr>
+<td>
+
+<div align="center">
+
+#if ( $data.getMessage() )
+  <span style="color:#FF0000">
+  $data.getMessageAsHTML()<br /><br />
+  </span>
+#end
+
+
+#if ($turbineconf.getProperty("webswamp.testserver").equals("true"))
+This is a SWAMP Test-Server. <br />
+You can login with 2 roles: <br />
+&nbsp;&nbsp;&nbsp;<i>swamp_user</i> with password "swamp"<br />
+&nbsp;&nbsp;&nbsp;<i>swamp_admin</i> with password "!swamp#"<br /><br />
+#end
+
+
+<form method="post" action="/webswamp/swamp/action/LoginActions" name="loginform">
+  <table cellspacing="0" cellpadding="5" class="box_login">
+  <tr class="box_head"><td class="box_head" colspan="2">Welcome to SWAMP 
+  </td></tr>
+
+    <tr>
+      <td>User: </td>
+      <td><input type="text" size="30" name="username" value=""></td>
+    </tr>
+    <tr>
+      <td>Password: </td>
+      <td><input type="password" size="30" name="password" value=""></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+      <input type="hidden" name="query" value="$!{query}">
+      <input type="submit" name="eventSubmit_doLoginuser" value=">> Login"></td>
+    </tr>
+  </table>
+</form>
+
+</div>
+
+</td><td>
+
+
+</td></tr></table>
+<br/>
+
+
+</div>

@@ -1,0 +1,68 @@
+
+<div id='mytasks'>
+<table cellspacing="3" cellpadding="3">
+<tr class="box_head">
+<td class="box_head">
+$ui.tr("Open tasks for user %1:", $data.getUser(), ${data.getUser().getName()})
+</td><td align="right" width="20">
+<a href="/rss?action=mytasks"><img src="$ui.image("rss_16")" alt="RSS"/></a>
+</td></tr>
+
+#if ($wfcount > 0) 
+<tr class="box_normal"><td style="border-width: 1px; border-style:solid; " colspan="2">
+
+<table width="100%" cellspacing="3" cellpadding="3">
+
+#set ($taskOwner = ${data.getUser().getName()})
+#set ($count = 0)
+#set ($maxcount = 30)
+#set ($notaskowners = "true")
+
+#foreach ($template in $wfmap.keySet())
+
+#if ($count <= $maxcount)
+<tr><td colspan="$columns.size()">
+#if ($ui.hasConfigValue($template, "icon_small"))
+	<img src="$ui.getResourcePath($template, "icon_small")" 
+	alt="" align="middle" />
+#else 
+	<img src="$ui.image("workflow-std_22")" 
+	alt="" align="middle" />
+#end
+&nbsp;
+<b>$template</b></td></tr>
+#end
+ 
+#foreach ($wf in $wfmap.get($template))
+#if ($count <= $maxcount)
+	#showcolumns ($wf $columns)
+	#set ($count = $count + 1)
+#end
+#end
+
+#if ($count > $maxcount && !$!alltasks)
+	<tr><td colspan="$columns.size()" align="right">
+	#set ($href = $link.setPage("Workflows.vm").addPathInfo("systemfilter_taskowner",$taskOwner).addPathInfo("systemfilter_hasactivetasks","true").addPathInfo("systemfilter_mandatorytasksonly","true"))
+	## create task list without displaying subworkflows
+	#foreach ($template in $templates)
+		#set ($href = $link.addPathInfo("systemfilter_displaysubwfs_$template", "none"))
+	#end
+	$ui.tr("(show <a href='%1'>all tasks assigned to me</a>)", ${data.getUser()}, $link)
+	</td></tr>
+	#set ($alltasks = "true")
+#end
+
+#end
+</table>
+
+## wfcount == 0
+#else 
+
+<tr><td>
+<table width="100%" cellspacing="3" cellpadding="3">
+<tr><td>
+$ui.tr("No open tasks.", ${data.getUser()})
+#end 
+
+</td></tr></table>
+</div>

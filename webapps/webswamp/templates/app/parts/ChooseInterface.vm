@@ -1,0 +1,18 @@
+#if ($ui.getValidInterfaces().size()>0)
+	<form method="post" 
+	action="$link.setPage($turbineconf.getString("template.homepage")).setAction("UserActions")">
+	Choose your Interface: 
+	
+	<select name="interface">
+		#foreach ($interface in $ui.getValidInterfaces())
+			#if ($interface.equals($ui.getInterface()))
+				<option value="$interface" selected>$interface</option>
+			#else 
+				<option value="$interface">$interface</option>
+			#end
+		#end
+		
+	</select>
+	<input type="submit" value="Change" name="eventSubmit_doInterface">
+	</form>
+#end

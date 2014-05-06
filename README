@@ -1,0 +1,250 @@
+SWAMP 1.6.1 (http://swamp.sf.net)
+---------
+Date: 
+
+SWAMP is a flexible, java based workflow server that runs on top of tomcat. 
+It reads its workflow definitions from XML files. Administration and tracking of workflow instances, 
+execution of individual tasks can be done via the web and SOAP interfaces.
+
+
+Changes
+-------
+
+  New features in 1.6.1:
+    
+    - Popups for bugids, loading data from bugzilla in the background
+    - update velocity lib, velocity-tools
+    - new datatypes for bugid lists and number lists
+    - dataedit action can include a <script> for additional verification checks
+
+  New features in 1.6:
+
+    - Datatypes can create the GUI for viewing, editing by themselves
+    - Bugzilla config is more flexible
+    - updated jfreechart, display avg age of running workflows in chart
+    - persistant secondary sorting in workflow views
+    - fix File uploads with IE
+    - logging in UTF-8
+
+  New features in 1.5.9:
+
+    - updated included libraries
+    - Display of single milestones can be enabled/disabled
+    - Supporting tomcat6
+    - smarter cache handling when reloading workflow definitions
+    - added API for changing role memberships
+    - filter for > and < comparison of databits (useful for date ranges)
+    - Webswamp: 
+      - Users can set a preference to which page they want to be redirected after doing a task
+    
+
+  New features in 1.5.8:
+
+    - Executor for external programs/scripts can set a timeout
+    - Added a Task cache for active tasks
+    - Tasks have a persistant id on re-activation
+    - Re-worked role implementation, adding possibility to reference to groups 
+      from the database backend (see UPGRADING file for the new xml schema)
+    - SOAPSWAMP: Fix datatype problems
+    - added HTML datatype with validation through jTidy
+    - reworked graph generation layout
+    - Using Ajax on index page to load individual tasks in background while page is already useable
+    - All workflow stacks are loaded via ajax (good improvement for deep stacks)
+      
+     
+
+  New features in 1.5.7: 
+  
+    - SWAMP now provides newsfeeds for "my tasks" and all other workflow lists in RSS and Atom format 
+      (http://en.opensuse.org/Swamp/RSS)
+    - minor webSWAMP fixes
+    - webSWAMP: scheduled jobs can be triggered from admin page
+
+
+  New features in 1.5.6: 
+  
+    - updated to jakarta-regexp 1.5
+    - performance improvements in bugzilla connect, groovy script parsing, milestone loading
+    - updated translations
+    - updated to velocity 1.5
+    - Bugfix for data change listener condition
+
+
+  New features in 1.5.5: 
+    
+    - new Startpage with workflow descriptions and personal tasks
+    - extended webswamp admin page
+    - when editing data triggers some action, the results are shown
+    - bugfix in role filters and evaluation
+
+  New features in 1.5.4: 
+
+  - added framework for localizations (en, de, cs available)
+  - completely switched to UTF-8
+  - user preferences page in webswamp
+  - documentation updates
+  - The latest workflows are shown on the workflow index page
+  - Roles can be inherited and merged
+  - Fixes for comment threads
+  - More popups in webswamp (roles, workflow descriptions)
+  - Generating workflow state description from active nodes
+  - fixed positioning of calendar applet + loading .js with relative path
+  - new plugin structure for easily adding new datatypes
+  - added float datatype
+  - added option for changing the parent of a subworkflow
+
+  New features in 1.5.3: 
+
+  - Added parentworkflow attribute to workflow definition for easier verification
+  - Added groovy (groovy.codehaus.org) scripting support inside workflows
+  - Added generic Class for LDAP authtification
+  - Data changes get propagated to all workflows that attach the dataset.
+  - Added collapseable tree views for subworkflows in webSWAMP
+  - added apparmor profile for SWAMP
+  - new Executor class allows calling external executeables from scriptactions
+
+  New features in 1.5.2: 
+  
+  - Bugfix in Sendeventaction (onlyweekdays option)
+  - Workflows can be deleted completely from the system
+
+  New features in 1.5.1: 
+  
+  - display of subworkflows/amount of displayed wfs per page 
+    can be set different for each workflow type
+  - displayed columns can be configured by url parameter for different views
+  - webSWAMP: added new views for "my tasks" and "all open tasks"
+  - added new filter type memory filter that can filter eg. for task owners 
+    which cannot be mapped to a SQL statement.
+  - webSWAMP: workflows can display their own logo on top of the page
+  - added support for multi-select data fields 
+  - webSWAMP startpage now shows a personalized todo list for the logged in user
+  - webSWAMP: Filedownload now sets the contentype
+  
+
+  
+  New features in 1.5:
+  
+  - Workflows can include documentation files and a customized 
+    navigation that get installed automatically
+  - Users can upload workflow definitions through the web interface
+  - Added comment datatype which allows to create discussion threads 
+    inside a workflow.
+  - Added scripts and docu for building + running SWAMP on Windows. 
+  - Enabled public subversion repository (https://svn.sourceforge.net/svnroot/swamp/trunk)
+  - Enabled public bugzilla (http://bugzilla.novell.com)
+  - Fixed bugs in data cache + sendevent actions
+  - added calendar popup for date type input in webSWAMP
+  - added statistic graph generation for amount of running workflows / time
+  - added DATETIME datatype
+  
+  New features in 1.4.1:
+
+   - removed ImageMagick dependency
+   - removed generated files from project tarball
+   - added HTML docu to RPM distribution, building as noarch
+   - fixed Bugs in webSWAMP   
+   - Workflows can provide a script snippet to set their colour 
+     in the workflow list. (Useful for highlighting priorities)
+	
+
+  New features in 1.4:
+
+  - Static roles 
+  - Admins + Workflow owners can add Databits to running workflows
+  - WebSWAMP: improvements of the DisplayWorkflow page
+  - Files can be attached (uploaded) to a workflow
+  - Scheduler was inactive in public 1.3 release
+  - Enhanced WorkflowVerifier: Catching more possible mistakes in workflow definitions
+  - Fixed build problems of 1.3 release
+
+
+  New features in 1.3:
+  
+  - Implemented SWAMP SOAP interface
+  - Perl client for remotely using the SWAMP SOAP interface is available
+  - WebSWAMP has URL shortcuts: /webswamp/task/<id> /webswamp/wf/<id>
+  - added verifier class for semantic checks of workflow definitions
+
+
+  New features in 1.2:
+  
+  - SWAMP is able to post comments to Bugzilla automatically.
+  - Progress-bar hover effect on Workflow list page
+  - Tasks can be restricted to groups.
+  - Sendeventaction is more flexible.
+  - Actions that were done automatically by finishing a Task are displayed.
+
+
+  New features in 1.1:
+  
+  - a default GUI (Startpage, navigation menu) is automatically generated 
+    for available Workflows
+  - SWAMP now has its own usermanagement which makes it independant of turbines one.
+  - Role based SWAMP: Workflows can define roles and workflow-actions can 
+    be restricted to these roles. Standard roles are "admin", "user", "starter".
+  - a new SWAMP-API that is between the SWAMP-Core and client apps (eg. WebSWAMP) 
+    takes care of the permission checking.
+  - Filtering by role members now possible
+  - Timer based actions implemented
+  - new Scriptaction to alter the Workflow with Velocity scripts
+  - User preferences (amount of displayed Wfs per page, configureable columns) 
+    are now stored permanent across sessions.
+  - after doing a Task, a list with the consequences is shown.
+    
+
+  New features in 1.0:
+  
+  - SWAMP is now scaling to a much higher amount of workflows by using the MySQL DB as a transparent backend.
+    (memory footprint and performance are independent of total number of existing workflow instances)
+  - Using a workflow cache of configureable size shortens the access time to popular workflows
+  - Filtered + sorted workflowlists are generated by filters, that are mapped directly to SQL statements
+  - Workflows do not have an explicit attribute "state" anymore, the state is mapped implicitely by the workflows active nodes.
+    (exception: Nodes may specify a type: start|end; Workflows with an active node of type "end" return false on isRunning())
+  - Actions can be marked as "optional" to be only displayed on the workflows detail page. 
+    (useful for "cancel", "finish" and other "standard" actions)
+  - Active nodes will stay active when a workflow is finished
+  - Mail-Templates are now scriptable, allowing IF-THEN-ELSE and so on.
+  - Non-reachable Bugzilla does not block workflows
+  
+  GUI: 
+  - More friendly color scheme
+  - persistently collapsable areas in the navigation bar for the different workflow navigations
+  - Print-view of workflow lists
+  - new column type "progress-bar" for showing progress based on reached milestones
+  - the Task page also shows reached milestones
+  - workflow list page displays configureable amount of items, browseable.
+  - Error fields are highlighted red.
+  
+  
+  Features of version 1.0RC1:
+  
+  - Workflows can attach Subworkflows and interact with them
+  - A Workflows Dataset can be shared with other Workflows.
+  - External Scripts can read/write data to a Workflow and trigger Events to change a Workflows state.
+  - Automated fetching of data from Novell Bugzilla and storing in a Workflows Dataset.
+  - Flexible versioning of Workflows by reading every version of a Workflow-type from a "Resource-Bundle". This contains the XML-Workflow Definition, Icons, E-Mail templates, and special Workflow configuration files.
+  - Each Workflow can be configured to send Notifications with dynamic content at a certain state.
+  - A Workflow can be extended with non-SWAMP functionality by referencing a Java Class in the Workflow Definition File.
+  - The Workflow-List can be configured with filters and custom columns to best fit the Workflows needs.
+  
+  
+  
+  
+Description
+-----------
+
+SWAMP is a generic Workflow-Management-System which does not contain any Workflow-specific code. 
+The Workflowdefinitions are read from a XML File.
+  
+  
+Feedback 
+----------------
+
+  We are open for every kind of comment/feedback on SWAMP.
+  Please write to swamp [at] suse.de or join our mailinglist: 
+  http://lists.sourceforge.net/lists/listinfo/swamp-devel
+
+  
+  
+  

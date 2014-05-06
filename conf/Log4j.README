@@ -1,0 +1,23 @@
+SWAMP uses Log4J for all Logging. 
+currently there are 4 Logfiles: 
+
+- console output: 
+Will be written to catalina.out if running inside a tomcat instance.
+
+- swamp.log: 
+default logfile: the output of every SWAMP class 
+that uses the standard logger de.suse.swamp.util.Logger
+will end up here.
+
+- turbine.log: 
+Messages of the Turbine Framework and other used jakarta libs
+
+- swamp-perlconnector.log: 
+Due to the huge amount of debug output the 
+external interface generates, its output is stored in 
+a seperate logfile.
+                           
+
+
+The logfiles will be created at the "local.swamp.logfilelocation" configured in 
+your host.properties file.

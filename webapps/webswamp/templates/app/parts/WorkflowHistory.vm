@@ -1,0 +1,100 @@
+## SWAMP Workflow Administration and Management Platform
+
+#if ( $showHistory )
+
+<table border="0" ><tr>
+<td valign="middle">
+<a href="$toggleHistoryURL"><img src="$ui.image("history_32")" alt="Toggle History" hspace="3" 
+	align="middle"></a>
+</td><td valign="middle">
+	<b>$ui.tr("Workflow History", $data.getUser())</b><br />
+	$ui.tr("choose a category to display: ", $data.getUser())
+</td>
+
+<td>
+&nbsp; 
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "Tasks")">
+Tasks</a> |
+</td>
+<td valign="middle">
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "SystemTasks")">
+SystemTasks</a> |
+</td>
+<td>
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "Nodes")">
+Nodes</a> |
+</td>
+<td>
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "Events")">
+Events</a> |
+</td>
+<td>
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "Notifications")">
+Notifications</a> |
+</td>
+<td>
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1).addPathInfo("historyType", "Data")">
+Data</a> |
+</td>
+<td>
+<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $workflow.getId()).addPathInfo("history", 1)">
+All
+</a> 
+</td>
+<tr></table>
+
+    <table cellpadding="4" cellspacing="0" border="0" width="100%" 
+    	style="border-width: 1px; border-style: solid; ">
+	<tr class="box_head">
+	  <td class="box_head">When</td>
+	  <td class="box_head" width="30"><!-- Icon --></td>
+	  <td class="box_head">What</td>
+	  <td class="box_head"><!-- Action --></td>
+	  <td class="box_head">
+	  <img src="$ui.image("people_24")" alt="Who" align="middle" />
+	  Who</td>
+	</tr>
+	
+	#if (!$historyList || $historyList.size() == 0)
+		<tr class="box_normal">
+		<td colspan="5">
+		No history entries found matching category "<i>$histType</i>".
+		</td></tr>	
+	#end
+	
+	#foreach ($hist in $historyList)
+	<tr class="box_normal">
+	  <td width="160">${hist.getWhenString()}</td>
+	  <td width="30">
+	  #set ($type = $hist.getType())
+	  #if ($type.startsWith("NOTIFICATION"))
+	  	<img src="$ui.image("letter_16")" alt="Notification" />
+	  #elseif ($type.startsWith("EVENT"))
+	  	<img src="$ui.image("pfeile_16")" alt="Node" />
+	  #elseif ($type.startsWith("NODE"))
+	  	<img src="$ui.image("pfeile_16")" alt="" />
+	  #elseif ($type.startsWith("TASK_WORKFLOWSTART"))
+	  	<img src="$ui.image("rocket_16")" alt="Start" />	
+	  #elseif ($type.startsWith("WORKFLOW_DELETED"))
+	  	<img src="$ui.image("critical_16")" alt="" />	
+	  #elseif ($type.startsWith("TASK_DONE"))
+	  	<img src="$ui.image("kreis_16")" alt="Task Done" />	
+	  #elseif ($type.startsWith("TASK_CANCELED"))
+	  	<img src="$ui.image("erase_16")" alt="" />
+	  #elseif ($type.startsWith("TASK_REMOVED"))
+	  	<img src="$ui.image("critical_16")" alt="" />
+	  #elseif ($type.startsWith("DATA_CHANGED"))
+	  	<img src="$ui.image("edit_22")" alt="" />		  
+	  	
+	  #end
+	  
+	  </td>
+	  <td>$ui.htmlEncode($hist.getWhat($workflow.getId()))</td>
+	  <td>$hist.getAction()</td>
+	  <td>$hist.getWho()</td>
+	</tr>
+	#end
+     <table>
+	<br />
+#end
+

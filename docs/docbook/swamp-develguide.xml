@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" 
+	"docbookx.dtd">
+
+<article id="swamp-develguide" lang="en">
+	<title>SWAMP - developers guide</title>
+	<subtitle>How to develop code for the SWAMP project</subtitle>
+	
+	<note><para>Note: This document is still work in progress. </para></note>
+
+	<section>
+		<title>Setting up a development environment with eclipse</title>
+		
+		<para>
+
+
+
+
+
+
+
+		</para>
+		
+	</section>
+		
+		
+	
+	<section>
+		<title>Debug a running SWAMP with eclipse</title>
+		
+		<para>
+		For debugging a Java Web Application (e.g. SWAMP) the Servlet Container 
+		can be run directly in Eclipse. 
+		You need the "Sysdeo Tomcat Plugin" for Eclipse from here: 
+		http://www.sysdeo.com/eclipse/tomcatPlugin.html (MIT License)
+		After copying the Sysdeo Files to your Eclipse/plugins folder and restarting Eclipse 
+		there are some new Options available. 
+		At first, add the Tomcat Controls to your Menubar with 
+		Window->Customize Perspective->Commands->Tomcat. 
+		Then you have to configure the Tomcat startup options 
+		in Window->Preferences->Tomcat. 
+		</para>
+		<para>
+		Now you can startup tomcat with the toolbar button.
+		The output is captured in eclipse's console window. 
+ 
+		To start debugging simply set a beakpoint in the source file that is going to 
+		be debugged.  
+		For a short introduction into the Eclipse Debugger yuo may look here: 
+		<ulink url="http://www-106.ibm.com/developerworks/opensource/library/os-ecbug/?Open&amp;ca=daw-ec-dr">
+		http://www-106.ibm.com/developerworks/opensource/library/os-ecbug/?Open&amp;ca=daw-ec-dr</ulink>	
+		</para>
+		
+	</section>
+	
+	
+	
+	 <section>
+      <title>The Container</title>
+      <para>
+	The central functionality of SWAMP is provided by the so-called
+	managers. A manager is a Singleton that takes care of a specific
+	subsystem. The managers are:
+      </para>
+      <para>
+        The <emphasis>StorageManager</emphasis> provides the abstraction
+	level between data storage (currently database only) and the
+	rest of the system. It provides the following methods for each
+	object type Blubber we have:
+	<itemizedlist mark='opencircle'>
+	  <listitem><para>ArrayList getBlubbers()</para></listitem>
+	  <listitem><para>int storeBlubber(Blubber b)</para></listitem>
+	  <listitem><para>int loadBlubber(int blubberId)</para></listitem>
+	  <listitem><para>void removeBlubber(int blubberId)</para></listitem>
+	</itemizedlist>
+	<emphasis>Object types</emphasis> are: tasks, workflows (with
+	all components), and data. Everything, actually.
+      </para>
+      <para>
+        The <emphasis>WorkflowManager</emphasis> reads in the
+        workflow definitions and keeps track of the workflow template 
+        objects that are created from them. It provides a list of possible
+        workflows, creates workflows on request and interacts with the
+        StorageManager to store and reload workflows to and from storage.
+        If you need access to one ore several workflow objects, get them
+        from the WorkflowManager, not the StorageManager.
+      </para>
+      <para>
+        The <emphasis>TaskManager</emphasis> accepts tasks from the
+	other subsystems or frontends, stores them and gives them back
+	on request. When a task is done, the system that acted on it
+	gives it back to the TaskManager with finishTask(Task), which
+	then checks if everything is ok and performs the associated
+	actions and clean-up work. Tasks containing a user action
+    	are stored until a frontend requests them, tasks for which
+	other subsystems are responsible are handed over to them
+	directly.
+      </para>
+      <para>
+	The <emphasis>EventManager</emphasis> accepts events from
+	anywhere in the system and distributes them to any object that
+	has registered itself as a listener to a specific event type.
+	(Yet to be written.) 
+      </para>
+      <para>
+	The <emphasis>WorkflowReader</emphasis> is used for reading in
+	workflow definition files in XML. <note>
+	<para>This might be split into
+	a WorkflowXMLReader and a WorkflowSwwReader class, where "sww"
+	stands for "SWAMP workflow". swx would be SWAMP xml file
+	etc.</para></note>
+      </para>
+    </section>
+	
+	
+	
+	
+	<section>
+      <title>How workflow tasks Work</title>
+
+	
+		<section>
+			<title>What is a workflow task?</title>
+			<para>
+
+		A workflow task consists of an action that has to be done within a
+		workflow, and a result of this action. If it is an interactive or 
+		user task, it also has a user who is more or less responsible. It 
+		has a start and an end date, and a status.
+		</para>
+    	</section>
+		
+		
+		<section>
+			<title>What classes are involved in a task?</title>
+			<para>
+
+		<itemizedlist>
+		<listitem><para>
+		the action, a subclass of de.suse.swamp.core.workflow.Action
+		</para></listitem>
+		<listitem><para>
+		the result, a subclass of de.suse.swamp.core.workflow.Result 
+		(Actions and Results are paired)
+		</para></listitem>
+		<listitem><para>
+		de.suse.swamp.core.tasks.WorkflowTask itself, which holds references
+  		to the action, the task, the user, the workflow...
+		</para></listitem>
+		</itemizedlist>
+		
+		</para>
+    	</section>
+
+
+	<section>
+			<title>What is the life cycle of a workflow task?</title>
+	<para>
+
+
+	<itemizedlist>
+		<listitem><para>
+  When a node is entered, it loops over its actions and asks each one
+  for a task (Action.getTask()). The Action class knows how to put
+  together a workflow task for itself. The node then hands over the
+  tasks to the TaskManager (TaskManager.addTask()). At this point, the
+  task already has an empty result object.
+  </para></listitem>
+		
+	<listitem><para>
+  The TaskManager stores the task into whatever storage is there,
+  updates its own internal data structures and logs that a task has
+  arrived. If it is a non-interactive or system task, it calls the
+  subsystem that is responsible for handling these. If it is an
+  interactive or user task, it waits for a frontend to come and ask for
+  it.
+  </para></listitem>
+
+	<listitem><para>
+  A frontend (webapp, shell) calls one of the getTasks() methods of the
+  taskmanager and gets back a list of tasks to display.
+  </para></listitem>
+
+	<listitem><para>
+  The user selects one of these tasks to work on. The frontend gets the
+  information it has to present to the user from the Action object, and
+  puts the data the user creates by completing the task into the Result
+  object.
+  </para></listitem>
+
+	<listitem><para>
+  The frontend needs to know how to present and receive the data for
+  each kind of Action/Result pair that exists in the system (i.e.
+  Manualtask, Decision, DataEdit...).
+  </para></listitem>
+
+	<listitem><para>
+  The frontend can call the validate(result) method from the Action 
+  class to check if the task is indeed completed. If this test is
+  successful, it calls TaskManager.finishTask(taskid) for the task.
+  </para></listitem>
+
+	<listitem><para>
+  The TaskManager asks the Task object (that has now a non-empty result
+  object with validated data) for the events that should be sent, and hands
+  these over to the EventManager (note: the frontend does not send any
+  events any more!). It then logs whatever needs to be logged, marks the
+  task as finished in storage and removes it from the list of active
+  tasks.
+    </para></listitem>
+  
+  </itemizedlist>
+	      </para>
+    </section>
+	
+	
+    </section>
+	
+	
+	
+	
+	
+	
+	<section>
+		<title>SWAMP User Interface Style Guide</title>
+		
+		<section>
+		<title>Buttons</title>
+		
+		<para>
+		<itemizedlist>
+		<listitem><para>
+		The default submit button is on the right below the form it is accociated
+			with.
+			</para></listitem>
+			<listitem><para>
+			Additional action buttons should be on the left side below the object they are
+			associated with ordered by significance from left to right, the most
+			significant button being the left-most.
+			</para></listitem>
+			<listitem><para>
+			The reset button is on the left side below the form it clears. It is labeled
+			"Clear Form". If there are additional action buttons for the same form the
+			reset button is the right-most button of these.
+			</para></listitem>
+			<listitem><para>
+			Texts on buttons use headline-style capitalization, where the first and last
+			words of the text and all other major words are capitalized.
+			</para></listitem>
+			</itemizedlist>
+		</para>
+		</section>
+	</section>
+	
+
+
+	<section>
+		<title>Implementation of Permissions and Roles</title>
+		
+		<section>
+		<title>Workflow-type specific roles</title>
+		
+		<para>
+
+		Every call for a SWAMPAPI method is checked for sufficient permissions 
+		of the provided user. So we are securing access to Task- Workflow- 
+		and WorkflowTemplate Objects at this layer. If the user does not have 
+		the permission to read / write a requested Object an Exception will be thrown 
+		by the API that can be displayed in the GUI / SOAP etc. interface.
+		To make a smooth GUI that does no give the user the option 
+		to request Objects he is not allowed to see the permissions can be checked by: 
+		
+		<itemizedlist>
+		<listitem><para>
+		<sgmltag>boolean Workflow.hasRole(String username, String role)</sgmltag>
+		</para></listitem>
+		<listitem><para>
+		<sgmltag>boolean WorkflowTemplate.hasRole(String username, String role)</sgmltag>
+		</para></listitem>
+		</itemizedlist>
+		
+		for the Workflow roles, and for the general permissions with: 
+		</para><para>
+		<sgmltag>
+		SecurityManager.isGroupMember(SWAMPUser user, String groupName)
+		</sgmltag>
+		</para>
+		
+		</section>
+	
+		<section>
+		<title>General SWAMP roles</title>
+		
+		<para>
+
+We use a simple user / group / role system here, 
+that uses the database tables dbUsers, dbGroups, dbPermissions, dbGroup_Permissions, dbUsers_Groups.
+
+For now we only have one group "swampadmins" with the permission "admin_permission" 
+that is assigned to the admin of the swamp installation. 
+This group is allowed to do maintenance actions, as reloading workflow definition files 
+and emptying the workflow cache. 
+Additionally members of the "swampadmins" group are automatically admins 
+of all workflows.
+    </para>
+    
+    </section>
+		
+	</section>
+
+
+
+
+	<section>
+		<title>The SWAMP API classes</title>
+		
+	<para>
+    </para>
+		
+	</section>
+	
+	
+	
+	
+	
+	<section>
+		<title>Localization</title>
+		
+	<para>
+	SWAMP is localized using the commons-gettext library, which uses standard .po files. 
+	By calling 
+	<sgmltag>bin/generate-po.sh</sgmltag> .pot files will get created for webswamp and swamp-core at 
+	<sgmltag>conf/i18n/keys.pot</sgmltag> and <sgmltag>webapps/webswamp/conf/i18n/keys.pot</sgmltag>.
+	Based on this .pot file you can create a translation file using a 
+	GUI editor, for example kbabel. When building SWAMP, the available .po files will automatically 
+	get installed. (You have to add the available languages to build.xml and 
+	webapps/webswamp/java/de/suse/swamp/modules/screens/Preferences.java at the moment)
+	</para>
+	<para>
+	To use localized texts in the code, you have to create an instance of: 
+	<sgmltag>de.suse.swamp.util.I18n</sgmltag> 
+	like this: 
+	<screen><![CDATA[I18n i18n = new I18n(getClass(), "de.suse.swamp.webswamp.i18n.Webswamp");]]></screen> 
+	(replace the second parameter with: <sgmltag>de.suse.swamp.webswamp.i18n.Swamp</sgmltag> when 
+	calling from swamp-core code)
+	</para>
+	<para>
+	Then, each usage of: 
+	<screen><![CDATA[i18n.tr("text to translate", user)]]></screen> 
+	will get trasnlated into the users preferred language and: 
+	<screen><![CDATA[i18n.tr("text to translate")]]></screen> 
+	will get translated to the configured default language of the system. 
+	If a text is not available in the .po file, the text from the method call 
+	will be returned.  
+    </para>
+		
+	</section>
+	
+	
+
+</article>

@@ -1,0 +1,61 @@
+## SWAMP Workflow Administration and Management Platform
+
+
+## this message can be diplayed on every page
+## expects a list of WorkflowReadResults in $!workflowreadresults 
+## to display success/failure in parsing workflow templates
+
+
+#if ($!workflowreadresults)
+
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+    <tr class="box_head">
+          <td colspan="2">Reading workflow definitions</td>
+    </tr>
+
+#foreach ($result in $!workflowreadresults)
+
+<tr><td colspan="2"><b>Workflow 
+#if ($result.getWfName())
+$result.getWfName()
+#else 
+<i>no name set</i>
+#end
+#if ($result.getWfVersion())
+$result.getWfVersion() 
+#else 
+<i>no version set</i>
+#end
+</b>
+</td></tr>
+
+	#foreach ($warning in $!result.getWarnings())
+		<tr><td width="20">
+		<img src="$ui.image("alert_16")">
+		</td><td>$warning</td></tr>
+	#end
+
+
+#if (!$result.hasErrors() )
+ 	<tr><td width="20">
+ 	<img src="$ui.image("milestone_reached")">
+ 	</td><td>Workflow validation passed.</td></tr>
+#else
+     
+     
+	#foreach ($error in $!result.getErrors())
+		<tr><td width="20">
+		<img src="$ui.image("critical_16")">
+		</td><td>$error</td></tr>
+	#end
+     
+#end
+
+
+
+#end
+
+</table>
+<br />
+
+#end 

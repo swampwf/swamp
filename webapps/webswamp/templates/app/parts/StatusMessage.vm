@@ -1,0 +1,57 @@
+##
+## SWAMP Workflow Administration and Management Platform
+
+
+## this message can be diplayed on every page
+## by setting $!statusmessage, $statusclass, $icon
+
+
+#if ($!statusmessage)
+<a name="data" ></a>
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+    <tr class="$statusclass">
+          <td colspan="2" class="$statusclass">$ui.newlineEncode($statusheader)</td>
+    </tr>
+	<tr>
+	  <td>$ui.newlineEncode($statusmessage)</td>
+	  <td align="left" valign="top">
+	  #if ($icon)
+		  <img src="$ui.image($icon)">
+	  #elseif ($statusclass.equals("success"))
+	  	<img src="$ui.image("ok")">
+	  #elseif ($statusclass.equals("error"))
+	  	<img src="$ui.image("error")">
+	  #end
+	 </td>
+    </tr>
+    </table>
+	<br />
+#end 
+
+#if ($history && $history.getResults(0).size() > 0)
+<table cellpadding="4" cellspacing="0" border="0" width="100%">
+        <tr class="box_head">
+        <td class="box_head">$ui.tr("What has happened: ", $data.getUser())</td>
+        </tr>
+</table>
+<br />
+<table>
+#foreach ($hist in $history.getResults(0))
+    <tr><td width="25" valign="top">
+    #if($hist.getLevel() == 2) 
+    	<img src="$ui.image("critical_16")">
+    #elseif($hist.getLevel() == 1) 
+    	<img src="$ui.image("alert_16")">
+    #else 
+    	<img src="$ui.image("milestone_reached")">
+    #end
+   </td><td valign="top">$ui.newlineEncode($ui.htmlEncode($hist.getMessage()))</td>
+   </tr>
+#end 
+</table>
+<br />
+#end
+
+
+
+

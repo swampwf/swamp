@@ -1,0 +1,1631 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" 
+	"docbookx.dtd">
+
+<article id="swamp-adminguide" lang="en">
+<title>SWAMP - Adminguide</title>
+<subtitle>How to administrate the SWAMP platform</subtitle>
+  
+<section>
+    <title>What is SWAMP?</title>
+      <para>
+      SWAMP is a platform that drives workflows. Workflows are, especially 
+      in a professional or business environment, processes that involve 
+      many people. Typically processes require input of distinct people 
+      in a more or less fixed sequence. Some people urgently need to be
+      informed about progress in the process, others may want to be informed.
+      </para>
+      <para>
+      Unfortunately, processes are not fix in the real world and they are
+      very hard to be defined. Process definitions change as fast as the 
+      opinions of the people taking part.
+      </para>
+      <para>
+      SWAMP wants to help to provide as much help as software can
+      provide to improve processes. Software can not talk to people
+      and try to motivate them, but software can help people to 
+      organise their daily work and give them a more free head for interesting
+      jobs by taking over the organisation of boring parts. 
+      </para>
+      <para>
+      Tasks and work sequences that are always of a recurring, similar type 
+      and that consist of unchanging subtasks may be defined as a workflow: 
+      A chronological sequence of similar tasks, that may or may not 
+      depend on each other. 
+      
+      These subtasks are handled by one or more persons. 
+      The Information about ongoing and already done tasks needs to 
+      be spread.
+      </para>
+      <para>
+      SWAMP wants to accept the challenge to be a platform to drive workflows.
+      As mentioned above, processes that are described by workflows change 
+      rapidly. That makes it expensive and inefficient to 'hardcode' workflows.
+      Workflows need to be easy defineable for people that are not programmers.
+      SWAMP offers a XML based language (basically a dtd ;-) to define workflows.
+      Once a workflow is defined by one person, it can be used in SWAMP. 
+      The target is that no programmer need to touch the SWAMP core 
+      for new workflows that come from a new XML file.
+      </para>
+
+</section>
+
+
+
+<section>
+    <title>Overview of the SWAMP architecture</title>
+    
+    <section>
+      <title>The SWAMP workflow model</title>
+    
+          <para>
+       A workflow is quite similar to the world. There are a lot
+       of villages, connected to each other by streets. Think of a
+       craftsman on a walk. He was born in one village and on some
+       day he starts on a walk to the world. Probably and hopefully
+       he will find something to do in every village and after he 
+       finished the job he continues his way  along one of the ways
+       to the next village. The way he takes may depend on the result
+       of the job he did in the last village or on other events.
+      </para>
+      <para>
+       Thats quite similar to how workflows are processed in SWAMP: 
+       In SWAMP the workflow's state engine acts as the craftsman,
+       the villages are nodes. Roads that connect villages are 
+       edges in SWAMP that connect nodes. And finally, the jobs are
+       similar to tasks in SWAMP.
+       </para>    
+    
+    <para>
+	A workflow is a compound object consisting of Nodes and Edges,
+	which in turn are compound objects. The workflow definitions are
+	read in from XML files, and a workflow template object is created 
+	for each workflow bundle.
+	When a new workflow instance is requested , the template object is
+	responsible for the creation of the workflow object. 
+	The workflow will run based on the template that it was created from. 
+	When a new version of a workflow-type was created, the running 
+	workflow instances are not affected. Only new workflow instances 
+	will be based on the new workflow definition. This mechanism assures 
+	that running workflows will not break on updates of the workflow definition.
+    </para>
+    
+    <para>
+	A workflow has the following graph-like structure:
+ 	
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-adminguide/swamp_workflow.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase>swamp workflow structure</phrase></textobject>
+	</inlinemediaobject> 
+
+	</para>
+	
+    <para>
+    Each workflow has one or more datasets connected to it where it stores 
+    values that are needed for the workflow. These datasets can also 
+    be shared across workflow instances, to be able to create 
+    dependencies between different workflows. 
+    </para>	
+	
+	</section>
+	
+	
+	
+	<section>
+    <title>Actions and Tasks</title>
+	
+	
+	<para>
+	Whenever a node is entered, its included actions are triggered.
+	Actions represent anything that has to be done, in any
+	subsystem. Once an action is
+	triggered, a task object is created that consists of:
+	
+	<itemizedlist mark='opencircle'>
+	  <listitem><para>a reference to the action</para></listitem>
+	  <listitem><para>an (empty or pre-set) result set that fits the
+	  action</para></listitem>
+	  <listitem><para>The user/group to whom this task is assigned to</para>
+	  </listitem>
+	</itemizedlist>
+	 
+	An action is the template for a task, which means that a task 
+	is a concrete instance of an action with a person/group assigned 
+	to it. Another possibility are system-tasks that are automatically 
+	done by the system, such as sending notifications, changing values 
+	of the dataset, starting subworkflows and so on. 
+	When a Task is done, it sends out an event, and thus drives the 
+	workflow on into the path where there is a condition waiting 
+	for that event.  
+	</para>
+	
+	</section>
+	
+	
+	
+	
+	
+	<section>
+    <title>Events and Conditions</title>
+	
+	<para>
+	A node stays active until one or more of the edges leading out of 
+	it can be followed. Which means that the edge's condition must be met.
+	Conditions are constructed out of the boolean
+	operators AND, OR and NOT and the following atomic conditions:
+	Either use only empty conditions to leave a
+	node or only non-empty ones, mixing both doesn't make any sense
+	at all. The empty conditions are used for modelling convenience.	
+	
+	<itemizedlist>
+	<listitem><para>
+	  EventCondition: waits until the workflow receives a specific event.
+	</para></listitem>
+	<listitem><para>
+	  DataCondition: waits for a specific databit to be set to a certain
+	  value. Dataconditions can use regexps to evaluate the content 
+	  of a databit, or just wait for the change of a databit-value.
+	</para>
+	</listitem>
+	<listitem><para>
+	  SubsfinishedCondition: waits for attached subworkflows to be finished.
+	</para>
+	</listitem>
+	<listitem><para>
+	  Empty: edges that should always be followed immediately are 
+	  realized as an EventCondition with the special event "none".
+	</para>
+	</listitem>
+	</itemizedlist>
+	
+	
+	If several different edges with compound conditions leave a node, they
+	are followed (i.e. the node is left) according to these precedence rules:
+	
+	<itemizedlist>
+	<listitem><para>
+	Empty edges are followed immediately. If there are more than one, all
+	of them are followed, so that the workflow can split its thread and 
+	afterwards has more than one active node at a time.
+	</para>
+	</listitem>
+	<listitem><para>
+	On entering a node, all Conditions are checked. If this leads to
+	(simple or compound) conditions of one ore more edges to resolve to
+	true, these edges are followed.
+	</para>
+	</listitem>
+	<listitem>
+	<para>
+	If the node is still active after 1. and 2., incoming events and data
+	changes are processed in the order they occur. As soon as one or more
+	simple or compound conditions resolve to true, the respective edge(s)
+	are followed and the node is left and won't receive any further events.
+	</para>
+	</listitem>
+	</itemizedlist>
+	
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-adminguide/swamp_nodes.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase></phrase></textobject>
+	</inlinemediaobject>   
+	
+	When a node is left, but still has active tasks that were not yet done, these 
+	tasks get cancelled. 	
+	</para>
+      
+    </section>
+
+
+
+
+
+    <section>
+      <title>Data</title>
+      <para>
+	Data is organized in datasets, which in turn 
+	can contain other datasets and databits. A databit is a single 
+	key-value item with a datatype assigned to it to be able to 
+	verify user input. 
+	Available datatypes so far are: 
+		
+	<itemizedlist>
+	  <listitem><para>boolean (true/false, rendered by a checkbox in webSWAMP)</para></listitem>
+	  <listitem><para>number (integer)</para></listitem>
+	  <listitem><para>string (a text, rendered by a dynamically growing input field in webSWAMP)</para></listitem>
+	  <listitem><para>text (a text, rendered by text field of static size)</para></listitem>
+	  <listitem><para>person (comma-seperated list of loginnames and/or mail adresses)</para></listitem>
+	  <listitem><para>date (a date string in the format: yyyy-mm-dd)</para></listitem>
+	  <listitem><para>datetime (a date string in the format: yyyy-MM-dd, HH:mm)</para></listitem>
+	  <listitem><para>bugzilla (a id referencing bug in a bugzilla installation)</para></listitem>
+      <listitem><para>enum (a list of possible values, rendered by a dropdown box in webSWAMP)</para></listitem>
+      <listitem><para>multienum (a list of more than one possible values, rendered by a multi-select box in webSWAMP)</para></listitem>
+	  <listitem><para>comment (a comment field which will automatically create the possibility to post replies to it)</para></listitem>
+	</itemizedlist>	
+	
+
+      </para>
+    </section>
+
+
+
+
+
+
+    <section>
+      <title>Users, Groups and Roles</title>
+
+	<para>
+    The security concept of SWAMP is based on two role-systems. 
+    Roles can be stored in the database backend and roles can be defined in the 
+    workflow definition files. The workflow definition can also reference 
+    roles from the database. The systemwide "admin" role is defined as a group in the database. 
+    The admins are 
+    superusers of the SWAMP server and are allowed to do everything 
+    such as clearing the workflow cache, reloading workflow definitions 
+    and administrative tasks. This system is based on the database tables 
+    dbUsers, dbGroups, dbPermissions, dbUsers_Groups and dbGroups_Permissions 
+    which connect the permissions to certain groups and add users to groups.  
+    </para>
+    
+    <para>
+    The second system takes care of permissions inside workflows. 
+    That means who is allowed to do a special task, start or cancel workflows etc. 
+    
+    These roles are initially defined in the workflow template, and may be overwritten 
+	in each single workflow instance. 
+	Standard roles are: 
+	
+	<itemizedlist>
+		<listitem><para>"user":  is allowed to see a workflow and its content in the GUI</para></listitem>
+		<listitem><para>"owner":  is the person who started this workflow-instance and has all rights for this instance.</para></listitem>
+		<listitem><para>"admin": is the admin of that workflow-template / -instance and has all rights for this instance. 
+	         He is able to perform "admin"-action on that workflow, e.g. restarting, 
+	         de-/activate certain nodes manually</para></listitem>
+		<listitem><para>"starter": is allowed to start workflows of that type  </para></listitem>
+	</itemizedlist>	
+	
+	additional roles may be defined in each workflow template to be available in 
+	the workflow. 
+    
+    </para>
+
+    </section>
+</section>
+  
+  
+  
+
+
+<section>
+    <title>Creating a Workflow Definition</title>
+    <section>
+      <title>Overview</title>
+      <para>
+      The definition files are stored in the well-known file format XML.
+      As widely known, XML allows to define hierarchical structures 
+      very powerfull. Moreover, XML files are very good to verify and to 
+      parse. However it is not so comfortable and straightforward to edit
+      XML files in a text editor. But since that improves with good 
+      syntax highlighting capabilities of modern editors and finally
+      if somebody writes a GUI to create the definition files (which 
+      is relative easy again) this disadvantage was considered to be
+      ok for SWAMP.
+      </para>
+      <para>
+      This chapter tries to explain how to write a workflow definiton
+      file for SWAMP. All shown snippets are taken out of the workflow 
+      "Example", that is included in the SWAMP release. 
+      Thus it should be easy to learn how to define a workflow and to 
+      play around with it. 
+      </para>
+      <para>
+      Note: The system expects all textfiles to be UTF-8 encoded 
+      to be able to handle special characters. 
+      </para>
+    </section>
+
+    <section>
+      <title>The XML Workflow Definition File</title>
+      <para>
+      The rules for the syntactical rules for a workflow definition are 
+      specified in the workflow DTD, located at conf/dtds/workflow.dtd.
+      If a workflow definition is malformed and does not validate against 
+      the DTD, or has other semantic errors, SWAMP will refuse to load it.
+      The <emphasis>workflow definition file</emphasis> starts with an XML header
+      consisting of an <emphasis>XML declaration</emphasis> and a <emphasis>document
+      type declaration</emphasis>:
+      </para>
+      <screen><![CDATA[<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "../../../dtds/workflow.dtd">]]></screen>
+
+      <para>
+      This way the <emphasis>root</emphasis> resp. <emphasis>top-level
+      element</emphasis> is also defined and it is called
+      <sgmltag>workflow</sgmltag>.  The <sgmltag>workflow</sgmltag> element requires
+      the attributes 
+      <literal>name</literal> (has to be the same as the directory the workflow-version is stored in), 
+      <literal>version</literal> (the version of this workflow) 
+      and <literal>leastSWAMPVersion</literal> (the minimum version of SWAMP this workflow requires to run on).
+	  </para><para>
+      If the workflow is a subworkflow, you additionally have to set the attributes 
+      parentwf (the parent workflow name) and parentwfversion (the version of the parent workflow). 
+      With this additional information the workflow verifier is able to some checks 
+      on the workflow. 
+
+      <screen><![CDATA[<workflow name="ExampleWorkflow" version="0.1" leastSWAMPVersion="1.2">]]></screen>
+      
+      A raw view on the structure of the workflow definition looks like this: 
+	</para>
+<screen><![CDATA[<workflow ... >
+	<metadata>
+		<!-- Meta information of that workflow -->
+		<roles>
+			<!-- definition of roles needed in that workflow -->
+		</roles>
+	</metadata>
+
+	<node ...>
+	<!-- definition of nodes including actions and conditional 
+		edges to other nodes -->
+	</node>
+
+	<dataset ...>
+	<!-- definition of the workflows dataset -->
+	</dataset>
+</workflow>
+]]></screen>
+
+      <para>
+      Now, we are going to show the details of each workflow element, and 
+      describe the example implementation as in the ExampleWorkflow workflow.
+      </para>
+      
+      
+      <section>
+      <title>Metadata + Role definitions</title>
+      <para>
+	The <sgmltag>metadata</sgmltag> element contains the mandatory elements   
+	<sgmltag>templatedescription</sgmltag>,  
+	<sgmltag>description</sgmltag> and 
+	<sgmltag>roles</sgmltag>.
+	</para>
+	
+<screen><![CDATA[<metadata>
+	<templatedescription>
+	Workflow for Testing Issues
+	</templatedescription>
+	<description>Workflow for Testing Issues</description>
+
+	<roles>
+		<role name="owner" restricted="true" type="databit">
+			<rolevalue>testdataset.roles.owner</rolevalue>
+		</role>
+		<!-- @type is set to "value" by default -->
+		<role name="admin" restricted="true">
+			<description>Admins</description>
+			<rolevalue>swamp_user, swamp_admin</rolevalue>
+		</role>
+		<role name="starter" restricted="true" type="reference">
+			<rolevalue>user</rolevalue>
+		</role>
+		<role name="user" restricted="false" type="databit">
+			<rolevalue>testdataset.roles.user</rolevalue>
+		</role>
+		<!-- reference the group with name "supporter" from the database:  -->
+		<role name="supporter" restricted="true" type="dbreference">
+			<description>Support-Team</description>
+			<rolevalue>supporter</rolevalue>
+		</role>
+	</roles>
+</metadata>]]></screen>
+
+	<para>
+	<sgmltag>templatedescription</sgmltag> contains the general description of this workflow type, 
+	whereas <sgmltag>description</sgmltag> means the description of a single workflow instance 
+	and may be dynamically modified with script content as described later.
+	</para>
+	
+	<para>
+	The shown role definitions are a minimum set of required roles. 
+	The standard roles <sgmltag>owner</sgmltag>, <sgmltag>admin</sgmltag>, <sgmltag>starter</sgmltag> 
+	and <sgmltag>user</sgmltag> have to be defined in each workflow. 
+	These roles were already explained in the previous chapter. 
+	Each role has a flag <sgmltag>restricted</sgmltag> with which you simply can turn off 
+	that role, means every logged in user automatically has that role and is 
+	allowed to do actions that require that role. 
+	If <sgmltag>restricted</sgmltag> is set to <sgmltag>true</sgmltag>, you 
+	have two options: 
+	
+	<itemizedlist>
+	<listitem><para>
+	Specify a <sgmltag>rolevalue</sgmltag> as the example does for the role <sgmltag>admins</sgmltag>. 
+	This way all workflow instances share the admin definition of the template, and if you want 
+	to add a new admin to all workflows of that type, just add the new admin to the template 
+	and reload the template. These roles are called "static" roles in SWAMP.
+	</para></listitem> 
+	<listitem><para>
+	Specify a target databit (<sgmltag>roledatabit</sgmltag>) where the usernames of 
+	the users the are assigned to that role are stored. This way the members of that role can 
+	be changed individually for each workflow instance. 
+	</para></listitem> 
+	</itemizedlist>
+	
+	The <sgmltag>owner</sgmltag> role is automatically set to the user that has 
+	started the workflow.
+	
+	To change the users that are assigned to a role in a workflow instance 
+	simply edit the corresponding Databit.
+	
+	</para><para>
+			
+	Merging roles: 
+<screen><![CDATA[<role name="mergerole" restricted="true" type="reference">
+	<description>Merged role</description>
+	<rolevalue>owner</rolevalue>
+	<rolevalue>admin</rolevalue>
+</role>]]></screen>
+	To merge 2 or more roles into a new one use the <sgmltag>roleref</sgmltag> element.
+	</para>
+	</section>
+
+	
+
+
+
+  <section>
+      <title>Nodes</title>
+
+       <para>
+       A raw overview of a node definition looks like this: 
+       
+<screen><![CDATA[<node [type="start"] name="start">
+	<description>Mandatory start node</description>
+	
+	<!-- duedate  definition -->
+	<duedate ... />
+	<!-- definition of a milestone -->
+	<milestone ... >
+	<!-- definitions of included actions -->
+	<action... >
+	<!-- definitions of edges leaving the node -->
+	<edge ...>
+</node>]]></screen>   
+       
+       Each workflow must exactly have one node with the attribute type="start", 
+       because this node gets activated on workflow creation and 
+       starts the process. Normal nodes do not have the attribute type set, 
+       where nodes with type="end" mark endpoints of a workflow, and signal 
+       that the workflow is finished. When an endnode is reached, all remaining active tasks 
+       will get canceled, and the workflow will disappear from the "running" list of 
+       workflows. The name attribute is the unique identifier of a node. 
+
+	</para>
+    <para>
+       Nodes can include a milestone, that 
+       marks a point of significant progress and makes it easier to 
+       track the progress of a complex workflow in the GUI.
+       A node can have any amount jobs to be done, in SWAMP jobs are
+       called actions. If a node is entered, all included actions will get activated. 
+       At least a node can define edges and conditions that define which edge should 
+       be taken at which situation.  
+    </para>
+
+	</section>
+
+
+
+  <section>
+      <title>Milestones</title>
+      <para>
+      Milestones can help to generate a linear list of 
+      points in the workflow that show the progress of a process 
+      in a simple way and hide the workflow complexity.
+      Milestones can be rendered nicely in the workflow list pages 
+      of webSWAMP and give a fast overview of the workflows progress.
+       An example milestone definition looks like this: 
+       
+<screen><![CDATA[<milestone name="m1" weight="5">
+	<description>Milestone 1 reached</description>
+</milestone>]]></screen>
+      
+	The description will be displayed to the user in the GUI, and 
+	the weight-factor gives the milestones an order to pretend 
+	a linear order that is often not given in complex workflow scenarios.
+      </para>
+  </section>
+
+
+  <section>
+      <title>Duedates</title>
+      <para>
+      Each node can be marked with a "duedate" that means a date when 
+      the node should be left. This is usually done when the contained tasks 
+      were done, depending on the attached conditions of the leaving edges. 
+      Workflows with duedates that are near their target time, or already 
+      late can get displayed with yellow and red color in the GUIs workflow 
+      lists to show that something is stuck.
+      The XML definition: 
+      <screen><![CDATA[<duedate databit="testdataset.duedate1"/>]]></screen>
+      <sgmltag>databit</sgmltag> contains the path to the databit where 
+      the duedate value is set. Usually this value is set there by a preceding 
+      dataedit action or by any automatic mechanism.
+      </para>
+  </section>
+
+
+
+  <section>
+      <title>Actions - The tasks that have to be done</title>
+      <para>
+      There are two classes of available actions: system-actions and 
+      user-actions. 
+      
+      <itemizedlist mark='opencircle'>
+	  <listitem><para>Systemactions are jobs that are done automatically by the system, 
+      such as sending notifications, starting subworkflows or doing scripted actions. 
+      </para></listitem>
+      <listitem><para>A useraction needs the interaktion of the assigned user/role in the GUI. 
+      This can be entering data, making a decision or just clicking "OK" at some point 
+      of the workflow. 
+      </para></listitem>
+      </itemizedlist>
+      
+      The actions have some attributes in common: 
+      The attribute <sgmltag>name</sgmltag> always contains a unique identifier for that action, and 
+      the <sgmltag>description</sgmltag> element contains a description for that action. 
+      
+      The user-actions have the following attributes in common: 
+      
+      <itemizedlist mark='opencircle'>
+	  <listitem><para><sgmltag>role</sgmltag> contains the name of the assigned role. 
+	  The definition of roles was described earlier in this chapter. 
+	  This attribute is not mandatory. But if you don't specify a role to an action, 
+	  you are not able to send notifications to the assigned role, or restrict 
+	  the execution of the action to the role members.	  
+      </para></listitem>
+      <listitem><para><sgmltag>restricted</sgmltag> (boolean) defines whether the 
+      execution of this action is only allowed to users that are in the configured 
+      <sgmltag>role</sgmltag> or if every valid workflow user may act this action. 
+      This attribute in not mandatory and set to false by default.
+      </para></listitem>
+	  <listitem><para><sgmltag>notificationtemplate</sgmltag> contains the path 
+	  to the mail-notification template. When the action gets activated the users 
+	  of the assigned role will get notified. 
+      </para></listitem>
+	  <listitem><para><sgmltag>mandatory</sgmltag> is a hook for the GUI to 
+	  distinguish between "maintenance" tasks and important tasks. Only mandatory 
+	  tasks are shown in the workflow lists. Default is "true".
+      </para></listitem>
+      </itemizedlist>    
+            
+      </para>
+  </section>
+      
+      <section>
+      <title>Dataedit (user-action)</title>
+      <para>
+      A dataedit-action wants the user to enter/edit data of 
+      certain fields in the workflows dataset. 
+      Example code: 
+      
+<screen><![CDATA[<dataedit name="dataedit1" eventtype="DATAEDIT2_OK">
+	<description>Please fill in the fields.</description>
+	<longdesc>Workflows-Threads are unitet now</longdesc>
+	<field path="testdataset.product.product_name" mandatory="yes" />
+	<field path="testdataset.roles.manualtask_owner" mandatory="yes" />
+</dataedit>]]></screen>
+      
+      Here, the user gets a view where he has to edit 2 fields of the dataset. 
+      The <sgmltag>mandatory</sgmltag> tag says if the user may leave the field blank. 
+      If the entered values do not fit the datatype of the field, they will not get saved and 
+      the user will get an errormessage. 
+      When no errors were reported, the event "DATAEDIT2_OK" will get sent to the workflow and 
+      the task is done.
+      </para>
+      </section>
+      
+      <section>
+      <title>Manualtask (user-action)</title>
+      <para>
+      Manualtask is a simple acknowledgement of the user. 
+      The Description as in the elements <sgmltag>description</sgmltag> 
+      and <sgmltag>longdesc</sgmltag> will be shown, and when the user clicks 
+      on "OK" the defined event will get sent out. This task can be used 
+      to acknowledge that some work has been done outside the system, or 
+      a manager can give his ok for the workflow to continue...      
+<screen><![CDATA[<manualtask name="manualtask3" eventtype="UNITE">
+	<description>Go on in the Workflow</description>
+</manualtask>]]></screen>
+      </para>
+      </section>
+      
+      <section>
+      <title>Decision (user-action)</title>
+      <para>
+      A Decision presents the user with a description and 
+      some possible options. Each answer is connected with an event that 
+      will get sent when the user has made a choice.
+      
+<screen><![CDATA[<decision name="decision" >
+	<description>Testen der CDs</description>
+	<question>Please test the CD</question>
+	<answer eventtype="PATH1">Take Path 1 in this Workflow.</answer>
+	<answer eventtype="PATH2">Take Path 2 in this Workflow.</answer>
+	<answer eventtype="PATH3">Take Path 3 in this Workflow.</answer>
+</decision>]]></screen>
+      </para>
+      </section>
+      
+      
+      
+      
+      <section>
+      <title>Notification (system-action)</title>
+      <para>
+      The notification-action sends out notification at any point of the workflow progress. 
+      Based on a notification-template, there can be any amount of recipients added, 
+      like the following snippet shows: 
+            
+<screen><![CDATA[<notification name="notify_owner" 
+		msgtemplate="notifications/notification1">
+	<recipient recipientemail="please_change@swamp.swamp"/>
+	<recipient dbit="testdataset.roles.user"/>
+	<recipient recipientrole="user"/>
+	<recipient recipientname="swamp_user"/>
+</notification>]]></screen>
+      
+      The recipients can be configured directly by their mail-adress, their SWAMP username, 
+      all users that have a special role in that workflow or all usernames, mail addresses 
+      that are included in a certain databit.
+      </para>
+      </section>
+      
+      
+      <section>
+      <title>Customtask (system-action)</title>
+      <para>
+      A <sgmltag>customtask</sgmltag> allows the instantiation of a custom java class 
+      at runtime. Thus it is possible to invoke a piece of code at any 
+      point of a workflow. The usage of this action is not recommended, 
+      as the java class has to be compiled and must be available to the tomcat 
+      classloader. It cannot be contained in a workflow resource bundle. 
+      Please try to use a <sgmltag>scriptaction</sgmltag> when possible.
+      
+<screen><![CDATA[<customtask name="custom_test" eventtype="none" 
+	class="de.suse.swamp.custom.CustomActionExample" 
+	function="customTest" >
+	<description>Calling CustomActionExample.customTest()</description>
+</customtask>]]></screen>
+      
+      The invoked method must have the following signature: 
+      <screen><![CDATA[public Boolean customTest(Integer wfid, Integer userId) throws Exception]]></screen>
+      
+      A customaction can be used for calling external programs on the server. 
+      An example on how to do this is included in the de.suse.swamp.custom.CustomActionExample class.
+      
+      </para>
+      </section>
+
+
+      
+      <section>
+      <title>Startsubworkflow (system-action)</title>
+      <para>
+      This action starts a new workflow and attaches it as a 
+      subworkflow to the workflow from where it was called. 
+      A subworkflow may be a complex sub-process in a workflow 
+      that happens one or moe times. A subworkflow is defined 
+      the same way as a normal workflow, as it just a normal workflow 
+      but has a reference to its parent workflow and sends an 
+      event to its parent workflow on finish. 
+      Definition looks like this: 
+      
+<screen><![CDATA[<startsubworkflow name="startsub" subname="Example" subversion="0.1">
+	<description>Starting Subworkflow</description>	
+</startsubworkflow>]]></screen>
+      
+      When a subworkflow is started, a reference to the datasets of its parent 
+      workflow is given to him. This way the subworkflow has access to its parent 
+      workflows data. In addition it is checked if there are databits in the subworkflows 
+      default-dataset that have the same name as databits in the default-dataset of 
+      the root workflow. If there are any, their content is copied from the root workflow 
+      to the subworkflow.
+      
+      
+      </para>
+      </section>
+      
+      
+      <section>
+      <title>Sendevent (system-action)</title>
+      <para>
+      The sendevent action can send out events dependant 
+      on time contraints. With this action we are able to implement 
+      a reminder after a certain time, or take any other action in the 
+      workflow if a node hasn't been left in time.       
+      
+<screen><![CDATA[<sendevent name="reminder" eventtype="DELAY_1D">
+	<triggerdate databit="System.path2.enterDate" 
+		offset="+1d"
+		onlyweekdays="true"/> 
+</sendevent>]]></screen>
+      
+      In this example the event "DELAY_1D" will get sent if 
+      the node isn't left 1 day after it was activated. 
+      The "databit" attribute can reference a normal databit that 
+      contains a date value, or like in this case a special 
+      "pseudo-" databit that contains workflow values. More details 
+      about these system-databits can be found in one of the next sections. 
+      The "offset" parameter has the format "+[0-9][m|h|d]" which stands 
+      for the amount of minutes, hours and days. 
+      </para>
+      <para>
+      Note: if you use time triggers for intervals shorter than 30 minutes, 
+      you have to reconfigure the scheduler thread to run more often. 
+      This can be done in the database table TURBINE_SCHEDULED_JOB. 
+      </para>
+      <para>
+      The sendevent action does not need to set a triggerdate, if none is set, 
+      the event is send immediately. It is also possible to send 
+      events to other workflows with this action, for example:  
+      
+      <screen><![CDATA[<sendevent name="reminder" eventtype="DELAY_1D">
+	<targetwfs>
+	#foreach ($subwf in $wf.getSubWorkflows(true))
+		$subwf.getId(), 
+	#end
+	</targetwfs>
+</sendevent>]]></screen>
+      
+      This action will send the Event DELAY_1D to all attached subworkflows. 
+      The element targetwfs expects to have a comma seperated list of workflow ids, 
+      that can be generated by velocity scripting. 
+      </para>
+      </section>
+      
+      
+      <section>
+      <title>Scriptaction (system-action)</title>
+      <para>
+      A scriptaction allows you to invoke  
+      <ulink url="http://jakarta.apache.org/velocity/">Velocity</ulink> and 
+      <ulink url="http://groovy.codehaus.org">Groovy</ulink> scripts  
+      at a certain point of the workflow. These scripts are 
+      executed in a special environment where they have some 
+      limited access to workflow objects. 
+      This is an example: 
+      
+<screen><![CDATA[<scriptaction name="script_example" language="velocity">
+	<description>Setting comment</description>
+	<script>
+     	$wf.getDatabit("testdataset.comment").setValue("TADAA")
+     	</script>
+</scriptaction>]]></screen>
+
+<screen><![CDATA[<scriptaction name="script_example" language="groovy">
+	<description>Setting comment</description>
+	<script>
+     	wf.getDatabit("testdataset.comment").setValue("TADAA")
+     	</script>
+</scriptaction>]]></screen>
+      
+      The workflow object is available as ($)wf in the script context. 
+      It can be altered in any way, like changing a databit as in the example, 
+      activating- deactivating nodes. This assumes you know what you are doing, 
+      as it is easy to break a workflow this way. 
+      Other objects that are available in the script context are 
+      
+      <itemizedlist mark='opencircle'>
+	  <listitem><para>
+      <sgmltag>uname</sgmltag>: the actual username
+      </para></listitem>
+	  <listitem><para>
+      <sgmltag>wf</sgmltag>: reference to the workflow object
+      </para></listitem>
+	  <listitem><para>
+      <sgmltag>bTools</sgmltag>: for triggering Bugzilla actions  
+      </para></listitem>
+	  <listitem><para>
+      <sgmltag>hist</sgmltag>: an arraylist where messages can be appended 
+      that will be shown in the GUI afterwards. Usage: 
+      <sgmltag>hist.addResult(boolean isError, String result)</sgmltag>
+      </para></listitem>
+	  <listitem><para>
+      <sgmltag>scriptapi</sgmltag>: Object that allows to invoke the following methods: 
+		<itemizedlist mark='opencircle'>
+		<listitem><para>
+	  	<sgmltag>createSubWorkflow(String name, String version)</sgmltag>: create a subworkflow
+      	</para></listitem>
+		<listitem><para>
+	  	<sgmltag>sendEvent(String eventString, int wfid)</sgmltag>: send an event
+      	</para></listitem>
+		<listitem><para>
+	  	<sgmltag>getWfConfigItem(String name)</sgmltag>: retrieve property from workflow.conf
+      	</para></listitem>
+		<listitem><para>
+	  	<sgmltag>getSWAMPProperty(String name)</sgmltag>: retrieve property from defaults
+      	</para></listitem>
+      	</itemizedlist>
+      </para></listitem>
+	  <listitem><para>
+      <sgmltag>executor</sgmltag>: Allows the execution of external 
+      programs and handling of their output and return code.        
+      </para></listitem>
+      </itemizedlist>
+   
+   Example for calling external scripts from a scriptaction:     
+<screen><![CDATA[<scriptaction name="call_external" language="velocity">
+	<description>Calling external a program</description>
+	<script>
+	$executor.setExecutable("/bin/ps")
+	$executor.addArgument("-a")
+	$executor.addArgument("-u")
+	$executor.addArgument("-x")
+	$executor.setExceptionOnError(true)
+	$executor.execute()
+	$wf.getDatabit("set.ps").setValue($executor.getStdout())
+	</script>
+</scriptaction>]]></screen>
+
+
+
+      </para>
+      </section> 
+      
+      
+	</section>
+
+
+
+
+
+  <section>
+      <title>The flow of the work - Edges and Conditions</title>
+      <para>
+      When a node is entered (at workflow start this is the startnode) 
+      its edges get activated. That means, they check their associated 
+      conditions of being true. 
+       If it is true, the source node is left
+       and the new node becomes active. 
+       That means, only edges that leave an active node are active and 
+       listen to events, changes of data etc. 
+       If more than one edges leave a node, and the condition of one 
+       of them resolves to true the source node and all leaving edges get 
+       deactivated.      
+
+      
+      
+<screen><![CDATA[<edge to="node1">
+
+<!-- conditions for that edge -->
+
+</edge>]]></screen>
+      
+
+       Each edge needs to have a condition assigned to it which may 
+       be a compound condition consisting of AND/OR constructions. 
+       Examples for all possible condition types follow: 
+      </para>
+      
+      
+      <section>
+      <title>Event - condition</title>
+      <para>
+      An eventcondition waits for an event to arrive and resolves 
+      to true when the event was received. An event is identified by an 
+      event string. For example: 
+      
+<screen><![CDATA[<edge to="path2_is_late" >
+	<event type="DELAY_1D"/>
+</edge>]]></screen>
+
+	waits for the event "DELAY_1D" to arrive. If an edge has only one 
+	event-condition attached, like in the example, 
+	a short definition is available:       
+      
+<screen><![CDATA[<edge to="path2_is_late" event="DELAY_1D" />]]></screen>
+            
+      The event string "NONE" is a reserved event that defines that 
+      no event is required, and the condition will always immediately 
+      resolve to true on activation. This event is needed for modelling 
+      purposes, for example to split the workflow thread.
+	  </para>
+      </section> 
+      
+      
+      <section>
+      <title>Data - condition</title>
+      <para>
+      A datacondition waits for data to be changed, or to match against a 
+      given regular expression.
+      </para> 
+      
+<screen><![CDATA[<edge to="node_product1">
+	<data check="regexp" 
+		field="testdataset.product.product_name" 
+		value=".*SLES.*"/>
+</edge>]]></screen>
+
+	<para>
+	This data-condition waits until the databit "testdataset.product.product_name" matches 
+	the regular expression ".*SLES.*". The change of the data has not neccessarily 
+	to happen within a dataedit-task, it can also happen by a user editing 
+	the workflows data directly or via another subsystem eg. the SOAP interface. 
+	</para>
+	
+	<para>
+    To make a data-condition watch for any change of a databit, use this code: 
+<screen><![CDATA[<edge to="node_product1">
+	<data check="changed" 
+		field="testdataset.product.product_name" value=""/>
+</edge>]]></screen>
+    
+    This condition will always turn to true when the content of the databit gets changed. 
+    The value parameter has no effect in this case.      
+    </para>
+    </section>
+      
+      
+      <section>
+      <title>Subworkflowsfinished - condition</title>
+      <para>
+      To wait until all appended subworkflows are finished the 
+      "subsfinished" condition can be used. 
+      Per definition a finished subworkflow sends the event "SUBWORKFLOW_FINISHED" 
+      to its parent workflow. The "subsfinished" condition is waiting for that event, 
+      checks if it was sent by the configured workflow type and version, and resolves to 
+      true if the finished subworkflow was the last running subworkflow. 
+      Example definition:       
+      
+      <screen><![CDATA[<subsfinished subname="Example" subversion="0.1"/>]]></screen>
+      
+      It can be used to stop the main workflow at a certain point and wait until 
+      all started subworkflows finished.     
+      </para>
+      </section>
+      
+      
+      <section>
+      <title>Connecting conditions with AND, OR and NOT</title>
+      <para>
+      Conditions can be nested in complex contructions by combining 
+      the already shown conditions with AND, OR and NOT operands. 
+      For example: 
+      
+<screen><![CDATA[<edge to="node_product1">
+	<and>
+	<event type="DATAEDIT2_OK"/>
+	<not>
+	<data check="regexp" field="testdataset.product.product_name" 
+		value=".*LINUX.*"/>
+	</not>
+	</and>
+</edge>]]></screen>
+      
+      </para>
+      <para>
+      The AND and OR elements do both take 2 subelements, and the NOT 
+      element takes just one. That means, to connect for example 
+      3 event conditions by AND you have to write your definition this way: 
+      
+<screen><![CDATA[<edge to="node2">
+	<and>
+	<event type="DATAEDIT1_OK"/>
+		<and>
+		<event type="DATAEDIT2_OK"/>
+		<event type="DATAEDIT3_OK"/>
+		</and>
+	</and>
+</edge>]]></screen>  
+      
+      </para>
+      </section>
+      
+      
+  
+  
+  
+  
+  
+  
+    <section>
+      <title>Datasets</title>
+      <para>
+      Datasets contain are the workflows storage for data. 
+      They can store texts, dates and role assignments. 
+      Atm each workflow defines one root-dataset in its xml definition 
+      which has also to be referenced as "defaultdataset" in the 
+      workflow element. Datasets can be nested, and the elements that contain 
+      the actual data are called databits.
+      
+<screen><![CDATA[<dataset description="Roles" name="roles">
+
+	<dataset ...>
+	<databit ...>
+
+</dataset>]]></screen> 
+      
+      Each databit has a datatype against which its content is verified on changes 
+      (type attribute). The visibility of databits and datasets can 
+      be set by the state attribute, for example to hide workflow-internal data from the 
+      user in the GUI. A databit is defined like this: 
+      
+<screen><![CDATA[<databit name="admin" description="Workflow-Admins" 
+		type="person" state="read-write">
+	<defaultvalue>swamp_admin</defaultvalue>
+</databit>]]></screen> 
+      
+      The element defaultvalue sets the initial value of the databit. 
+      Databits can be referenced from various places within a workflow, eg. 
+      data-conditions, dataedit-actions, scriptactions, notificationtemplates and more. 
+      The notation for referencing a databit is: 
+      
+	<screen><![CDATA[datasetname.[datasetname.]databitname]]></screen>  
+      
+      </para>
+      
+      
+      
+      
+     <section>
+      <title>System databits</title>
+      <para>
+     To extend the power and flexibility of the previously shown 
+     workflow elements that use databits, some workflow information is also mapped 
+     into the databit "namespace". 
+      </para>
+      <para>
+     These special dynamic databits are referenced with a leading "System." as 
+     pseudo datasetname. Available system databits so far are: 
+     
+<screen><![CDATA[System.<nodename>.dueDate
+and 
+System.<nodename>.enterDate]]></screen> 
+
+	to query the attached due date of a node, and to get the date when a node was entered. 
+	This can be used for example in the sendevent-action (see section "actions") to 
+	determine how long a node has been active. 
+	Also mechanisms to notify responsible persons if duedates are not met can 
+	be implemented that way.
+     
+      </para>
+  </section>
+      
+      
+  </section>
+  
+  
+  
+  </section>
+  
+</section>
+
+
+
+
+
+
+
+<section>
+    <title>Creating a workflow resource bundle</title>
+    <para>
+      SWAMP learns about it's workflows from workflow definition files
+      that are read from the file system from a dedicated directory. 
+      Each workflow-type consists of a resource bundle that contains 
+      the workflow definition, configuration, mail-templates and icons.
+ 	  	
+ 	  </para>	
+ 	  <para> 	  	
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-adminguide/workflowdirs.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase>swamp workflow structure</phrase></textobject>
+	</inlinemediaobject> 
+ 	  	
+ 	  </para>	
+ 	  <para> 
+      
+      Additionally the workflows are versioned so that the process can 
+      be changed at any time without breaking already running workflows. 
+      </para>
+      <para>            
+      All existing workflow subdirectories are scanned and parsed at 
+      the startup of SWAMP. Even
+      while SWAMP is running, new workflow definitions or new revisions 
+      of existing workflow-types can be copied into
+      the directory and SWAMP can be told to re-scan the directory for new 
+      workflow definitions.
+      </para>
+
+
+
+
+	<section>
+	    <title>Notification Templates</title>
+     <para>
+	Notification templates are used to create the emails for 
+	users that have a new task assigned or that were created by 
+	notification-actions. On loading the workflow template, 
+	the system already checks if all needed template files are available. 
+	The path to a notification-template is relative to its workflow definition. 
+	For example when an action has configured the "notificationtemplate" 
+	attribute with the value "notifications/template.txt" the template 
+	is expected at 
+	conf/workflows/&lt;workflowname&gt;/&lt;version&gt;/notifications/template.txt.
+	An example template looks like this: 
+	
+	
+<screen><![CDATA[subject=$wf.getName(): new Test-Notification
+xheader=$wf.getName()
+This is an example-notification of workflow: $wf.getName()
+
+Owner of this workflow: $wf.getDatabitValue("testdataset.roles.owner")
+Link to this workflow: $webswamp_link/wf/$wf.getId() 
+
+--  
+This Message was automatically generated by the the WebSWAMP-Server at 
+$app_link]]></screen> 
+
+	The first line must start with "subject=" and contains the subject of the email. 
+	The second line defines an additional x-Header line in the email. The remaining 
+	part of the template contains the text that will be sent as message body. 
+	See the example for possible velocity replacements, all velocity constructs 
+	are useable here, including if-then-else conditions and loops.
+	 </para>
+	
+	
+	</section>
+
+
+
+
+
+
+
+	<section>
+	    <title>Workflow configuration files</title>
+	    <para>
+	Each workflow searches for a config file named "workflow.conf" at its 
+	resource directory. If none is found, default values will be used as a fallback. 
+	
+		
+<screen><![CDATA[## config file for Workflow testworkflow.
+## in this file some GUI options for webSWAMP are provided
+
+logo=images/logo.jpg
+icon=images/yast_system_22.png
+icon_big=images/yast_system_64.png
+
+# displayed columns, should be one line.
+displayedcolumns_workflowview=column_workflowid,column_workflowdescription, \
+	column_nexttasks,System.start.enterDate,testdataset.roles.owner, column_state
+
+
+sortby_workflowview=column_workflowid
+direction_workflowview=ascending]]></screen> 
+		
+		In this file you can configure how the workflow will be presented in the GUI. 
+		The <sgmltag>logo</sgmltag> and <sgmltag>icon</sgmltag> values refer to 
+		images that get displayed in the GUI.		
+		The <sgmltag>displayedcolumns_workflowview=</sgmltag> 
+		line tells webswamp wich columns should be displayed 
+		when showin workflow lists. 
+		Possible values are all databit names including system databits, and some 
+		special columns: 
+		<itemizedlist>
+		<listitem><para>
+		<sgmltag>column_nexttasks</sgmltag>: Shows the next tasks.
+		</para></listitem>
+		<listitem><para>
+		<sgmltag>column_workflowdescription</sgmltag>: Shows the workflows description.
+		</para></listitem>		
+		<listitem><para>
+		<sgmltag>column_progress</sgmltag>: Shows a progress bar that indicates 
+		what milestones have already been reached.
+		</para></listitem>	
+		<listitem><para>		
+		<sgmltag>column_workflowid</sgmltag>: Shows the workflow id with a link to the 
+		workflows detail page.
+		</para></listitem>	
+		<listitem><para>		
+		<sgmltag>column_wficon</sgmltag>: Shows the workflows icon.
+		</para></listitem>		
+		<listitem><para>	
+		<sgmltag>column_state</sgmltag>: Shows the workflows state (running/finished).
+		</para></listitem>	
+		
+		</itemizedlist> 
+		
+		Please note that this just are the default values for displaying lists. Each 
+		user can change the configuration for himself to best fit his needs. 
+		The shown example workflow.conf file would result in a layout like this: 
+		
+ 	  </para>	
+ 	  <para> 
+		
+		<inlinemediaobject>
+			<imageobject> 
+			<imagedata fileref="images-adminguide/wflist_layout.png" format="PNG" 
+				scalefit="1" align="center" scale="50"/> 
+			</imageobject>
+			<textobject><phrase></phrase></textobject>
+		</inlinemediaobject> 
+		
+		</para>
+	</section>
+	
+	
+	<section>
+	    <title>Workflow documentation and template files</title>
+	    <para>
+		Each workflow can bring its own documentation with it. 
+		The element <sgmltag>helpcontext</sgmltag> inside the node 
+		tags of a workflow definition contains the path to the corresponding help file. 
+		Available help contexts are displayed on the corresponding pages in webSWAMP and 
+		a complete listing of all available help pages is also available from the menu.
+		</para>
+		<para>
+		The documentation files are stored in the docs/ subdirectory of the 
+		workflow resource directory. Please look into the "Example" workflow for an 
+		example documentation file. The "head" file is used to display a headline 
+		on the documentation overview page.
+		</para>
+		<para>
+		The subdirectory templates/ of a workflow resource can contain 
+		custom Velocity template files that can be used to generate 
+		pages that are unique for that workflow. 
+		By default each workflow can provide the following templates 
+		that will replace the default ones when this workflow is displayed:  
+		<itemizedlist>
+		<listitem><para>
+		<sgmltag>page_top.vm</sgmltag>: Will replace the default page header, 
+		for example to display a custom image for each workflow.
+		</para></listitem>
+		<listitem><para>
+		<sgmltag>menutop.vm</sgmltag>: The navigation on the left is build from this file. 
+		This way, you 
+		can extend the navigation of a workflow with extra links to filtered views 
+		for example.
+		</para></listitem>
+		<listitem><para>
+		<sgmltag>wflist_colours.vm</sgmltag>: If you configured special colours 
+		for workflows in the workflow list by using the 
+		<sgmltag>workflowlist_colour=</sgmltag> variable in the workflow.conf file 
+		you can add an explanation to the wflist_colours.vm file which will 
+		get included at the bottom of the workflow list.
+		</para></listitem>
+		</itemizedlist>
+			
+		</para>
+
+	</section>
+
+
+
+	<section>
+	    <title>Extending elements with velocity scripting</title>
+	<para>
+	
+	There are several elements of a workflow definition that can 
+	be extended by embedding 
+	<ulink url="http://jakarta.apache.org/velocity/">velocity</ulink> scripts. 
+	The velocity script inside the elements is evaluated at runtime, 
+	and thus provides dynamic content at the used place. Here is a list 
+	of elements that are aware of content with included velocity scripts, 
+	and what objects are provided to be used within the scripts.
+	
+	<itemizedlist>
+		<listitem><para>Every description and longdescription element from the 
+		workflow definition. (Provided references: The current workflow object as $wf and 
+		the corresponding workflow-template object as $wftemplate)</para></listitem>
+		<listitem><para>Notificationtemplates (Provided references: 
+		The current workflow object as $wf,  
+		the corresponding workflow-template object as $wftemplate, 
+		if called from a task, the task as $task. Links to webswamp can be generated from 
+		the varibles $app_link and $secure_app_link, see example workflow)</para></listitem>
+		<listitem><para>The content of a script action (Provided references: 
+		The current workflow object as $wf and a reference to the BugzillaTools object 
+		as $btools)</para></listitem>
+		<listitem><para>Sendevent-action (Provided references: The current workflow object as $wf 
+		for evaluating the workflow ids the event should be sent to)</para></listitem>
+	</itemizedlist>
+
+	Velocity scripting also provides the possibility of if-then-else conditions 
+	and loops. A velocity userguide is available at 
+	<ulink url="http://jakarta.apache.org/velocity/docs/user-guide.html">
+	http://jakarta.apache.org/velocity/docs/user-guide.html</ulink>
+
+	 </para>
+	</section>
+
+
+</section>
+
+
+
+<section>
+    <title>Setting up authentication with LDAP / other datasource</title>
+    <para>
+	The SWAMP user backend can be connected to a central LDAP 
+	server for authentication and getting user data which is a 
+	common scenario in large companies. 
+	To switch to the LDAP authentication the setting of 
+	<sgmltag>AUTH_CLASS</sgmltag> 
+	in the conf/defaults file has to be changed to 
+	<sgmltag>de.suse.swamp.core.security.SWAMPLDAPUserManager</sgmltag>. 
+	The LDAP connection is configured by the additional <sgmltag>LDAP_</sgmltag> 
+	config values. 	When a user is requested the first time, he gets fetched from the 
+	LDAP server and gets stored in the SWAMP database. 
+	So we don't have to query the LDAP backend everytime. 
+	Authentication always happens directly against LDAP, 
+	so we don't store the users passwords in SWAMP. 
+	</para>
+	<para>
+	Users that are available from the database and have a value in the passwordHash field 
+	will get authenticated from there.  
+	This is useful for adding additional users to SWAMP when you don't have 
+	admin access to the LDAP server. 
+	</para>
+	<para>
+	To implement another authentication method, you need to write a class that 
+	implements the interface 
+	<sgmltag>de.suse.swamp.core.security.UserManagerIface</sgmltag> and set 
+	it as <sgmltag>AUTH_CLASS</sgmltag> in the conf/defaults file.
+	</para>
+	<para>
+
+	</para>
+</section>
+
+
+
+<section>
+    <title>WebSWAMP</title>
+     <para>
+	
+	WebSWAMP is the standard GUI for normal users to interact with SWAMP. 
+	All features are available here. 
+	The user can browse lists of workflows, edit data and work on tasks 
+	that are assigned to him. 
+	Administrative tasks that can be done from the web-frontend are 
+	reloading/installing workflow definitions, manually change a workflows 
+	state and clearing the workflow cache. 
+	</para>
+	
+	
+	
+	<section>
+	    <title>Reload / install workflow definitions</title>
+	    <para>
+	    
+	    At the shown page (Admin Area -> Workflow Templates) you  
+	    have the possibility to administrate the workflow definitions. 
+ 	  </para>	
+ 	  <para>  
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-adminguide/reload_definitions.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase>swamp workflow structure</phrase></textobject>
+	</inlinemediaobject> 
+ 	  </para>	
+ 	  <para> 
+ 	  How to install / upgrade a workflow definition: 
+		<itemizedlist>
+		<listitem><para>Manually with access to the filesystem: </para>
+		<para>Copy your new version to the workflow storage at workflows/${workflowname}/${workflowrevision} 
+		and tell SWAMP to reload the definitions either from WebSWAMP ("Workflow Templates"->"Reload Templates") 
+		or by reloading the complete SWAMP application.</para>
+	    </listitem>
+		<listitem><para>By uploading through the web interface: </para>
+		<para>To upload a new workflow / revision please go to the shown page 
+		and use the upload form at the bottom. You can upload a single workflow.xml 
+		definition file, or a zipped workflow resource bundle which can contain all elements, 
+		for example the workflow.conf file, icons, notification templates...</para>
+		<para>After the upload the workflow will automatically get verified and can get installed 
+		if no fatal errors were detected. 
+		</para>
+	    </listitem>
+	</itemizedlist>
+ 	  
+	    Each workflow is read in from the resource directory and verified. 
+	    If errors were detected when SWAMP reads the workflow and internally 
+	    constructs the workflow template the system will refuse to 
+	    add the workflow to the list. 
+	    If non-fatal warnings were detected, they are displayed, but the 
+	    workflow is added to the list. 	    
+
+	 	</para>
+	</section>
+	
+	
+	<section>
+	    <title>Manually change a workflows state</title>
+	    <para>
+	    
+	    Admins can manually change the internal state of a workflow. 
+	    To do so, please open the workflow page of the workflow you want to change. 
+	    Admins can now open the "admin console" 
+	    and will get a menu similar to that on the screenshot. 
+ 	  </para>	
+ 	  <para> 
+	    <inlinemediaobject>
+			<imageobject> 
+			<imagedata fileref="images-adminguide/workflow_admin.png" format="PNG" 
+				scalefit="1" align="center" scale="50"/> 
+			</imageobject>
+			<textobject><phrase>swamp workflow structure</phrase></textobject>
+		</inlinemediaobject> 
+ 	  </para>	
+ 	  <para> 
+	    Each node of the workflow is listed here, and can be set to active/inactive. 
+	    You should have explicit knowledge of the workflow structure 
+	    before changing the nodes states manually here, because a workflow 
+	    can easily get out of its track when internal node states are changed 
+	    in the wrong way. 
+	    On this page admins have the additional possibility to send an event to 
+	    the workflow manually.	    
+	    
+	 	</para>
+	</section>
+	
+	
+	
+	<section>
+	    <title>Reset the workflow cache</title>
+	    <para>
+	    
+	    Workflows are cached internally to save time when they are requested. 
+	    The amount of cached workflows is configured in the "conf/defaults" 
+	    config file. To empty the workflow cache 
+	    (can be useful after direct editing of the database and other 
+	    dirty tricks ;-)) please go to: Admin Area -> Objects.	    
+ 	  </para>	
+ 	  <para> 
+	<inlinemediaobject>
+		<imageobject> 
+		<imagedata fileref="images-adminguide/reset_cache.png" format="PNG" 
+			scalefit="1" align="center" scale="50"/> 
+		</imageobject>
+		<textobject><phrase>swamp workflow structure</phrase></textobject>
+	</inlinemediaobject> 
+ 	  </para>	
+ 	  <para> 
+	    This page also offers the option to manually force a full garbage collection 
+	    of the java virtual machine.
+	 	</para>
+	</section>
+	
+
+
+
+</section>
+
+
+
+<section>
+    <title>SOAPSWAMP</title>
+    <para>
+	SOAPSWAMP is an extension to SWAMP that provides access to the 
+	SWAMP workflow engine by the SOAP interface. It is installed as an 
+	extra webapp in tomcat. 
+	It uses the <ulink url="http://ws.apache.org/axis/">axis framework</ulink> 
+	to provide the SOAP service. 
+	The WSDL webservice description can be fetched from:  
+	<screen><![CDATA[http://<hostname>:8080/axis/services/swamp?wsdl]]></screen> 
+	The WSDL contains all needed information about available methods, 
+	and can be used by some tools to automatically create client libs. 
+	SWAMP already ships a perl client module for connecting external 
+	systems to SWAMP (see next section). 
+	Methods available via the SOAP interface atm include: 
+	
+	<itemizedlist>
+		<listitem><para>Reading / Writing data to a workflow</para></listitem>
+		<listitem><para>Sending events to workflows</para></listitem>
+		<listitem><para>Getting a list of workflow ids that match a certain criteria</para></listitem>
+		<listitem><para>Read workflow information of a workflow instance</para></listitem>
+		<listitem><para>Start workflow instances</para></listitem>
+	</itemizedlist>
+	
+	All methods include parameters for username and password, as the SOAP interface is 
+	based on the same SWAMP interface as webSWAMP. Unauthorized access will be denied 
+	with an Exception. 	
+ </para>
+</section>
+
+
+
+<section>
+    <title>Perl SOAP client</title>
+    <para>
+    The perl SOAP client enables an easy integration of 
+    the SWAMP server into remote applications. 
+    It can be downloaded 
+    <ulink url="http://sourceforge.net/project/showfiles.php?group_id=68771">here</ulink> 
+    either as SUSE RPM or source tarball. 
+    After installing the perl module "SUSE::Swamp" should be useable from within your perl scripts. 
+    
+    To view the module documentation please use:     
+    <screen><![CDATA[perldoc SUSE::Swamp]]></screen> 
+
+    All methods that are available via the SOAP interface are 
+    automatically mapped to perl functions. To display all available methods 
+    you can use this script: 
+    
+    <screen><![CDATA[#!/bin/bash -i
+$WSDL='http://<swamp.server>:8080/axis/services/swamp?wsdl'
+perl -I. -MSUSE::Swamp -e"print SUSE::Swamp->new('$WSDL')->generateDoc()" | 
+	pod2man --name="SWAMP SOAP API" | nroff -man | less;]]></screen> 
+    
+    which will display a manpage with descriptions and signatures of the available methods. 
+     </para>
+    
+    <para>
+    A complete example script on how to use the module is included in its distribution. 
+    Usage looks like this:      
+    <screen><![CDATA[#!/usr/bin/perl
+use strict; 
+use SUSE::Swamp;
+my $url = 'http://<swamp.url>:8080/axis/services/swamp?wsdl';
+my $username = "swamp_user";
+my $pwd = "swamp";
+
+my $swamp = SUSE::Swamp->new($url);
+my $version = $swamp->doGetProperty( "SWAMP_VERSION", $username, $pwd );
+print "SWAMP server version: " . $version . "\n";
+
+# create a workflow: 
+my $wfid = $swamp->createWorkflow( 0, "Example", $username, $pwd );
+print "Created workflow with id: $wfid" . "\n";
+
+# read data from the workflow 
+my $result = $swamp->doGetData( $wfid, "testdataset.reason", $username, $pwd );
+print "Value of testdataset.reason: $result" . "\n";]]></screen> 
+     
+ </para>
+</section>
+
+
+
+<section>
+    <title>Updating / maintenance of the server</title>
+    <para>
+    To update an existing SWAMP instance to a newer version you have to 
+    pay attention to some things. The complete state of the system is 
+    stored in the database backend. So, to be able to restore your system 
+    if something goes wrong you need a copy of your databese, and your workflow 
+    definitions. It is recommended to backup your database regulary, SWAMP already comes 
+    with a script that can do that for you. 
+    Call: 
+    <screen><![CDATA[bin/db-dump.sh]]></screen> 
+    to make a backup using <sgmltag>mysqldump</sgmltag> and <sgmltag>gzip</sgmltag>.
+    </para>
+    <para>
+    Every new SWAMP release comes with a file called <sgmltag>UPGRADING</sgmltag>. 
+    This file contains notes on changes to the database layout and workflow definition format 
+    in the new version. Thus you know how to convert your backed up state 
+    to the new version if there have been incompatible changes.
+     </para>
+    <para>
+    If you are running into space problems, or want to keep your backups small, 
+    you can safely emtpy the tables: 
+    <sgmltag>dbEventHistory</sgmltag>, 
+    <sgmltag>dbHistory</sgmltag> and <sgmltag>dbNotifications</sgmltag>. 
+    Your SWAMP will also run without he content of these tables, but will not be 
+    able to provide history information of old workflows. 
+     </para>
+</section>
+    
+
+
+</article>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT swampxmlresponse (errorcode, msg)>
+
+<!ELEMENT errorcode (#PCDATA)>
+<!ELEMENT msg (#PCDATA)>
+
+

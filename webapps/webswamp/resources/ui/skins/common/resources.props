@@ -1,0 +1,133 @@
+# Images
+
+logo = swamp-logo_75.jpg
+logo_test = swamp-logo_test_75.jpg
+palastDerRepublik = boxes_top_right_corner.png
+stripes = topnav_tableback_petrol.png
+footerPalast = boxes_bottom_left1.png
+doubleline = footer_tableback.png
+clearpix = clear_pix.gif
+
+
+
+# Images for the box corners:
+bigboxcornerbottom = bigbox_bottomleft_corner_petrol.png
+bigboxcornertop = bigbox_topleft_corner_petrol.png
+bigboxbordertop = bigbox_top_border_petrol.png
+bigboxborderbottom = bigbox_bottom_border_petrol.png
+navboxbordertop = navbox_top_border.gif
+navboxcornertopinside = navbox_toprightcorner_inside.gif
+navboxcornertopoutside =  navbox_topcorner_outside.png
+olivebullet = olive_bullet.png
+navboxborderbottom = navbox_bottom_border.gif
+navboxcornerbottominside = navbox_bottomrightcorner_inside.gif
+navboxcornerbottomoutside = navbox_bottomcorner_outside.gif
+
+border_top_right = border_top_right.png
+
+
+
+
+
+pfeil_up = pfeil_up.gif
+pfeil_down = pfeil_down.gif
+taskok= kontact_todo.png
+
+help_16=help_16.png
+help_22=help_22.png
+
+printer_16=printer_16.png
+printer_22=printer_22.png
+printer_32=printer_32.png
+
+erase_16=erase_16.png
+erase_24=erase_24.png
+erase_32=erase_32.png
+
+critical_16=critical_16.png
+critical_24=critical_24.png
+critical_32=critical_32.png
+
+rocket_16=rocket_16.png
+rocket_24=rocket_24.png
+rocket_32=rocket_32.png
+
+letter_16=letter_16.png
+letter_24=letter_24.png
+letter_32=letter_32.png
+letter_48=letter_48.png
+
+pfeile_16=pfeile_16.png
+pfeile_24=pfeile_24.png
+pfeile_32=pfeile_32.png
+
+people_16=people_16.png
+people_24=people_24.png
+people_32=people_32.png
+
+kreis_16=kreis_16.png
+kreis_24=kreis_24.png
+kreis_32=kreis_32.png
+
+info_16=info_16.png
+
+email= contact.png
+graph_32= graph_32.png
+graph_128= graph_128.png
+recycle= reload_32.png
+history_32= history_32.png
+history_128= history_128.png
+
+edit_22=edit_22.png
+edit_32=edit_32.png
+edit_64=edit_64.png
+
+security_16=security_16.png
+security_22=security_22.png
+security_32=security_32.png
+
+
+favicon = favicon.ico
+ok = ok.png
+error = error.png
+
+# default images
+line = line.gif
+
+alertImage = alert1.gif
+alert= alter2.gif
+alert_16= alert_16.gif
+
+milestone_unreached = critical_16.png
+milestone_reached = ok_16.png
+
+item_open=item_f_open.png
+item_close=item_f_close.png
+
+upload_48=upload_48.png
+download_16=download_16.png
+
+pdf_16=pdf_16.png
+document_16=document_16.png
+locale_24=locale_24.png
+clock_16=clock_16.png
+
+buggie_16=buggie_16.png
+buggie_32=buggie_32.png
+buggie_64=buggie_64.png
+
+editdata_16=editdata_16.png
+editdata_32=editdata_32.png
+
+workflow-std_22=workflow_std_22.png
+workflow-std_32=workflow_std_32.png
+workflow-std_64=workflow_std_64.png
+
+rss_32=rss_32.png
+rss_16=rss_16.png
+
+sflogo=sflogo.png
+
+rotate=rotating-tail.gif
+
+

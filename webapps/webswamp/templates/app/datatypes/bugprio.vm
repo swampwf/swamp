@@ -1,0 +1,55 @@
+#if ($rendertype.equals("wflist") || $rendertype.equals("workflow")) 
+    
+    #if (!$content.equals(""))
+    <nobr><div style="
+    #if ($content.startsWith("P5"))
+    background-color: #fff;
+    #elseif ($content.startsWith("P4"))
+    background-color: #f5ddc5;
+    #elseif ($content.startsWith("P3"))
+    background-color: #f5c594;
+    #elseif ($content.startsWith("P2"))
+    background-color: #f5ac62;
+    #elseif ($content.startsWith("P1"))
+    background-color: #f57b00;
+    #elseif ($content.startsWith("P0"))
+    background-color: #f6d518;
+    #end
+    ">$content</div></nobr>
+        
+    #else
+        <i>no value</i>
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    #set ($xsize = 0)
+    #set ($ysize = 0)
+    #if (${field.getEditInfo()}) 
+        #set ($ysize = ${field.getEditInfo().getYsize()})
+        #set ($xsize = ${field.getEditInfo().getXsize()})
+    #end
+
+    #if ($!{ysize} > 1)
+        <textarea name="field_$field.getPath()" cols="$xsize" rows="$ysize">$!initval</textarea> 
+    #elseif ($!{xsize} > 1)       
+        <input name="field_$field.getPath()" value="$!initval" type="text" size ="${xsize}" />
+    #else
+   
+        ## auto-resize if needed:
+        #if ($!initval && $!{initval.length()} > 40)
+            #set ($ysize=$!initval.length() / 40 + 1)
+            <textarea name="field_$field.getPath()" cols="45" rows="$ysize">$!initval</textarea>
+        #else 
+            <input name="field_$field.getPath()" value="$!initval" type="text" size ="40" id="field_$field.getPath()" />
+        #end
+
+    #end
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end
+
+

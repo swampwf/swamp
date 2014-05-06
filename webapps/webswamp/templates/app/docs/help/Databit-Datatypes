@@ -1,0 +1,65 @@
+Description of available Datatypes and general usage of Datasets
+
+<table cellpadding="4" cellspacing="0" border="0" width="98%">
+        <tr class="snav_sidehead">
+          <td>Explaining the meaning of different Datatypes in SWAMP Databits:</td>
+        </tr>
+</table>
+<br />
+
+
+<table width="500"><tr><td>
+			
+<a name="string"><b>String:</b></a> <br />
+A String (one line).
+<br /><br />
+
+<a name="number"><b>Number:</b></a> <br />
+A Number.
+<br /><br />
+	
+<a name="enum"><b>Enumeration:</b></a> <br />
+Lets you pick one of some given values in a dropdown box. 
+<br /><br />
+	
+<a name="boolean"><b>Boolean:</b></a> <br />
+A boolean Value with the choice: true/false.
+<br /><br />
+	
+<a name="person"><b>Person:</b></a> <br />
+The type <i>person</i> contains the a valid login or E-Mail adress. 
+The integrity of the username is evaluated by checking the database/LDAP backend. 
+Also valid is a comma-seperated List of usernames and E-Mail adresses.
+<br /><br />
+	
+<a name="URL"><b>URL:</b></a> <br />
+An Internet URL, for example "http://swamp.sf.net".
+<br /><br />
+	
+<a name="test"><b>Text:</b></a> <br />
+A multiline Text.
+<br /><br />
+	
+<a name="date"><b>Date:</b></a> <br />
+A Date in the format: yyyy-MM-dd 
+<br /><br />
+
+<a name="datetime"><b>DateTime:</b></a> <br />
+A Date in the format: yyyy-MM-dd, HH:mm 
+<br /><br />
+
+
+<a name="bugzilla"><b>Bugzilla ID:</b></a> <br />
+A valid id of an entry in the connected Bugzilla System. 
+SWAMP fetches Bugzilla Information over 
+its XML-Interface, and fills the Data into Databits in 
+the same dataset if it finds databits with corresponding names 
+to the Bugzilla Output. 
+<br /><br />
+	
+<a name="fileref"><b>File reference:</b></a> <br />
+Lets you attach any binary file to a workflow by uploading it to the SWAMP 
+server. 
+<br /><br />
+
+</td></tr></table>

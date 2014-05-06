@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database_3_1.dtd">
+
+<!-- ==================================================================== -->
+<!--                                                                      -->
+<!-- B A S E  T U R B I N E  S C H E M A                                  -->
+<!--                                                                      -->
+<!-- ==================================================================== -->
+<!-- This is the the XML schema used by Torque to generate the necessary  -->
+<!-- sources used to create/initialize the base Turbine system. Torque    -->
+<!-- will create the SQL for the database required by Turbine, and the    -->
+<!-- Peer-based Object Model used by Turbine internally to manage         -->
+<!-- users, security, and job scheduling.                                 -->
+<!-- ==================================================================== -->
+<!-- @author: <a href="mailto:jvanzyl@periapt.com">Jason van Zyl</a>      -->
+<!-- @version $Id$     -->
+<!-- ==================================================================== -->
+
+<database name="@TORQUE_PROJECT@" defaultIdMethod="native">
+  
+
+  <table name="TURBINE_SCHEDULED_JOB" idMethod="native">
+    <column name="JOB_ID" required="true" primaryKey="true" type="INTEGER" 
+    autoIncrement="true" />
+    <column name="SECOND" default="-1" required="true" type="INTEGER"/>
+    <column name="MINUTE" default="-1" required="true" type="INTEGER"/>
+    <column name="HOUR" default="-1" required="true" type="INTEGER"/>
+    <column name="WEEK_DAY" default="-1" required="true" type="INTEGER"/>
+    <column name="DAY_OF_MONTH" default="-1" required="true" type="INTEGER"/>
+    <column name="TASK" required="true" size="99" type="VARCHAR"/>
+    <column name="EMAIL" size="99" type="VARCHAR"/>
+    <column name="PROPERTY" type="VARBINARY"/>
+  </table>
+
+
+</database>

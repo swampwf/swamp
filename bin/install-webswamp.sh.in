@@ -1,0 +1,23 @@
+#!/bin/bash
+
+SWAMP_HOME=@SWAMP_HOME@;
+cd $SWAMP_HOME;
+
+#check if we need to generate language resources: 
+(if [ ! -d "build/de/suse/swamp/i18n" ]; then
+ant i18n; 
+fi)&& 
+
+# install swamp
+ant jar-up &&
+ant install-tomcat && 
+
+# install webswamp
+cd webapps/webswamp && 
+
+#check if we need to generate language resources: 
+(if [ ! -d "build/WEB-INF/classes/de/suse/swamp/webswamp/i18n" ]; then
+ant i18n;
+fi)&&
+
+ant install jar;

@@ -1,0 +1,39 @@
+## SWAMP Workflow Administration and Management Platform
+
+$page.setTitle("WebSWAMP WorkflowGraph for ${wfname}")
+
+<table class="box_head" width="100%" 
+style="border-width: 1px; border-style: solid; "><tr>
+<td class="box_head" width="50">
+
+#if ($ui.hasConfigValue(${templateName}, "icon"))
+	<img src="$ui.getResourcePath(${templateName}, "icon")" alt="icon" />
+#else 
+	<img src="$ui.image("workflow-std_32")" alt="icon" />
+#end
+
+</td>
+<td class="box_head">WorkflowGraph for 
+#if ($wfid)
+	<a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $wfid)">${wfname}</a>
+#else
+	${wfname}, v${templateVersion}
+#end
+</td></tr></table>
+
+<table class="box_normal" width="100%" cellpadding="3" 
+style="border-width: 1px; border-style: solid; "><tr>
+<td class="box_head">Graph Agenda: </td></tr>
+<tr><td class="box_normal">
+- Black parts of the graph are currently not active<br />
+- Active Nodes are colored green.<br />
+- Edges that are waiting for its conditions to be fulfilled are colored green.<br />
+- Conditions that are still waiting for a certain event are colored red.
+</td></tr>
+</table>
+<br />
+<a href="$biggraphURL"><img src="${graphURL}" 
+border="0" alt="Graph for Workflow ${wfname}" style="border-width:1px; "/></a><br />
+<br />
+
+Click to view the <a href="$biggraphURL">full-sized image</a>.

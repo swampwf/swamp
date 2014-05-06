@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+  <display-name>RSS-SWAMP</display-name>
+
+    
+  <servlet>
+    <servlet-name>RssServlet</servlet-name>
+    <servlet-class>
+        de.suse.swamp.rss.Dispatcher
+    </servlet-class>
+  </servlet>
+
+
+  <servlet-mapping>
+    <servlet-name>RssServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/README</url-pattern>
+  </servlet-mapping>
+
+
+  <!-- Define a Security Constraint on this Application -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>Your login</web-resource-name>
+      <url-pattern> /* </url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+       <role-name>tomcat</role-name>
+    </auth-constraint>
+  </security-constraint>
+
+  <!-- Define the Login Configuration for this Application -->
+  <login-config>
+  	<!-- possible methods: BASIC, DIGEST, and FORM -->
+    <auth-method>BASIC</auth-method>
+    <realm-name>Your login</realm-name>
+  </login-config>
+
+  <!-- Security roles referenced by this web application -->
+  <security-role>
+    <description>
+      The role that is required to authenticate
+    </description>
+    <role-name>tomcat</role-name>
+  </security-role>
+
+
+  <session-config>
+	<session-timeout>1</session-timeout>
+  </session-config>
+
+
+</web-app>

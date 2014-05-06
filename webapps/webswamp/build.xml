@@ -1,0 +1,260 @@
+<project name="webSWAMP" default="compile" basedir=".">
+  
+  <property file="build.properties"/>
+  <property file="${swamp.home}/build.properties" />
+
+  <path id="classpath">
+  	<path location="${swamp.home}/build"></path>
+    <fileset dir="${swamp.home}/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="./lib">
+          <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <property name="build.dir" value="${basedir}/build" />
+  <property name="install.tomcatdir" value="${catalina.base}/webapps" />
+  
+  
+  
+  <!-- =================================================================== -->
+  <!-- C R E A T E  C O N F I G                                            -->
+  <!-- =================================================================== -->
+  
+  <target name="local-init">
+    <!-- load host specific build properties -->
+    <exec outputproperty="hostname" executable="hostname" />
+    <property file="${swamp.home}/properties/${hostname}.properties" />
+  </target>
+
+
+  <target name="check-host-properties" depends="local-init" unless="local.swamp.logfilelocation">
+    <echo>
+    ***** Please setup a host specific properties file at properties/${hostname}.properties*****
+    ***** properties will be created with default values! *****
+    ***** run: "ant local-init" to update the build properties *****
+    </echo>
+    <property file="${swamp.home}/properties/host.properties" />
+  </target>
+  
+  
+  <target name="init" depends="check-host-properties">
+  	
+    <filter token="WEBSWAMP_HOME" value="${local.webswamp.home}" />
+    <filter token="WEBSWAMP_PORT" value="${local.webswamp.port}" />
+    <filter token="WEBSWAMP_SSLPORT" value="${local.webswamp.sslport}" />
+    <filter token="WEBSWAMP_HOSTSTRING" value="${local.webswamp.hoststring}" />
+    <filter token="WEBSWAMP_HOSTNAME" value="${local.webswamp.hostname}" />
+    <filter token="WEBSWAMP_PATH" value="${local.webswamp.path}" />
+    <filter token="WEBSWAMP_JAVAOPTS" value="${local.webswamp.javaopts}" />
+    <filter token="SWAMPCONF" value="${local.swamp.conf}" />  	
+  	
+    <copy
+       file="./conf/TurbineResources.template"
+       tofile="./conf/TurbineResources.properties"
+       overwrite="yes"
+       filtering="yes"
+     />
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- P R E P A R E  W E B - I N F                                        -->
+  <!-- =================================================================== -->
+
+  <target name="setup-webinf" depends="init">
+    <mkdir dir="${build.dir}" />
+  	<mkdir dir="${build.dir}/META-INF" />
+    <mkdir dir="${build.dir}/WEB-INF" />
+    <mkdir dir="${build.dir}/WEB-INF/classes" />
+    <mkdir dir="${build.dir}/WEB-INF/conf" />
+    <mkdir dir="${build.dir}/WEB-INF/lib" />
+    <mkdir dir="${build.dir}/conf" />
+    <mkdir dir="${build.dir}/conf/dtds" />
+    <mkdir dir="${build.dir}/var" />
+    <chmod dir="${build.dir}/var" perm="777"/>
+    <mkdir dir="${build.dir}/var/upload" />
+    <chmod dir="${build.dir}/var/upload" perm="777"/>
+    <mkdir dir="${build.dir}/var/graphs" />
+    <chmod dir="${build.dir}/var/graphs" perm="777"/>
+    <mkdir dir="${build.dir}/var/statistics" />
+    <chmod dir="${build.dir}/var/statistics" perm="777"/>
+    
+    <copy todir="${build.dir}">
+        <fileset dir="templates/jsp/screens">
+                <include name="index.jsp"/>
+        </fileset>
+    </copy>
+    
+    <copy todir="${build.dir}">
+        <fileset dir=".">
+                <include name="images/**"/>
+                <include name="resources/**"/>
+                <include name="templates/**"/>
+        </fileset>
+        <fileset dir="${swamp.home}">
+                <include name="README"/>
+        </fileset>
+    </copy>
+  	<delete dir="${build.dir}/templates/jsp"/>
+  	
+    <copy todir="${build.dir}/WEB-INF/conf">
+    <!-- copy the dtd for XML interface -->
+	<fileset dir="${swamp.home}/conf">
+	  <include name="dtds/*.dtd" />
+	</fileset>
+	<fileset dir="${conf.home}">
+		<include name="workflows/**" />
+	</fileset>
+ 	<fileset dir="${conf.home}">
+	  <include name="defaults" />
+	</fileset>
+	<fileset dir="${conf.home}">
+	  <include name="notifications/**" />
+	</fileset>
+	<fileset dir="./conf">
+	  <include name="TurbineResources.properties" />
+	</fileset>
+	<fileset dir="${conf.home}">
+	  <include name="Torque.properties" />
+	  <include name="Fulcrum.properties" />
+	  <include name="Log4j.properties" />
+	</fileset>
+    </copy>
+
+  	
+    <copy todir="${build.dir}/WEB-INF/lib">
+		<fileset dir="${lib.home}" excludes="torque-gen*,swamp*,webswamp*,log4j*,
+			commons-collections*,mysql-*, junit-*, xercesImpl*, xml-apis*, 
+			activation*, javamail*, velocity*, Tidy.jar, groovy-*, gettext-*" /> 
+    	<fileset dir="./lib" excludes="servlet-api*" />
+    </copy>
+  	
+    <copy todir="${build.dir}/WEB-INF"
+          file="conf/web.xml" />
+  	
+    <copy todir="${build.dir}/META-INF"
+          file="conf/context.xml" />
+  	
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- C O M P I L E                                                       -->
+  <!-- =================================================================== -->
+
+  <target name="compile" depends="setup-webinf" 
+    description="--> compiles the source code">
+
+    <javac srcdir="src/java"  
+  	    debug="${compile.debug}" 
+		optimize="${compile.optimize}" 
+		deprecation="${compile.deprecation}" 
+		verbose="${compile.verbose}" 
+        destdir="${build.dir}/WEB-INF/classes" 
+    	target="${compile.target}"
+    	source="${compile.source}">
+      <classpath refid="classpath"/>
+    </javac>
+  </target>
+  
+  
+    <!-- ==================== Localization Target ============================= -->
+    <!-- generate pot + po files with bin/generate-po.sh -->
+    
+    <target name="i18n" 
+                description="--> Generate Resource files from *.po files">
+            <mkdir dir="build/WEB-INF/classes/de/suse/swamp/webswamp/i18n"/>
+            <echo message="Generating language resource files to de.suse.swamp.webswamp.i18n.Webswamp" />
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild/WEB-INF/classes"/>
+                    <arg value="--resource=de.suse.swamp.webswamp.i18n.Webswamp"/>
+                    <arg value="--locale=de"/>
+                    <arg value="./conf/i18n/keys.de.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild/WEB-INF/classes"/>
+                    <arg value="--resource=de.suse.swamp.webswamp.i18n.Webswamp"/>
+                    <arg value="--locale=cs"/>
+                    <arg value="./conf/i18n/keys.cs.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild/WEB-INF/classes"/>
+                    <arg value="--resource=de.suse.swamp.webswamp.i18n.Webswamp"/>
+                    <arg value="--locale=en"/>
+                    <arg value="./conf/i18n/keys.en.po"/>
+            </exec>
+            <exec executable="msgfmt" failonerror="true" failifexecutionfails="true">
+                    <arg value="--java2"/>	
+                    <arg value="-dbuild/WEB-INF/classes"/>
+                    <arg value="--resource=de.suse.swamp.webswamp.i18n.Webswamp"/>
+                    <arg value="--locale=es"/>
+                    <arg value="./conf/i18n/keys.es.po"/>
+            </exec>
+    </target>
+    
+	
+  <!-- =================================================================== -->
+  <!-- J A R                                                    -->
+  <!-- =================================================================== -->
+  
+   <target name="jar" description="--> creates jarfile">
+   	
+        <jar destfile="./build/webswamp.jar" 
+            basedir="${build.dir}/WEB-INF/classes" 
+            compress="true" />
+    
+    </target>
+	
+  <!-- =================================================================== -->
+  <!-- I N S T A L L                                                       -->
+  <!-- =================================================================== -->
+	
+  <target name="install" depends="compile"
+    description="--> install to ${install.tomcatdir}" >
+    <echo message="installing to ${install.tomcatdir}" />
+      
+    <mkdir dir="${install.tomcatdir}/${swamp.webapp}" />
+    <!-- delete old contents -->
+    <!-- 
+    <delete includeemptydirs="true">
+      <fileset dir="${install.tomcatdir}/${swamp.webapp}" includes="**/*"/>
+    </delete>
+    -->
+    
+    <!-- install prepared /webswamp webapp -->
+    <copy todir="${install.tomcatdir}/${swamp.webapp}" >
+		<fileset dir="${build.dir}" excludes="webswamp.jar"/>
+    </copy>
+  	
+  	<!-- install the webapp config file -->
+  	<copy todir="${catalina.base}/conf/Catalina/localhost">
+  		<fileset dir="./conf" includes="webswamp.xml"/>
+  	</copy>
+  	
+  	<!-- make dirs writeable for tomcat -->
+  	<chmod perm="+rwx" dir="${install.tomcatdir}/${swamp.webapp}/var" />
+  	<chmod perm="+rwx" dir="${install.tomcatdir}/${swamp.webapp}/resources" />
+  	<chmod perm="+rwx" dir="${install.tomcatdir}/${swamp.webapp}/templates/app/docs/workflows" />
+  	
+  </target>
+
+
+
+  <!-- =================================================================== -->
+  <!-- C L E A N                                                           -->
+  <!-- =================================================================== -->
+
+  <target name="clean">
+    <delete dir="${build.dir}" />
+    <!-- Remove tomcat content  -->
+    <delete includeemptydirs="true">
+      <fileset dir="${install.tomcatdir}/${swamp.webapp}" includes="**/*"/>
+    </delete>
+  	<mkdir dir="${build.dir}"/>
+  	<mkdir dir="${build.dir}/WEB-INF"/>
+  </target>
+
+</project>

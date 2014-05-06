@@ -1,0 +1,49 @@
+#if ($rendertype.equals("wflist")) 
+    #buglist($workflow.getDatabit($path).getValueAsList())
+    
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else 
+        #buglist($workflow.getDatabit($path).getValueAsList())
+    #end
+    
+#elseif ($rendertype.equals("edit")) 
+
+    #set ($xsize = 0)
+    #set ($ysize = 0)
+    #if (${field.getEditInfo()}) 
+        #set ($ysize = ${field.getEditInfo().getYsize()})
+        #set ($xsize = ${field.getEditInfo().getXsize()})
+    #end
+
+    #if ($!{ysize} > 1)
+        <textarea name="field_$field.getPath()" cols="$xsize" rows="$ysize">$!initval</textarea> 
+    #elseif ($!{xsize} > 1)       
+        <input name="field_$field.getPath()" value="$!initval" type="text" size ="${xsize}" />
+    #else
+   
+        ## auto-resize if needed:
+        #if ($!initval && $!{initval.length()} > 40)
+            #set ($ysize=$!initval.length() / 40 + 1)
+            <textarea name="field_$field.getPath()" cols="45" rows="$ysize">$!initval</textarea>
+        #else 
+            <input name="field_$field.getPath()" value="$!initval" type="text" size ="40" id="field_$field.getPath()" />
+        #end
+
+    #end
+    
+#elseif ($rendertype.equals("flags")) 
+    #if ($field.isMandatory()) * #end
+#else 
+    ERROR
+#end
+
+
+
+
+
+
+
+					
+			

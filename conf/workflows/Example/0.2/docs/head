@@ -1,0 +1,11 @@
+<table width="90%" cellpadding="3" class="box_head">
+  <tr class="box_head">
+    <td class="box_head" valign="middle" width="25">
+    <img src="${ui.getResourcePath("Example", "icon")}" alt="" valign="middle" />
+    </td>
+    <td class="box_head" valign="middle">
+    Documentation for workflow "Example"
+    </td>
+  </tr>
+</table>
+<br />

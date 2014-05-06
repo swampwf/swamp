@@ -1,0 +1,25 @@
+Edit Help for $!editContextHelp.getContext():<br/><br/>
+
+<form method="post"
+      action="$link.setPage("Documentation.vm").setAction("DocumentationActions")">
+  <table>
+    <tr><td>
+    Title: <br />
+      <input type="text" name="editHelpTitle" size="60" value="$!editContextHelp.getTitle()" />
+    </td></tr>
+    <tr><td>
+    Text: <br />
+      <textarea name="editHelpText" cols="90" rows="30">$!editContextHelp.getText()</textarea>
+    </td></tr>
+    <tr><td>
+    <input type="hidden" name="editHelpContext" value="$!editContextHelp.getContext()">
+      <div style="float:left">
+      <input type="reset" name="reset"
+             value="Clear Form">
+      </div>
+      <div style="float:right">
+      <input type="submit" name="eventSubmit_doSavedocumentation"
+             value="Save">
+    </td></tr>
+  </table>
+</form>

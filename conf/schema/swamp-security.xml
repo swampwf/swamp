@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<dataset name="all">
+
+  <!-- Attention: 
+  	Torque uses a special mapping here: 
+  	Identifier with a "_" are written with an uppercase next letter...
+  	GROUP_ID -> GroupId -->
+  	
+  <!-- Groups -->
+  
+  <Dbgroups GroupId="1" GroupName="swampadmins"/>
+
+  <!-- Permissions -->
+
+  <Dbpermissions PermissionId="1" PermissionName="admin_permission"/> 
+
+  <!-- Associate Permissions with Roles -->
+
+  <DbgroupsPermissions GroupId="1" PermissionId="1"/>
+
+  <!-- Users -->
+
+  <!-- password for mrswamp is: "swamp"; passwords get generated with: echo -n "password" | md5sum; -->
+  <Dbusers UserId="1" UserName="mrswamp" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="Mr." LastName="SWAMP" Email=""/>
+  <!-- password for swamp_admin is: "!swamp#" -->
+  <Dbusers UserId="2" UserName="swamp_admin" PasswordMd5="3bb34cd6ec7ad579a60457f76ce873df" FirstName="Admin" LastName="SWAMPFamily" Email=""/>
+  <!-- password for swamp_user is: "swamp" -->
+  <Dbusers UserId="3" UserName="swamp_user" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="User" LastName="SWAMPFamily" Email=""/>
+
+  
+  <!-- Associate Users with Groups -->
+
+  <DbusersGroups UserId="2" GroupId="1"/>
+
+    
+</dataset>

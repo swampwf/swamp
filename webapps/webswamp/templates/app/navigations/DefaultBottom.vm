@@ -1,0 +1,13 @@
+<br/>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+	<td width="194" height="64"><img src="$ui.image("footerPalast")" 
+		border="0" width="194" height="64" alt="" /></td>
+	
+	<td height="64" width="100%" style="background-image:url($ui.image("doubleline")); text-align:center;">
+	</td>
+
+
+</tr>
+</table>

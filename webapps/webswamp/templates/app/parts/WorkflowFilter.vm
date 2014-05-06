@@ -1,0 +1,21 @@
+## SWAMP Workflow Administration and Management Platform
+
+<table cellpadding="4" cellspacing="0" border="0" width="100%" style="border-width: 1px; border-style:solid; ">
+	<tr class="box_head">
+		<td valign="top" class="box_head">
+		$ui.tr("Show %1 of %2 workflows", $data.getUser(), $!displayedWorkflows, $!numberOfWorkflows)
+		</td>
+	</tr>
+	<tr class="box_normal">
+		<td>
+			
+		#if ($!systemFilterText)
+		   $ui.tr("Filtered view:", $data.getUser()) 
+		   $ui.tr("Show", $data.getUser())
+		   <i>$!systemFilterText</i> 
+		#end
+			
+		</td>
+	</tr>
+</table>
+	

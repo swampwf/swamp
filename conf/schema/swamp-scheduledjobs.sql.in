@@ -1,0 +1,24 @@
+use @TORQUE_PROJECT@;
+
+INSERT INTO `TURBINE_SCHEDULED_JOB` 
+ (`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
+VALUES 
+('0', '5', '-1', '-1', '-1', 'NotifyScheduler', '', ''); 
+
+
+INSERT INTO `TURBINE_SCHEDULED_JOB` 
+(`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
+VALUES 
+('0', '30', '-1', '-1', '-1', 'TimeTriggers', '', ''); 
+
+
+INSERT INTO `TURBINE_SCHEDULED_JOB` 
+(`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
+VALUES 
+('0', '10', '24', '-1', '-1', 'Statistics', '', '');
+
+
+INSERT INTO `TURBINE_SCHEDULED_JOB` 
+(`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
+VALUES 
+('0', '00', '07', '-1', '-1', 'NotifyReminderScheduler', '', '');  

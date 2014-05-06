@@ -1,0 +1,14 @@
+<Context path="/webswamp" docBase="${catalina.base}/webapps/webswamp" 
+	debug="9" 
+	privileged="true"
+	cookies="true" 
+	reloadable="false">
+	
+	<Manager 
+		className="org.apache.catalina.session.StandardManager" 
+		distributable="true" 
+		debug="9"
+		maxActiveSessions="1000" 
+	/>
+
+</Context>

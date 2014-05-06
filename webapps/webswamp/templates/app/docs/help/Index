@@ -1,0 +1,37 @@
+Welcome to SWAMP
+<h1>What is SWAMP?</h1>
+<p>
+SWAMP is a platform that drives workflows. Workflows are, especially in a professional 
+or business environment, processes that involve many people. 
+Typically processes require input of distinct people in a more 
+or less fixed sequence. Some people urgently need to be informed 
+about progress in the process, others may want to be informed.
+</p>
+<p>
+Unfortunately, processes are not fix in the real world and they are very hard to 
+be defined. Process definitions change as fast as the opinions of the poeple taking part.
+</p>
+<p>
+SWAMP wants to help to provide as much help as software can provide to 
+improve processes. Software can not talk to people and try to motivate them, 
+but software can help people to organise their daily work and give them a more 
+free head for interesting jobs by taking over the organisation of boring parts.
+</p>
+<p>
+Tasks and work sequences that are always of a recurring, similar type and 
+that consist of unchanging subtasks may be defined as a workflow: 
+A chronological sequence of similar tasks, that may or may not depend 
+on each other. These subtasks are handled by one or more persons. The 
+Information about ongoing and already done tasks needs to be spread.
+</p>
+<p>
+SWAMP wants to accept the challenge to be a platform to drive workflows. 
+As mentioned above, processes that are described by workflows change rapidly. 
+That makes it expensive and inefficient to 'hardcode' workflows. Workflows need 
+to be easy defineable for people that are not programmers. SWAMP offers a 
+XML based language (basically a dtd ;-) to define workflows. Once a workflow 
+is defined by one person, it can be used in SWAMP. The target is that no 
+programmer need to touch the SWAMP core for new workflows that come from a new 
+XML file. 
+</p>
+

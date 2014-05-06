@@ -1,0 +1,16 @@
+To set up SWAMP please follow the install instructions at:
+
+/usr/share/doc/packages/swamp/html-installguide/swamp-installguide.html 
+
+The administration documentation is available here: 
+
+/usr/share/doc/packages/swamp/html-adminguide/swamp-adminguide.html 
+
+or online at the project homepage: 
+
+http://swamp.sourceforge.net/index.php?seite=docs
+
+
+After a successful installation and tomcat startup the webSWAMP GUI will be available 
+at http://<hostname>:8080/webswamp
+Have fun!

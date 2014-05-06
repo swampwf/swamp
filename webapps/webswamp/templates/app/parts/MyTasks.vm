@@ -1,0 +1,33 @@
+
+<script language="JavaScript">
+new Ajax.Updater({ success:'mytasks'}, '/webswamp/swamp',
+  {
+    method:'get', 
+    parameters: {action: 'AjaxData', eventSubmit_doGetusertasks: 'true'},
+    onFailure: function(transport){ 
+        Element.update('mytasks_message', 
+                '<div id="mytasks_message"><img src="$ui.image("alert_16")"> ' + 
+                '$ui.tr("An error ocurred while loading your tasks.", ${data.getUser()})</div>')
+        }
+  });
+
+</script>
+
+<div id='mytasks'>
+<table cellspacing="3" cellpadding="3">
+<tr class="box_head">
+<td class="box_head">
+$ui.tr("Open tasks for user %1:", $data.getUser(), ${data.getUser().getName()})
+</td><td align="right" width="20">
+<a href="/rss?action=mytasks"><img src="$ui.image("rss_16")" alt="RSS"/></a>
+</td></tr>
+
+<tr><td colspan="2">
+<div id="mytasks_message">
+<img src="$ui.image("rotate")"> 
+$ui.tr("Loading your tasks...", ${data.getUser()})
+</div>
+</td></tr>
+
+</table>
+</div>

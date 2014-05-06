@@ -1,0 +1,27 @@
+## general purpose velocity macros
+## available in notifications, scriptactions, .vm web templates
+
+#macro (showdata $wf $path)
+#if ($wf.containsDatabit($path))
+#set ($dbit = $wf.getDatabit($path))
+#if (!$dbit.getValue().equals(""))
+#if($dbit.getType().equals("fileref"))
+#fileurl($wf $path)
+#elseif($dbit.getValue().length() > 80)
+${dbit.getDescription()}: 
+$dbit.getValue()
+#else
+${dbit.getDescription()}: $dbit.getValue()
+#end
+#end
+#end
+#end
+
+#macro (fileurl $wf $path)
+#if ($htmlout)
+-> <a href="${webswamp_link}/swamp/action/FileDownload/wfid/${wf.getId()}/path/${path}/name/${wf.getDatabit($path).getValue()}">${wf.getDatabit($path).getValue()}</a>
+#else
+${wf.getDatabit($path).getValue()}:
+${webswamp_link}/swamp/action/FileDownload/wfid/${wf.getId()}/path/${path}/name/${wf.getDatabit($path).getValue()}
+#end
+#end

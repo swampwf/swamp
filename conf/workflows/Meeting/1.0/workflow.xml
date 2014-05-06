@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "../../../dtds/workflow.dtd">
+<workflow name="Meeting" version="1.0" leastSWAMPVersion="1.4">
+
+	<metadata>
+		<templatedescription>
+		This Workflow helps you in managing a team-meeting. \n
+		It starts with choosing a date and location and 
+		notifies the attendees. After the meeting, the minutes 
+		are posted in the Workflow and get automatically sent to the 
+		attendees and additional adresses.
+		</templatedescription>
+		<description>
+		#if (!$wf.getDatabitValue("meetingdata.topic").equals("")) 
+			$wf.getDatabitValue("meetingdata.topic") 
+		#else 
+			(no topic yet)
+		#end 
+		at 
+		#if (!$wf.getDatabitValue("meetingdata.date").equals("")) 
+			$wf.getDatabitValue("meetingdata.date")
+		#else 
+			(no date yet)
+		#end 
+		</description>
+		<creator>tschmidt@suse.de</creator>
+		<history>
+			<change when="2005-04-06" who="tschmidt">
+			Started Meeting Workflow
+			</change>
+		</history>
+
+		<roles>
+			<role name="owner" restricted="true" type="databit">
+				<rolevalue>meetingdata.roles.owner</rolevalue>
+			</role>
+			<role name="admin" restricted="true">
+			</role>
+			<role name="starter" restricted="false">
+			</role>
+			<role name="user" restricted="false">
+			</role>
+			<role name="minutesPoster" restricted="true" type="databit">
+				<rolevalue>meetingdata.roles.minutesPoster</rolevalue>
+			</role>
+		</roles>
+	</metadata>
+
+
+	<!-- Workflow starts here -->
+
+	<node type="start" name="startnode">
+		<description>Enter initial meeting Data</description>
+		<dataedit name="initdata" role="owner" 
+		eventtype="INITDATA_CHANGED">
+		<description>Enter Meeting Data</description>
+		<longdesc>
+		Please enter the meetings data.
+		</longdesc>
+		<field path="meetingdata.topic" mandatory="yes" />
+		<field path="meetingdata.date" mandatory="yes" />
+		<field path="meetingdata.place" mandatory="yes" />
+		<field path="meetingdata.agenda" mandatory="yes" />
+		<field path="meetingdata.roles.attendees" mandatory="yes" />
+		<field path="meetingdata.roles.minutesPoster" mandatory="yes" />
+	</dataedit>
+		<edge to="sendInvitations" event="INITDATA_CHANGED" />
+		<edge to="milestone_init" event="INITDATA_CHANGED" />
+	</node>
+
+
+    <node name="milestone_init">
+      <description>Initial data</description>
+      <milestone name="InitialData" weight="5">
+      	<description>Initial data</description>
+      </milestone>
+    </node>  
+
+
+
+	<node name="sendInvitations">
+		<description>Sending invitations to the atttendees</description>
+		<notification name="invite_attendees" 
+			msgtemplate="notifications/invite_attendees">
+		<recipient dbit="meetingdata.roles.attendees"/>
+		<description></description>
+	</notification>
+		<edge to="post_minutes" event="none" />
+	</node> 
+
+
+
+
+
+	<node name="post_minutes">
+		<description>Post the meeting minutes</description>
+		<dataedit name="postMinutes" role="minutesPoster" 
+		eventtype="MINUTES_READY" notificationtemplate="notifications/task_send_minutes">
+		<description>Please enter the Meeting minutes</description>
+		<longdesc>
+		Please enter the Meeting minutes here. They will automatically 
+		be sent to the attendees and additional receivers upon clicking "Done".
+		</longdesc>
+		<field path="meetingdata.minutes" mandatory="yes" />
+		<field path="meetingdata.minutesTo" mandatory="no" />
+		<field path="meetingdata.roles.attendees" mandatory="yes" />
+	</dataedit>
+		<edge to="sendMinutes" event="MINUTES_READY" />
+		<edge to="milestone_minutes" event="MINUTES_READY" />
+	</node>
+
+
+
+    <node name="milestone_minutes">
+      <description>minutes posted</description>
+      <milestone name="MinutesStone" weight="35">
+      	<description>Minutes draft ready</description>
+      </milestone>
+    </node> 
+
+
+
+	<node name="sendMinutes">
+		<description>Sending the minutes to the atttendees</description>
+		<notification name="send_minutes" 
+			msgtemplate="notifications/send_minutes">
+		<recipient dbit="meetingdata.roles.attendees"/>
+		<recipient dbit="meetingdata.minutesTo"/>
+		<description></description>
+	</notification>
+	
+		<edge to="meeting_closed" event="none"/>
+		<edge to="milestone_publish_minutes" event="none" />
+	</node> 
+
+
+
+    <node name="milestone_publish_minutes">
+      <description>Minutes published</description>
+      <milestone name="MinutesPublishStone" weight="45">
+      	<description>Minutes published</description>
+      </milestone>
+    </node> 
+
+
+
+
+
+
+	<!-- close the workflow -->
+	<node type="end" name="meeting_closed">
+		<description>
+		This Meeting Workflow is closed.
+		</description>
+	</node>
+
+
+
+
+
+	<!-- Datapack starts here -->
+	<dataset name="meetingdata" description="Meeting Dataset" state="read-write">
+
+	<databit name="topic" description="Topic of the meeting" shortdesc="Topic" type="string"/>
+	<databit name="place" description="Location of the meeting" type="string"/>
+
+	<databit name="date" description="When will the meeting be?" shortdesc="Date" type="datetime"/>
+
+	<databit name="agenda" description="Meetings Agenda" type="text">
+		<dbedit type="text" ysize="7" xsize="65"/>
+	</databit>
+
+	<databit name="minutes" description="Meeting minutes" type="text">
+		<dbedit type="text" ysize="8" xsize="65"/>
+	</databit>
+	
+	<databit name="minutesTo" 
+	description="Additional receivers of the meeting minutes:" type="person"/>
+	
+	
+
+		
+	<!-- Roles in this Workflow -->
+		
+	<dataset name="roles" description="Involved people" state="read-write">
+
+		<databit name="owner" description="Owner of this Workflow" type="person" state="read-write"/>
+		
+		<databit name="attendees" description="Attendees of the meeting" 
+			type="person" state="read-write">
+			<dbedit type="text" ysize="3" xsize="60"/>
+		</databit>
+			
+		<databit name="minutesPoster" 
+		description="Who should take the meeting minutes?" type="person"/>
+		
+	</dataset>
+		
+	</dataset>
+</workflow>
+
