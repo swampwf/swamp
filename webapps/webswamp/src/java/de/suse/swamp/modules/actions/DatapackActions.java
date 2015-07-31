@@ -110,10 +110,7 @@ public class DatapackActions extends SecureAction {
                                 count++;
                             }
                         } else if (dbitType.equalsIgnoreCase("patchdocumd")) {
-                                    String value = pp.get(field);
-                            if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, value, false, userName, changeResults)) {
-                                changedBits.add(fieldpath);
-                            }
+                            String value = pp.get(field);
                         } else {
                             String value = StringEscapeUtils.unescapeHtml(pp.get(field));
                             if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, value, false, userName, changeResults)) {
