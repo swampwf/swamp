@@ -35,12 +35,19 @@ $page.setBgColor($ui.bgcolor)
 
 
 #if ($turbineconf.getProperty("webswamp.testserver").equals("true"))
-This is a SWAMP Test-Server. <br />
-You can login with 2 roles: <br />
-&nbsp;&nbsp;&nbsp;<i>swamp_user</i> with password "swamp"<br />
-&nbsp;&nbsp;&nbsp;<i>swamp_admin</i> with password "!swamp#"<br /><br />
+    This is a SWAMP Test-Server. <br />
+    You can login with 2 roles: <br />
+    <i>swamp_user</i> with password "swamp"<br />
+    <i>swamp_admin</i> with password "!swamp#"<br /><br />
+#elseif ($turbineconf.getProperty("webswamp.testserver").equals("demo"))
+    <h2>Welcome to the SWAMP Demo Server</h2> <br />
+    You can login with different users: <br />
+    <i><b>swamp_user</b></i> with password "<b>swamp</b>" (normal user)<br />
+    <i><b>swamp_admin</b></i> with password "<b>!swamp#</b>" (admin user)<br /><br />
+    JobTracker users: <br />
+    <i><b>deplead_operations</b></i> with password "<b>swamp</b>"<br />
+    <i><b>teamlead_tools</b></i> with password "<b>swamp</b>"<br /><br />
 #end
-
 
 <form method="post" action="/webswamp/swamp/action/LoginActions" name="loginform">
   <table cellspacing="0" cellpadding="5" class="box_login">

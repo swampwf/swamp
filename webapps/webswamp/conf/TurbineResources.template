@@ -23,7 +23,7 @@ webswamp.path=@WEBSWAMP_PATH@
 swamp.conf = @SWAMPCONF@
 
 # mark this server as a testserver in the layout
-webswamp.testserver = true
+webswamp.testserver = false
 
 turbine.displayStackTraceInApp = true
 turbine.displayProcessingExceptionInApp = true

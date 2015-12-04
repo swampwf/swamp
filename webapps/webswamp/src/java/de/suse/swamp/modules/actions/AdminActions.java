@@ -35,9 +35,12 @@ import org.apache.turbine.services.schedule.*;
 import org.apache.turbine.util.*;
 import org.apache.velocity.context.*;
 
+import de.suse.swamp.core.actions.*;
 import de.suse.swamp.core.api.*;
 import de.suse.swamp.core.security.*;
+import de.suse.swamp.core.util.*;
 import de.suse.swamp.core.util.SecurityException;
+import de.suse.swamp.core.workflow.*;
 import de.suse.swamp.modules.scheduledjobs.*;
 import de.suse.swamp.turbine.services.security.*;
 import de.suse.swamp.util.*;
@@ -85,7 +88,6 @@ public class AdminActions extends SecureAction {
         String uname = data.getUser().getName();
         long freeMem2 = wfapi.doFullgc(uname);
         context.put("freeMem2", String.valueOf(freeMem2));
-        
     }
     
     public void doEmptycaches(RunData data, Context context) throws Exception {
@@ -137,5 +139,38 @@ public class AdminActions extends SecureAction {
         context.put("statusclass", "success");
         context.put("icon", "ok");
     }
+
     
+    /**
+     * Manually run a script
+     */
+    public void doRunScript(RunData data, Context context) throws Exception {
+        SWAMPUser user = ((SWAMPTurbineUser) data.getUser()).getSWAMPUser();
+        if (!de.suse.swamp.core.container.SecurityManager.isGroupMember(user, "swampadmins"))
+            throw new SecurityException("No permission (needs group swampadmins)");
+
+        int wfId = data.getParameters().getInt("wfid");
+        String language = data.getParameters().getString("language");
+        String script = data.getParameters().getString("script");
+        Workflow wf = new WorkflowAPI().getWorkflow(wfId, user.getUserName());
+        ResultList results = new ResultList();
+
+        ScriptTemplate scriptTemplate = new ScriptTemplate(script);
+        ScriptActionTemplate scriptAction = new ScriptActionTemplate(null, null);
+        scriptTemplate.setLanguage(language);
+        HashMap parameters = new HashMap();
+        parameters.put("wf", wf);
+        parameters.put("scriptapi", scriptAction.new ScriptApi(user.getUserName(), wf, results));
+        scriptTemplate.setParameters(parameters);
+        String result = scriptTemplate.evaluate();
+        results.addResult(ResultList.MESSAGE, "Script result: " + result);
+        
+        context.put("script", script);
+        context.put("wfid", "" + wfId);
+        context.put("language", language);
+        context.put("history", results);
+        context.put("statusheader", "Success");
+        context.put("statusclass", "success");
+        context.put("icon", "ok");
+    }
 }

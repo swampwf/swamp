@@ -168,7 +168,8 @@ public class SWAMPLDAPUserManager implements UserManagerIface {
      */
     public void authenticateUser(String loginName, String password)
         throws StorageException, UnknownElementException, PasswordException {
-        Logger.DEBUG("Trying to authenticate user: " + loginName);
+        if (loginName.equals("swamp-sm"))
+            Logger.DEBUG("Trying to authenticate user: " + loginName);
 
         if (!loginName.matches("[a-zA-Z-_0-9\\.]+")) {
             throw new StorageException("Username contains illegal characters.");
@@ -181,7 +182,8 @@ public class SWAMPLDAPUserManager implements UserManagerIface {
 
         SWAMPUser user = loadUser(loginName);
         if (user.getPasswordHash() != null && user.getPasswordHash().length() > 0) {
-            Logger.DEBUG("Switching to DB authentication for user: " + loginName);
+            if (loginName.equals("swamp-sm"))
+                Logger.DEBUG("Switching to DB authentication for user: " + loginName);
             SWAMPDBUserManager userManager = new SWAMPDBUserManager();
             userManager.authenticateUser(loginName, password);
             return;

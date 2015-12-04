@@ -215,6 +215,7 @@
     <antcall target="torque-create-database"/>
     <antcall target="torque-schema-sql"/>
     <antcall target="torque-security-sql"/>
+    <antcall target="fix-generated-sql" />
     <antcall target="torque-insert-sql-files"/>
     <antcall target="torque-update-tr-props"/>
     <antcall target="torque-project-om"/>
@@ -478,5 +479,9 @@
             <classpath refid="classpath" />
         </java>
         </target> 
+
+    <target name="fix-generated-sql">
+      <replace dir="torque/sql" token="Type=MyISAM" value="Engine=MyISAM" />
+    </target>
 	
 </project>

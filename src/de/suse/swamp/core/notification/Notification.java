@@ -338,17 +338,12 @@ public class Notification implements Cloneable {
         prepareContentString();
         return content;
     }
-    
-    
-    
-    
+
     /**
-	 * Detect type of getting the recipient (databit, email, swampuser, role)
+     * Detect type of getting the recipient (databit, email, swampuser, role)
      * The referenced Databit may contain a comma-seperated List of 
-     * SuSE Users, or comma-separated email-addresses.
-     * 
-     * 
-	 */
+     * swamp users, or comma-separated email-addresses.
+     */
      public synchronized int setRecipients() throws Exception {
      
          WorkflowManager wfman = WorkflowManager.getInstance();

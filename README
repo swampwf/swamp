@@ -1,4 +1,4 @@
-SWAMP 1.6.1 (http://swamp.sf.net)
+SWAMP 1.6.2 (http://swamp.sf.net)
 ---------
 Date: 
 
@@ -9,6 +9,14 @@ execution of individual tasks can be done via the web and SOAP interfaces.
 
 Changes
 -------
+
+  New features in 1.6.2:
+  
+    - Add JobTracker to public swamp version
+    - Admin page can run scripts now, so you can debug scripts online.
+    - Additional 'done' and 'reset' for editactions on page top
+    - Allow failure when executing external programs
+    - Added method to determine who executed a certain task
 
   New features in 1.6.1:
     
@@ -247,4 +255,4 @@ Feedback
 
   
   
-  
+

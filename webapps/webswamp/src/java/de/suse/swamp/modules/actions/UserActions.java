@@ -130,7 +130,7 @@ public class UserActions extends VelocityAction {
                     .equals("de.suse.swamp.core.security.SWAMPLDAPUserManager") &&
                     (passwordHash == null || passwordHash.equals(""))){
                 throw new Exception("Not allowed to change user preferences");
-            } else if (Turbine.getConfiguration().getString("webswamp.testserver").equals("true")){
+            } else if (!Turbine.getConfiguration().getString("webswamp.testserver").equals("false")) {
                 throw new Exception("Not allowed to change user preferences");
             }
     	}

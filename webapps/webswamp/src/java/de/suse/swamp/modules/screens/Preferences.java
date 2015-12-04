@@ -88,7 +88,7 @@ public class Preferences extends SecureScreen {
 				(passwordHash == null || passwordHash.equals(""))){
 			context.put("locked", i18n.tr("Fields are automatically synced from %1", user,
 					new SWAMPAPI().doGetProperty("LDAP_BIND_URL", uname)));
-		} else if (Turbine.getConfiguration().getString("webswamp.testserver").equals("true")){
+		} else if (!Turbine.getConfiguration().getString("webswamp.testserver").equals("false")) {
 			context.put("locked", i18n.tr("Fields are locked because this is a test system.", user,
 					new SWAMPAPI().doGetProperty("LDAP_BIND_URL", uname)));
 		}

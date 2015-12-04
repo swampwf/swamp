@@ -106,3 +106,27 @@ Change user to: <input type="text" name="targetuser" />
 
 
 <br /><br />
+
+
+<table cellspacing="3" cellpadding="3" width="60%">
+<tr class="box_head">
+<td class="box_head">Script: </td></tr>
+</td></tr>
+<tr class="box_normal"><td>
+
+<form method="POST" action="$link.setPage("Debug.vm").setAction("AdminActions")">
+Workflow id: <input type="text" value="$!wfid" name="wfid" />
+Language: <select name="language">
+#if ($language) <option selected>$language</option> #end
+<option>velocity</option><option>groovy</option></select>
+<br/>Script: <br/>
+<textarea name="script" rows="10" cols="75">$!script</textarea>
+<input type="submit" name="eventSubmit_doRunScript" value="Execute script"/>
+</form>
+
+</td></tr>
+</table>
+
+
+<br /><br />
+

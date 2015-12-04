@@ -288,7 +288,6 @@ public class Workflow extends Persistant {
         return found;
     }
     
-    
     /**
      * Central event handling routine. The method queries all nodes and their
      * edges and provides the incoming Event to every edge with help of method
@@ -296,6 +295,9 @@ public class Workflow extends Persistant {
      * <p>
      * Note that this method changes the databases: If the edges are satisfied
      * for a node, it is left to go to its successor.
+     *
+     * FIXME: the "synchronized" is only here because of our autobuild connection 
+     * which has causes nested event loops. 
      *
      * @param e the event that will be handled by the workflow object
      */

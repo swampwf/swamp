@@ -109,7 +109,7 @@ public class SoapSwamp {
 
     public String doGetData(int wfid, String path, String username, String password)
             throws RemoteException {
-        Logger.DEBUG("SOAPSWAMP: dogetData(): " + wfid + ", " + path);
+        //Logger.DEBUG("SOAPSWAMP: dogetData(): " + wfid + ", " + path);
         try {
             authenticate(username, password);
             return this.dataApi.doGetDataBit(wfid, path, username).getValue();
@@ -121,7 +121,7 @@ public class SoapSwamp {
 
     public Object[] doGetAllDataPaths(int wfid, String username, String password)
     throws RemoteException {
-    	Logger.DEBUG("SOAPSWAMP: doGetAllDataPaths(): " + wfid);
+    	//Logger.DEBUG("SOAPSWAMP: doGetAllDataPaths(): " + wfid);
     	try {
     		authenticate(username, password);
     		Workflow wf = wfApi.getWorkflow(wfid, username);
@@ -134,7 +134,7 @@ public class SoapSwamp {
 
     public HashMap doGetAllData(int wfid, String username, String password)
     throws RemoteException {
-        Logger.DEBUG("SOAPSWAMP: doGetAllData(): " + wfid);
+        //Logger.DEBUG("SOAPSWAMP: doGetAllData(): " + wfid);
         try {
             authenticate(username, password);
             Workflow wf = wfApi.getWorkflow(wfid, username);
@@ -152,7 +152,7 @@ public class SoapSwamp {
 
     public boolean doSendData(int wfid, String path, Object value, String username, String password)
             throws RemoteException {
-        Logger.DEBUG("SOAPSWAMP: doSendData(): " + wfid + ", " + path + " " + value);
+        //Logger.DEBUG("SOAPSWAMP: doSendData(): " + wfid + ", " + path + " " + value);
         try {
             authenticate(username, password);
             Workflow wf = wfApi.getWorkflow(wfid, username);
@@ -170,7 +170,7 @@ public class SoapSwamp {
 
     public Object[] doSendEvent(int wfid, String event, String username,
 			String password) throws RemoteException {
-		Logger.DEBUG("SOAPSWAMP: doSendEvent(): " + wfid + ", " + event);
+		//Logger.DEBUG("SOAPSWAMP: doSendEvent(): " + wfid + ", " + event);
         ResultList hist = new ResultList();
         ArrayList results = new ArrayList();
         try {
@@ -210,7 +210,7 @@ public class SoapSwamp {
 
     public boolean addUserToWfRole(String targetUser, String wfName, String roleName, String username, String password) 
         throws RemoteException {
-        Logger.DEBUG("SOAPSWAMP: addUserToWfRole(): " + targetUser + " role: " + roleName + " wf: " + wfName);
+        //Logger.DEBUG("SOAPSWAMP: addUserToWfRole(): " + targetUser + " role: " + roleName + " wf: " + wfName);
         try {
             authenticate(username, password);
             return securityApi.addUserToWfRole(targetUser, wfName, roleName, username);
@@ -221,7 +221,7 @@ public class SoapSwamp {
 
     public boolean removeUserFromWfRole(String targetUser, String wfName, String roleName, String username, String password) 
         throws RemoteException {
-        Logger.DEBUG("SOAPSWAMP: removeUserFromWfRole(): " + targetUser + " role: " + roleName + " wf: " + wfName);
+        //Logger.DEBUG("SOAPSWAMP: removeUserFromWfRole(): " + targetUser + " role: " + roleName + " wf: " + wfName);
         try {
             authenticate(username, password);
             return securityApi.removeUserFromWfRole(targetUser, wfName, roleName, username);
@@ -235,7 +235,7 @@ public class SoapSwamp {
 
     public String doGetProperty(String propName, String username,
 			String password) throws RemoteException {
-		Logger.DEBUG("SOAPSWAMP: doGetProperty(): " + propName);
+		//Logger.DEBUG("SOAPSWAMP: doGetProperty(): " + propName);
 		try {
 			authenticate(username, password);
 			return SWAMP.getInstance().getProperty(propName);
@@ -254,7 +254,7 @@ public class SoapSwamp {
 
     public HashMap getWorkflowInfo(int wfid, String username,
 			String password) throws Exception {
-		Logger.DEBUG("SOAPSWAMP: getWorkflowInfo(): " + wfid);
+		//Logger.DEBUG("SOAPSWAMP: getWorkflowInfo(): " + wfid);
 		HashMap info = new HashMap();
 		try {
 			authenticate(username, password);
@@ -280,7 +280,7 @@ public class SoapSwamp {
     //FIXME: add order capability to soap interface
     public Object[] getWorkflowIdList(HashMap filterStrings, String username, String password)
             throws Exception {
-        Logger.DEBUG("SOAPSWAMP: getWorkflowIdList()");
+        //Logger.DEBUG("SOAPSWAMP: getWorkflowIdList()");
         try {
             authenticate(username, password);
             ArrayList ids = new ArrayList(wfApi.getWorkflowIds(filterStrings, null, username));
@@ -295,7 +295,7 @@ public class SoapSwamp {
 
     public int createWorkflow(int parentWfid, String templateName, String username,
 			String password) throws RemoteException {
-		Logger.DEBUG("SOAPSWAMP: createWorkflow() ");
+		//Logger.DEBUG("SOAPSWAMP: createWorkflow() ");
 		try {
 			authenticate(username, password);
 			WorkflowTemplate templ = wfApi.getWorkflowTemplate(templateName, username);

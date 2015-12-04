@@ -12,17 +12,10 @@ Name:  swamp_beta
 ###############################################################################
 
 %if 0%{?suse_version}
-BuildRequires: docbook-toys ant gettext update-alternatives
+BuildRequires: docbook-toys ant gettext update-alternatives 
+BuildRequires: java-devel >= 1.5
 # enable for testing in build root
 #BuildRequires: mysql 
-
-%if 0%{?opensuse_bs}
-# in buildservice
-BuildRequires: java-devel
-%else
-# autobuild macro
-BuildRequires: java2-devel-packages
-%endif
 
 # what the rpm  will require:
 Requires: mysql
@@ -30,7 +23,7 @@ Requires: mysql
 # switch different tomcat versions
 %if 0%{?suse_version} > 1030
 Requires: tomcat6
-BuildRequires: tomcat6
+BuildRequires: tomcat6 
 %define catalina_home   /usr/share/tomcat6
 %define catalina_base   /srv/tomcat6
 %define catalina_common   /usr/share/tomcat6/lib
@@ -94,7 +87,7 @@ BuildRequires: classpathx-jaf
 %endif
 ###############################################################################
 
-Version:      1.6.1beta
+Version:      1.6.2beta
 Release:      1
 License:      GPL, Other License(s), see package
 Group:        Productivity/Networking/Other
@@ -242,6 +235,8 @@ cp  build/swamp.jar \
     lib/javamail-*.jar \
     lib/Tidy.jar \
     lib/antlr-*.jar \
+    lib/xercesImpl*.jar \
+    lib/xml-apis-*.jar \
     ${RPM_BUILD_ROOT}%{catalina_common}
 
 

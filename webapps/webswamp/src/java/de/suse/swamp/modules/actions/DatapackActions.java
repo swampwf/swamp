@@ -77,7 +77,7 @@ public class DatapackActions extends SecureAction {
         DataeditResult result = new DataeditResult(wfID);
 
         org.apache.turbine.util.parser.ParameterParser pp = data.getParameters();
-        int count = 0;
+        List changedBits = new ArrayList();
         ArrayList bugIdFields = new ArrayList();
         ResultList changeResults = new ResultList();
 
@@ -100,21 +100,24 @@ public class DatapackActions extends SecureAction {
                                 if (fileName.indexOf("\\") >= 0) fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
                                 if (fileName.indexOf("/") >= 0) fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
                                 dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, fileName, false, userName, changeResults);
-                                count++;
+                                changedBits.add(fieldpath);
                             }
                         } else if (dbitType.equalsIgnoreCase("bugzilla")) {
                             bugIdFields.add(field);
                         } else if (dbitType.equalsIgnoreCase("multienum")) {
                             SWAMPHashSet values = new SWAMPHashSet(pp.getStrings(field));
                             if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, values.toString(", "), false, userName, changeResults)) {
-                                count++;
+                                changedBits.add(fieldpath);
                             }
                         } else if (dbitType.equalsIgnoreCase("patchdocumd")) {
-                            String value = pp.get(field);
+                                    String value = pp.get(field);
+                            if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, value, false, userName, changeResults)) {
+                                changedBits.add(fieldpath);
+                            }
                         } else {
                             String value = StringEscapeUtils.unescapeHtml(pp.get(field));
                             if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, value, false, userName, changeResults)) {
-                                count++;
+                                changedBits.add(fieldpath);
                             }
                         }
                     } else {
@@ -126,7 +129,7 @@ public class DatapackActions extends SecureAction {
                         // nothing selected
                         if (wf.containsDatabit(field.substring(7))) {
                             if (dataapi.doUpdateDataBitValue(wf.getId(), field.substring(7), "", false, userName, changeResults)) {
-                                count++;
+                                changedBits.add(fieldpath);
                             }
                         }
                     }                    
@@ -136,7 +139,7 @@ public class DatapackActions extends SecureAction {
                         // checkbox not checked
                         if (wf.containsDatabit(field.substring(8))) {
                             if (dataapi.doUpdateDataBitValue(wf.getId(), field.substring(8), "false", false, userName, changeResults)){
-                                count++;
+                                changedBits.add(fieldpath);
                             }
                         }
                     }
@@ -154,7 +157,7 @@ public class DatapackActions extends SecureAction {
             try {
                 String value = StringEscapeUtils.unescapeHtml(pp.get(field));
                 if (dataapi.doUpdateDataBitValue(wf.getId(), fieldpath, value, false, userName, changeResults)) {
-                    count++;
+                    changedBits.add(fieldpath);
                     message += "Bugzilla data has been updated.\n";
                 } else if (pp.containsKey("refresh_bugzilla")) {
                     // force refresh:
@@ -168,13 +171,11 @@ public class DatapackActions extends SecureAction {
         }
 
         context.put("result", result);
-        Logger.DEBUG("doSavedatapack changed " + String.valueOf(count) + " dbits");
-        if (count == 1) {
-            message += "Changed 1 databit.\n";
-            
-        } else if (count > 1){
-            message += "Changed " + String.valueOf(count) + " databits.\n";
-        
+        Logger.DEBUG("doSavedatapack changed " + changedBits.size() + " dbits. "
+                + new SWAMPHashSet(changedBits).toString());
+        if (changedBits.size() > 0) {
+            message += "Changed " + changedBits.size() + " databits.\n";
+            message += "(" + new SWAMPHashSet(changedBits).toString() + ")\n";
         } else {
             message += "No Workflow-data has been changed.\n";
         }

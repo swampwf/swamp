@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE workflow SYSTEM "../../../../../swamp/swamp/conf/dtds/workflow.dtd">
+<workflow name="JobTracker" version="1.0" leastSWAMPVersion="1.6">
+
+    <metadata>
+      <templatedescription>
+      	Workflow to track a "Job-Offer". \n
+      	Each Job-Offer attaches subworkflows for the Job-Applicants 
+      	that also include the application files as PDF. \n
+      	A rating system is included, to allow interested people 
+      	to give a comment to the applications. Permissions for each 
+      	Job can be set seperately.
+      </templatedescription>
+      <description>Job-Offer  
+		#if (!$wf.getDatabitValue("ausschreibungsdata.stelle").equals(""))
+		$wf.getDatabitValue("ausschreibungsdata.stelle")
+		#else
+		(no Description yet)
+		#end
+      </description>
+      <creator>tschmidt</creator>
+      
+      	<history>
+        <change who="tschmidt" when="2005-06-20">Version 0.1</change>
+        </history>
+      
+		<roles>
+			<role name="owner" restricted="true" type="databit">
+				<description>Owner</description>
+				<rolevalue>ausschreibungsdata.roles.hr</rolevalue>
+			</role>
+			<role name="admin" restricted="true" type="reference">
+				<description>JobTracker admins</description>
+				<rolevalue>depleads</rolevalue>
+				<rolevalue>hrs</rolevalue>
+				<rolevalue>resp_teamlead</rolevalue>
+			</role>
+			<role name="teamleads" restricted="true">
+				<description>Team leads</description>
+				<rolevalue>swamp_user, teamlead_tools, teamlead_design</rolevalue>
+			</role>
+			<role name="depleads" restricted="true">
+				<description>Department leads</description>
+				<rolevalue>swamp_admin, deplead_operations, deplead_qa</rolevalue>
+			</role>
+			<role name="hrs" restricted="true">
+				<description>HR people</description>
+				<rolevalue>swamp_user</rolevalue>
+			</role>
+			<role name="starter" restricted="true">
+				<description>Starters</description>
+				<rolevalue/>
+			</role>
+			<role name="user" restricted="true" type="databit">
+				<description>additional workflow users</description>
+				<rolevalue>ausschreibungsdata.roles.user</rolevalue>
+			</role>
+			<role name="hr_responsible" restricted="true" type="databit">
+				<description>HR Responsible</description>
+				<rolevalue>ausschreibungsdata.roles.hr</rolevalue>
+			</role>
+			<role name="resp_teamlead" restricted="true" type="databit">
+				<description>Responsible hiring manager</description>
+				<rolevalue>ausschreibungsdata.roles.hiring_manager</rolevalue>
+			</role>
+			<role name="resp_depleader" restricted="true" type="databit">
+				<description>Responsible Department-leader</description>
+				<rolevalue>ausschreibungsdata.roles.abtleiter</rolevalue>
+			</role>
+		</roles>
+    </metadata>
+
+
+
+	<node type="start" name="start">
+		<description>Startnode</description>
+		<edge to="ausschreibung_start" event="none" />
+		<edge to="node_milestone_start" event="none" />
+	</node>
+
+
+    <node name="node_milestone_start">
+		<description>Job-offer started</description>
+	<milestone name="milestone_start" weight="5">
+		<description>Job-offer started</description>
+	</milestone>
+	</node>
+
+
+    <node name="ausschreibung_start">
+    	<description>Starting Job-Offer</description>
+		<dataedit name="initdata" role="owner" 
+		eventtype="INITIAL_DATA" restricted="true">
+		<description>Enter Job-Offer Data</description>
+		<longdesc>
+		A new Job-Tracker Workflow has been started. \n
+		You may use the unique ID: $wf.getName() for referencing to this 
+		Job-Offer. \n 
+		Please enter the initial data below. 
+		</longdesc>
+		<field path="ausschreibungsdata.stelle" mandatory="yes" />
+		<field path="ausschreibungsdata.w3link" mandatory="no" />
+		<field path="ausschreibungsdata.intern_extern" mandatory="yes" />
+		<field path="ausschreibungsdata.comp_level" mandatory="yes" />
+		<field path="ausschreibungsdata.referral_bonus" mandatory="no" />
+		<field path="ausschreibungsdata.comment" mandatory="no" />
+		<field path="ausschreibungsdata.roles.hr" mandatory="yes" />
+		<field path="ausschreibungsdata.roles.user" mandatory="no" />
+		<field path="ausschreibungsdata.add_teamleads" mandatory="no" />
+		<field path="ausschreibungsdata.roles.abtleiter" mandatory="false" />
+		<field path="ausschreibungsdata.roles.hiring_manager" mandatory="no" />
+	</dataedit>
+   		<edge to="teamleiterToUser" event="INITIAL_DATA" />
+   		<edge to="node_milestone_data" event="INITIAL_DATA" />
+   		<edge to="wait_cancel" event="INITIAL_DATA" />
+		<edge to="wait_activate_finish" event="INITIAL_DATA" />
+   		<edge to="add_teamleads_node">
+   			<and>
+			<data check="regexp" field="ausschreibungsdata.add_teamleads" value="true"/>
+			<event type="INITIAL_DATA"/>
+			</and>
+   		</edge>
+    </node>				
+    					
+
+
+    <node name="add_teamleads_node">
+		<description>add teamleads</description>
+		<scriptaction name="useradd_teamleads">
+			<description>add teamleads to Workflow users</description>
+			<script>
+				$wf.getDatabit("ausschreibungsdata.roles.user").addValue($wf.getRole("teamleads").getMemberNames($wf).toString())
+			</script>
+		</scriptaction>
+	</node>
+
+
+    <node name="node_milestone_data">
+		<description>Initial data</description>
+		<milestone name="milestone_data" weight="9">
+			<description>Initial data</description>
+		</milestone>
+		<notification name="new_jobtracker" msgtemplate="notifications/new_jobtracker" >
+			<recipient recipientrole="admin"/>
+			<recipient recipientrole="user"/>
+		</notification>
+	</node>
+
+
+    					
+	<node name="teamleiterToUser">
+		<description>Adding the hiring manager to Workflow users</description>
+		<scriptaction name="useradd_teamlead">
+			<description>Adding the hiring manager to Workflow users</description>
+			<script>
+				$wf.getDatabit("ausschreibungsdata.roles.user").addValue($wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager"))
+			</script>
+		</scriptaction>
+		<edge to="ausschreibung_bewerber" event="none" />
+	</node>
+    		
+    					
+    						    							
+
+    <node name="ausschreibung_bewerber">
+    	<description>Add an applicant to this Job-Offer</description>
+
+		<scriptaction name="clear_bewerberdata">
+			<description>Clear applicant data</description>
+			<script>
+				$wf.getDatabit("ausschreibungsdata.bewerberdata.name").setValue("")
+				$wf.getDatabit("ausschreibungsdata.bewerberdata.eingang_am").setValue($wf.getDatabitValue("System.ausschreibung_bewerber.enterDate"))
+				$wf.getDatabit("ausschreibungsdata.bewerberdata.wiederholt").setValue("false")
+				$wf.getDatabit("ausschreibungsdata.bewerberdata.intern").setValue("false")		
+				$wf.getDatabit("ausschreibungsdata.files.file1").setValue("")	
+				$wf.getDatabit("ausschreibungsdata.files.file2").setValue("")	
+				$wf.getDatabit("ausschreibungsdata.files.file3").setValue("")	
+				$wf.getDatabit("ausschreibungsdata.files.file4").setValue("")		
+			</script>
+		</scriptaction>
+
+		<dataedit name="bewerber_data" role="owner" 
+		eventtype="BEWERBER_DATA" restricted="true">
+		<description>Add a new Job-Applicant</description>
+		<longdesc>
+		Please enter the applicants data and attach his files. \n
+		A rating from the responsible department lead(s): $wf.getDatabitValue("ausschreibungsdata.roles.abtleiter") \n
+		#if(!$wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager").equals(""))
+		and hiring manager: $wf.getDatabitValue("ausschreibungsdata.roles.hiring_manager") \n
+		#end
+		will automatically be requested.
+		</longdesc>
+		<field path="ausschreibungsdata.bewerberdata.name" mandatory="yes" />
+		<field path="ausschreibungsdata.bewerberdata.eingang_am" mandatory="no" />
+		<field path="ausschreibungsdata.bewerberdata.wiederholt" mandatory="yes" />
+		<field path="ausschreibungsdata.bewerberdata.intern" mandatory="yes" />
+		<field path="ausschreibungsdata.files.file1" mandatory="no" />
+		<field path="ausschreibungsdata.files.file2" mandatory="no" />
+		<field path="ausschreibungsdata.files.file3" mandatory="no" />
+		<field path="ausschreibungsdata.files.file4" mandatory="no" />
+	</dataedit>
+   		<edge to="fork_bewerber" event="BEWERBER_DATA" />
+   		<edge to="node_milestone_bewerber" event="BEWERBER_DATA" />
+    </node>	
+    
+    
+    <node name="node_milestone_bewerber">
+		<description>Applicant added</description>
+	<milestone name="milestone_bewerber" weight="15">
+		<description>Applicant added</description>
+	</milestone>
+	</node>
+
+
+
+	<node name="fork_bewerber">
+		<description>Node for adding a new applicant</description>
+		<startsubworkflow name="startsub" subname="application" subversion="1.0">
+			<description>Adding a new applicant</description>	
+		</startsubworkflow>
+		<edge to="ausschreibung_bewerber" event="none" />
+	</node>
+
+
+
+	<node name="wait_cancel">
+		<description>Waiting for Event to cancel this Job-Offer
+		</description>
+		<manualtask role="admin" name="cancel_Ausschreibung" eventtype="WORKFLOW_CANCEL" 
+			mandatory="false" restricted="true">
+			<description>Cancel this Job-Offer</description>
+			<longdesc>Cancel this Job-Offer</longdesc>
+		</manualtask>
+		<edge to="announce_cancel" event="WORKFLOW_CANCEL" />
+	</node> 
+	
+	
+	
+	<node name="wait_activate_finish">
+		<description>Wait until candidate chosen</description>
+		<edge to="wait_finish">
+			<data value=".+" field="ausschreibungsdata.candidate" check="regexp"/>
+		</edge>
+	</node>
+	
+	
+	<node name="wait_finish">
+		<description>Finish this Job-Offer</description>
+		<dataedit role="hr_responsible" name="end_Ausschreibung" 
+			eventtype="FINISH_JOBTRACKER" mandatory="true" restricted="true">
+			<description>Finish this Job-Offer</description>
+			<longdesc>
+				Finish this Job-Offer by entering its result here. 
+				#if (!$wf.getDatabitValue("ausschreibungsdata.candidate").equals(""))
+					The candidate that was chosen for the job is: 
+					$wf.getDatabitValue("ausschreibungsdata.candidate") 
+				#else 
+					Please choose one candidate to be taken for this job before 
+					finishing it. This should be done by the responsible 
+					department leader in the Job-Application subworkflow.			
+				#end
+				</longdesc>
+			<field mandatory="yes" path="ausschreibungsdata.candidate"/>
+			<field mandatory="yes" path="ausschreibungsdata.start_date"/>
+			<field mandatory="yes" path="ausschreibungsdata.department"/>
+			<field mandatory="no" path="ausschreibungsdata.comment"/>
+		</dataedit>
+		<edge to="announce_finish" event="FINISH_JOBTRACKER" />
+	</node>
+	
+	
+	
+	<node name="announce_cancel">
+		<description>
+		Announcing Job-Tracker canceled
+		</description>
+		<notification name="announce_cancel_mail" 
+			msgtemplate="notifications/announce_cancel">
+			<recipient recipientrole="owner"/>
+			<recipient recipientrole="user"/>
+			<recipient recipientrole="resp_depleader"/>
+		</notification>
+	
+		<!-- give cancel request to children-->
+		<sendevent name="signal_jobtracker_cancel" eventtype="JOBTRACKER_CANCELED">
+	  		<targetwfs>
+	  		#foreach ($subwf in $wf.getSubWorkflows(true))
+	  			$subwf.getId(), 
+	  		#end
+	  		</targetwfs>		
+		</sendevent>
+	
+	<edge to="canceled" event="none"/>
+	</node>
+	
+	
+	<node name="announce_finish">
+		<description>
+		Announcing Job-Tracker finished
+		</description>
+		<notification name="announce_finish_mail" 
+			msgtemplate="notifications/announce_finish">
+			<recipient recipientrole="owner"/>
+			<recipient recipientrole="user"/>
+			<recipient recipientrole="resp_depleader"/>
+		</notification>
+	
+		<!-- give finish request to children-->
+		<sendevent name="signal_jobtracker_finish" eventtype="JOBTRACKER_FINISHED">
+	  		<targetwfs>
+	  		#foreach ($subwf in $wf.getSubWorkflows(true))
+	  			$subwf.getId(), 
+	  		#end
+	  		</targetwfs>  			
+		</sendevent>
+	
+	<edge to="theend" event="none"/>
+	</node>
+	
+
+	<!-- ############### End nodes ################### -->
+
+	<node type="end" name="canceled">
+		<description>Job-Tracker is canceled</description>
+	</node>
+
+
+    <node type="end" name="theend">
+      <description>Job-Tracker ended</description>
+	<milestone name="milestone_end" weight="99">
+		<description>Job-Tracker finished</description>
+	</milestone>
+    </node>
+
+    
+    
+    <!-- ################ WF Data ####################### -->
+    
+    <dataset name="ausschreibungsdata" description="Data for this JobTracker">
+      
+    <databit name="stelle" description="Name of the job" type="string" state="read-write"/>
+	<databit name="w3link" description="URL of job-description in the intranet" 
+		type="url" state="read-write">
+		<dbedit type="text" xsize="65" ysize="1"/>
+	</databit>
+	<databit name="intern_extern" description="Internal Job-Offer?" type="boolean" state="read-write">
+	      <defaultvalue>false</defaultvalue>
+    </databit>
+    
+	<databit name="comp_level" description="Competency level" type="enum" 
+		state="read-write">
+			<defaultvalue>none</defaultvalue>
+			<value type="string">none</value>
+			<value type="string">Associate</value>
+			<value type="string">Senior Associate</value>
+			<value type="string">Specialist / Manager</value>
+			<value type="string">Senior Specialist / Senior Manager</value>
+			<value type="string">Principal</value>
+			<value type="string">Company Leader</value>
+	</databit>
+	<databit name="referral_bonus" description="Referral Bonus" type="string" 
+		state="read-write"/>
+	<databit name="comment" description="additional job comment" type="text" state="read-write"/>
+	<!-- should be copied in from Bewerbungs-Workflow -->
+	<databit name="candidate" description="Who was finally hired?" type="string" state="read-write"/>	 
+	<databit name="start_date" description="When is the first workday?" type="date" state="read-write"/>	 
+	<databit name="department" description="In which department/team will the applicant work?" type="string" state="read-write"/>
+	<databit name="add_teamleads" description="Add teamleads to workflow users" type="boolean" state="hidden">
+	      <defaultvalue>false</defaultvalue>
+    </databit>	 	
+	
+	<dataset description="Roles" name="roles">
+
+		 <databit name="user" description="additional workflow users" 
+		 	type="person" state="read-write" shortdesc="Users" >
+		 	<longdesc>Users in this role have access to this 
+		 	Job, all its applications and ratings.</longdesc>
+		 </databit>	
+		 <databit name="hr" description="HR responsible" type="person" state="read-write"/>
+		 <databit name="hiring_manager" description="hiring manager" type="person" state="read-write"/>
+		 <databit name="abtleiter" description="responsible department-leader" type="multienum" >
+			<defaultvalue></defaultvalue>
+			<value type="string">swamp_admin</value>
+			<value type="string">deplead_operations</value>
+			<value type="string">deplead_qa</value>
+		 </databit>
+
+	</dataset>
+	
+	<dataset description="Applicants-Data" name="bewerberdata" state="hidden">
+		 <databit name="name" description="Name of the job applicant" type="string" state="hidden"/>
+		 <databit name="eingang_am" description="Received at" type="date" state="hidden"/>
+	 	<databit name="wiederholt" description="repeated application" type="boolean" state="hidden">
+			 <defaultvalue>false</defaultvalue>
+		 </databit>
+	 	<databit name="intern" description="internal application" type="boolean" state="hidden">
+			 <defaultvalue>false</defaultvalue>
+		 </databit>
+	</dataset>
+	
+	
+	<dataset description="Applicants Files" name="files" state="hidden">
+		<databit name="file1" description="File1" type="fileref" state="hidden"/>
+		<databit name="file2" description="File2" type="fileref" state="hidden"/>
+		<databit name="file3" description="File3" type="fileref" state="hidden"/>
+		<databit name="file4" description="File4" type="fileref" state="hidden"/>
+	</dataset>
+	
+	
+    </dataset>
+</workflow>

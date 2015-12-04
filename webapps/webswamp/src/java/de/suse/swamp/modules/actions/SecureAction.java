@@ -102,7 +102,7 @@ public class SecureAction extends VelocitySecureAction {
         try {
             method = getClass().getMethod(theButton, methodParams);
             Object[] methodArgs = new Object[] { data, context };
-            Logger.DEBUG("Invoking " + method);
+//            Logger.DEBUG("Invoking " + method);
             method.invoke(this, methodArgs);
         } catch (NoSuchMethodException nsme) {
             data.getResponse().setStatus(400);

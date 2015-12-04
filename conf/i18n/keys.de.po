@@ -1,15 +1,15 @@
-# translation of keys.po to
+# translation of keys.po to Deutsch
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
 # tom <tschmidt æŧ suse.de>, 2006.
-# Thomas Schmidt <tschmidt@suse.de>, 2007.
+# Thomas Schmidt <tschmidt@suse.de>, 2007, 2008.
 msgid ""
 msgstr ""
-"Project-Id-Version: keys\n"
+"Project-Id-Version: keys.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-18 11:58+0200\n"
-"PO-Revision-Date: 2007-05-29 19:11+0200\n"
+"POT-Creation-Date: 2008-11-20 14:41+0100\n"
+"PO-Revision-Date: 2008-11-20 14:50+0100\n"
 "Last-Translator: Thomas Schmidt <tschmidt@suse.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -36,21 +36,21 @@ msgstr "muss eine Zahl enthalten!"
 msgid " must contain a date in the format: "
 msgstr "Muss ein Datum enthalten des Formats: "
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:81
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:86
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:72
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:77
 msgid "Unable to fetch data from: "
 msgstr "Konnte keine Daten lesen von: "
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:83
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
 msgid "Parsing error in line "
 msgstr "Lese-Fehler in Zeile "
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:83
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
 msgid ", column "
 msgstr ", Spalte "
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:84
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:88
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:75
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:79
 msgid "Reason: "
 msgstr "Grund: "
 
@@ -60,7 +60,6 @@ msgid "Assignment to Field "
 msgstr "Zuweisung zu Feld "
 
 #: src/de/suse/swamp/core/data/datatypes/multienumDatabit.java:77
-#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
 msgid " must be in Enumeration-Array!"
 msgstr "muss in der Auswahl-Liste verfügbar sein!"
 
@@ -76,14 +75,20 @@ msgstr "Antwort: "
 msgid " must contain a datetime in the format: "
 msgstr "Muss ein Datum/Zeit enthalten im Format: "
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:84
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:75
 msgid "Unknown User: "
 msgstr "Unbekannter Benutzer: "
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:85
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:76
 msgid " in field "
 msgstr "in Feld "
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:96
-msgid "is not a valid E-Mail adress."
-msgstr "ist keine gueltige Email Adresse."
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:86
+msgid " is not a valid E-Mail address."
+msgstr " ist keine gültige Email Adresse."
+
+#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
+msgid " must be in Enumeration-Array! "
+msgstr " muss in der Auswahl-Liste verfügbar sein!"
+
+

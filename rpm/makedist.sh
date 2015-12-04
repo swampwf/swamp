@@ -2,8 +2,8 @@
 
 BASEDIR=`dirname $0`/..;
 cd ${BASEDIR}/..;
-NAME=swamp
-TARGET_DIR=swamp_stable
+NAME=swamp_beta
+TARGET_DIR=swamp_svn
 VERSION=`perl -n -e 'print "$1\n" if( /^SWAMP_VERSION\s*=\s*(.+)$/ );' swamp/conf/defaults.in`
 FILE="${NAME}-${VERSION}.tar.bz2";
 TARFILE="${NAME}-${VERSION}.tar";
@@ -13,11 +13,11 @@ echo "Using filename: $FILE";
 
 PATH=$PATH:/work/src/bin:/work/src/bin/tools
 
-rm -f swamp/dist/${TARGET_DIR}/${NAME}-*.tar.bz2;
+rm -f swamp/rpm/${TARGET_DIR}/${NAME}-*.tar.bz2;
 
 echo "compressing source for distribution... ";
 
-tar cjf swamp/dist/${TARGET_DIR}/${FILE} \
+tar cjf swamp/rpm/${TARGET_DIR}/${FILE} \
 	--exclude .svn \
 	--exclude swamp/docs/artwork \
 	--exclude swamp/docs/documents \
@@ -73,7 +73,7 @@ tar cjf swamp/dist/${TARGET_DIR}/${FILE} \
 	swamp/webapps/rss-swamp \
 	;
 
-cd swamp/dist;
+cd swamp/rpm;
 # create additional .zip file: 
 #mkdir swamp-unpacked; cd swamp-unpacked;
 #tar -xjvf ../swamp/${FILE};

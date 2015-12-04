@@ -75,12 +75,10 @@ public class ScriptActionTemplate extends SystemActionTemplate implements Script
             HashMap parameters = new HashMap();
             parameters.put("wf", wf);
             parameters.put("uname", result.getUname());
-            parameters.put("bTools", new BugzillaTools());
             parameters.put("scriptapi", new ScriptApi(result.getUname(), wf, history));
             parameters.put("hist", history);
             parameters.put("datastates", new FieldMethodizer("de.suse.swamp.core.data.Data"));
             parameters.put("taskstates", new FieldMethodizer("de.suse.swamp.core.tasks.WorkflowTask"));
-            parameters.put("executor", new Executor()); 
             script.setParameters(parameters);
             String resultString = script.evaluate();
             // maybe the workflow was altered, we need to save it.
@@ -110,6 +108,7 @@ public class ScriptActionTemplate extends SystemActionTemplate implements Script
      * @return Returns the script.
      */
     public ScriptTemplate getScript() {
+        this.script.setDescription(getDescription());
         return script;
     }
 

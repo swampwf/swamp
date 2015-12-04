@@ -28,6 +28,12 @@
   <!-- password for swamp_user is: "swamp" -->
   <Dbusers UserId="3" UserName="swamp_user" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="User" LastName="SWAMPFamily" Email=""/>
 
+  <!-- JobTracker Users (pw=swamp)-->
+  <Dbusers UserId="4" UserName="deplead_operations" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="Dep.lead" LastName="Operations" Email=""/>
+  <Dbusers UserId="5" UserName="deplead_qa" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="Dep.lead" LastName="QA" Email=""/>
+  <Dbusers UserId="6" UserName="teamlead_tools" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="Teamlead" LastName="Tools" Email=""/>
+  <Dbusers UserId="7" UserName="teamlead_design" PasswordMd5="5d47a77d32202c58837f269a0d1c60c7" FirstName="Teamlead" LastName="Design" Email=""/>
+  
   
   <!-- Associate Users with Groups -->
 

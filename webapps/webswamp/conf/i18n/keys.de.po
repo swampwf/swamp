@@ -5,13 +5,13 @@
 #
 # Thomas Schmidt <tschmidt {at} suse.de>, 2006.
 # tom <tschmidt æŧ suse.de>, 2006.
-# Thomas Schmidt <tschmidt@suse.de>, 2007.
+# Thomas Schmidt <tschmidt@suse.de>, 2007, 2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: keys.de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-18 11:58+0200\n"
-"PO-Revision-Date: 2007-10-18 12:17+0200\n"
+"POT-Creation-Date: 2008-11-20 15:24+0100\n"
+"PO-Revision-Date: 2008-11-20 15:26+0100\n"
 "Last-Translator: Thomas Schmidt <tschmidt@suse.de>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -19,27 +19,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:65
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:64
 msgid "German"
 msgstr "Deutsch"
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:66
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:65
 msgid "Czech"
 msgstr "Tschechisch"
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:67
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:66
 msgid "English"
 msgstr "Englisch"
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:68
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:67
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:79
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:89
 msgid "Fields are automatically synced from %1"
 msgstr "Die Felder werden automatisch von %1 kopiert."
 
-#: src/java/de/suse/swamp/modules/screens/Preferences.java:82
+#: src/java/de/suse/swamp/modules/screens/Preferences.java:92
 msgid "Fields are locked because this is a test system."
 msgstr "Die Felder sind gesperrt, da dies ein Testsystem ist."
 
@@ -63,43 +63,51 @@ msgstr "erledigt von: "
 msgid "DisplayTask is not supported for showing SystemActions"
 msgstr "DisplayTask ist nicht unterstützt für SystemActions"
 
-#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:213
+#: src/java/de/suse/swamp/modules/screens/DisplayTask.java:212
 msgid "in DisplayTask: no task id."
 msgstr "Keine Task ID gegeben."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:100
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:102
 msgid "Changed language."
 msgstr "Sprache geaendert."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:123
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:109
+msgid "Changed default redirect after task."
+msgstr "Default-Umleitung nach einem Task geaendert."
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:120
+msgid "Changed reminder of workflow "
+msgstr "Workflow-Erinnerung geaendert "
+
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:143
 msgid "The passwords you entered do not match."
 msgstr "Die eingegebenen Passwoerter stimmen nicht ueberein."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:128
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:147
 msgid "Changed password."
 msgstr "Passwort geaendert."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:135
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:154
 msgid "Changed firstname."
 msgstr "Vorname geaendert."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:140
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:159
 msgid "Changed lastname."
 msgstr "Nachname geaendert."
 
-#: src/java/de/suse/swamp/modules/actions/UserActions.java:145
+#: src/java/de/suse/swamp/modules/actions/UserActions.java:164
 msgid "Changed email."
 msgstr "E-Mail geaendert."
 
-#: templates/app/parts/WorkflowFilter.vm:7
+#: templates/app/parts/WorkflowFilter.vm:6
 msgid "Show %1 of %2 workflows"
 msgstr "Zeige %1 von %2 Workflows"
 
-#: templates/app/parts/WorkflowFilter.vm:32
+#: templates/app/parts/WorkflowFilter.vm:13
 msgid "Filtered view:"
 msgstr "Gefilterte Ansicht:"
 
-#: templates/app/parts/WorkflowFilter.vm:33
+#: templates/app/parts/WorkflowFilter.vm:14
 msgid "Show"
 msgstr "Zeige"
 
@@ -132,8 +140,8 @@ msgid "Please test and check the system out by:"
 msgstr "Probieren und testen Sie die Funktionen des Systems, zB: "
 
 #: templates/app/parts/messages.vm:13
-msgid "browse installed templates in the left navigation"
-msgstr "waehle aus den verfuegbaren Workflow Vorlagen in der linken Navigation"
+msgid "browse installed workflow templates"
+msgstr "installierte Workflow Vorlagen anzeigen"
 
 #: templates/app/parts/messages.vm:14
 msgid "create new Workflows"
@@ -155,16 +163,16 @@ msgstr "Besuchen Sie unsere Projekt-Homepage unter"
 msgid "for more information."
 msgstr "fuer genauere Informationen."
 
-#: templates/app/parts/MyTasks.vm:27 templates/app/parts/Mytasks.content.vm:6
+#: templates/app/parts/MyTasks.vm:20 templates/app/parts/Mytasks.content.vm:6
 msgid "Open tasks for user %1:"
 msgstr "Offene Aufgaben fuer Benutzer %1:"
 
-#: templates/app/parts/MyTasks.vm:35
+#: templates/app/parts/MyTasks.vm:28
 msgid "Loading your tasks..."
 msgstr "Lade Tasks..."
 
 #: templates/app/parts/StatusMessage.vm:34
-#: templates/app/screens/DisplayWorkflow.vm:245
+#: templates/app/screens/DisplayWorkflow.vm:262
 msgid "What has happened: "
 msgstr "Was ist passiert: "
 
@@ -185,23 +193,29 @@ msgid "open Tasks:"
 msgstr "offene Tasks:"
 
 #: templates/app/parts/menutop.vm:50
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:36
 msgid "my tasks"
 msgstr "meine Tasks"
 
 #: templates/app/parts/menutop.vm:52
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:38
 msgid "all tasks"
 msgstr "alle Tasks"
 
 #: templates/app/parts/menutop.vm:64 templates/app/macros/WfList.vm:62
 #: templates/app/macros/WfList.vm:66 templates/app/macros/WfList.vm:70
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:53
 msgid "all"
 msgstr "alle"
 
 #: templates/app/parts/menutop.vm:66
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:51
 msgid "running"
 msgstr "laufende"
 
 #: templates/app/parts/menutop.vm:68
+#: ../../conf/workflows/JobTracker/1.0/templates/wflist_colours.vm:5
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:55
 msgid "closed"
 msgstr "beendete"
 
@@ -209,7 +223,11 @@ msgstr "beendete"
 msgid "Please choose your workflow:"
 msgstr "Bitte waehlen Sie Ihren Workflow:"
 
-#: templates/app/parts/Mytasks.content.vm:63
+#: templates/app/parts/Mytasks.content.vm:50
+msgid "(show <a href='%1'>all tasks assigned to me</a>)"
+msgstr "(zeige <a href='%1'>alle mir zugewiesenen Tasks</a>)"
+
+#: templates/app/parts/Mytasks.content.vm:64
 msgid "No open tasks."
 msgstr "Keine offenen Tasks."
 
@@ -247,7 +265,7 @@ msgstr "Workflow Version Hinzufügen/Ersetzen: "
 msgid "(Please upload a plain workflow.xml file or a *.zip workflow resource bundle)"
 msgstr "(Bitte eine workflow.xml Datei oder ein .zip Workflow Paket hochladen)"
 
-#: templates/app/screens/Workflows.vm:50
+#: templates/app/screens/Workflows.vm:48
 msgid "No Workflows could be found for your current Filter-Configuration."
 msgstr "Es wurden keine Workflows fuer diese Filtereinstellung gefunden."
 
@@ -255,11 +273,16 @@ msgstr "Es wurden keine Workflows fuer diese Filtereinstellung gefunden."
 msgid "Workflow state: "
 msgstr "Workflow Status: "
 
-#: templates/app/screens/Status.vm:20
+#: templates/app/screens/Status.vm:16 templates/app/screens/DisplayTask.vm:58
+#: templates/app/screens/DisplayWorkflow.vm:75
+msgid "Loading workflow stack..."
+msgstr "Lade Workflow Stack..."
+
+#: templates/app/screens/Status.vm:44
 msgid "current Tasks in this Workflow: "
 msgstr "Aktuelle Aufgaben in diesem Workflow: "
 
-#: templates/app/screens/Status.vm:29
+#: templates/app/screens/Status.vm:53
 msgid "current optional Tasks in this Workflow: "
 msgstr "aktuelle Zusatz-Aufgaben in diesem Workflow: "
 
@@ -267,12 +290,21 @@ msgstr "aktuelle Zusatz-Aufgaben in diesem Workflow: "
 msgid "Statistics: "
 msgstr "Statistiken: "
 
+#: templates/app/screens/DisplayTask.vm:116
+msgid "Please press 'Done' to finish this task."
+msgstr "Bitte klicke 'Fertig' um den Task abzuschliessen."
+
+#: templates/app/screens/DisplayTask.vm:207
+msgid "Done"
+msgstr "Fertig"
+
 #: templates/app/screens/DisplayWorkflow.vm:23
 msgid "Image"
 msgstr "Grafik"
 
 #: templates/app/screens/DisplayWorkflow.vm:27
 #: templates/app/screens/WorkflowIndex.vm:145
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:131
 msgid "History"
 msgstr "Historie"
 
@@ -289,13 +321,13 @@ msgid "generate Graph"
 msgstr "erstelle Graph"
 
 #: templates/app/screens/DisplayWorkflow.vm:56
-#: templates/app/screens/DisplayWorkflow.vm:162
+#: templates/app/screens/DisplayWorkflow.vm:181
 #: templates/app/screens/WorkflowIndex.vm:133
 msgid "Edit"
 msgstr "Editieren"
 
 #: templates/app/screens/DisplayWorkflow.vm:58
-#: templates/app/screens/DisplayWorkflow.vm:164
+#: templates/app/screens/DisplayWorkflow.vm:183
 msgid "View"
 msgstr "Ansicht"
 
@@ -303,60 +335,60 @@ msgstr "Ansicht"
 msgid "Admin console"
 msgstr "Admin Bereich"
 
-#: templates/app/screens/DisplayWorkflow.vm:71
+#: templates/app/screens/DisplayWorkflow.vm:68
 #: templates/app/screens/WorkflowIndex.vm:28
 msgid "Description:"
 msgstr "Beschreibung:"
 
-#: templates/app/screens/DisplayWorkflow.vm:84
+#: templates/app/screens/DisplayWorkflow.vm:102
 msgid "Workflow state:"
 msgstr "Workflow Status:"
 
-#: templates/app/screens/DisplayWorkflow.vm:95
+#: templates/app/screens/DisplayWorkflow.vm:113
 msgid "Currently Active Tasks:"
 msgstr "Momentan aktive Aufgaben:"
 
-#: templates/app/screens/DisplayWorkflow.vm:101
+#: templates/app/screens/DisplayWorkflow.vm:119
 msgid "optional tasks:"
 msgstr "zusaetzliche Tasks:"
 
-#: templates/app/screens/DisplayWorkflow.vm:110
+#: templates/app/screens/DisplayWorkflow.vm:128
 msgid "active time triggers:"
 msgstr "aktive Zeitausloeser:"
 
-#: templates/app/screens/DisplayWorkflow.vm:123
+#: templates/app/screens/DisplayWorkflow.vm:141
 msgid "<i>Not yet set</i>"
 msgstr "<i>Noch nicht gesetzt</i>"
 
-#: templates/app/screens/DisplayWorkflow.vm:129
+#: templates/app/screens/DisplayWorkflow.vm:147
 msgid "scheduled for:"
 msgstr "vorgesehen fuer:"
 
-#: templates/app/screens/DisplayWorkflow.vm:131
+#: templates/app/screens/DisplayWorkflow.vm:149
 msgid "only weekdays"
 msgstr "nur wochentags"
 
-#: templates/app/screens/DisplayWorkflow.vm:134
+#: templates/app/screens/DisplayWorkflow.vm:152
 msgid "edit"
 msgstr "editieren"
 
-#: templates/app/screens/DisplayWorkflow.vm:159
+#: templates/app/screens/DisplayWorkflow.vm:178
 msgid "Workflow Data:"
 msgstr "Workflow Daten:"
 
-#: templates/app/screens/DisplayWorkflow.vm:203
+#: templates/app/screens/DisplayWorkflow.vm:220
 msgid "Add"
 msgstr "Hinzufuegen"
 
-#: templates/app/screens/DisplayWorkflow.vm:203
+#: templates/app/screens/DisplayWorkflow.vm:220
 msgid "a Databit."
 msgstr "eines Databits."
 
-#: templates/app/screens/DisplayWorkflow.vm:269
+#: templates/app/screens/DisplayWorkflow.vm:286
 msgid "Node states:"
 msgstr "Knotenzustaende:"
 
-#: templates/app/screens/DisplayWorkflow.vm:269
+#: templates/app/screens/DisplayWorkflow.vm:286
 msgid "display graph"
 msgstr "zeige Graph"
 
@@ -413,18 +445,25 @@ msgid "Startpage for Workflow:"
 msgstr "Startseite des Workflows:"
 
 #: templates/app/screens/WorkflowIndex.vm:36
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:35
 msgid "Roles:"
 msgstr "Rollen:"
 
 #: templates/app/screens/WorkflowIndex.vm:48
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:47
 msgid "Role is inherited from:"
 msgstr "Rolle wurde vererbt von:"
 
 #: templates/app/screens/WorkflowIndex.vm:58
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:57
 msgid "This workflow does not implement any role restrictions."
 msgstr "Dieser Workflow hat keine Rollen definiert."
 
 #: templates/app/screens/WorkflowIndex.vm:67
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:65
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:83
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:100
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:118
 msgid "Search"
 msgstr "Suchen"
 
@@ -449,6 +488,8 @@ msgid "in field "
 msgstr "im Feld "
 
 #: templates/app/screens/WorkflowIndex.vm:85
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:78
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:113
 msgid "Please choose..."
 msgstr "Bitte wählen... "
 
@@ -477,10 +518,14 @@ msgid "latest Workflows:"
 msgstr "neueste Workflows:"
 
 #: templates/app/screens/WorkflowIndex.vm:154
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:140
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:154
 msgid "started by:"
 msgstr "gestartet von:"
 
 #: templates/app/screens/WorkflowIndex.vm:155
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:141
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:155
 msgid "at:"
 msgstr "am:"
 
@@ -497,39 +542,59 @@ msgstr "momentan laufende/beendete Workflows:"
 msgid "WebSWAMP User Preferences"
 msgstr "WebSWAMP Benutzereinstellungen"
 
-#: templates/app/screens/Preferences.vm:17
+#: templates/app/screens/Preferences.vm:14
 msgid "Username: "
 msgstr "Benutzername: "
 
-#: templates/app/screens/Preferences.vm:25
+#: templates/app/screens/Preferences.vm:22
 msgid "Choose your language: "
 msgstr "Wählen Sie Ihre Sprache: "
 
-#: templates/app/screens/Preferences.vm:51
+#: templates/app/screens/Preferences.vm:42
+msgid "Page shown after finishing a task: "
+msgstr "Angezeigte Seite nach Beendigung eines Tasks: "
+
+#: templates/app/screens/Preferences.vm:46
+msgid "Task results"
+msgstr "Task Resultate"
+
+#: templates/app/screens/Preferences.vm:47
+msgid "Previous page"
+msgstr "Vorherige Seite"
+
+#: templates/app/screens/Preferences.vm:48
+msgid "The workflow the task belongs to"
+msgstr "Zugehoeriger Workflow"
+
+#: templates/app/screens/Preferences.vm:57
+msgid "Send regular reminder mail with my open tasks: "
+msgstr "Sende regelmaessige Erinnerungsmail mit mir zugewiesenen Tasks: "
+
+#: templates/app/screens/Preferences.vm:85
 msgid "Firstname: "
 msgstr "Vorname: "
 
-#: templates/app/screens/Preferences.vm:62
+#: templates/app/screens/Preferences.vm:96
 msgid "Lastname: "
 msgstr "Nachname: "
 
-#: templates/app/screens/Preferences.vm:73
+#: templates/app/screens/Preferences.vm:107
 msgid "Email: "
 msgstr "E-Mail: "
 
-#: templates/app/screens/Preferences.vm:84
+#: templates/app/screens/Preferences.vm:119
 msgid "Current password: "
 msgstr "Aktuelles Passwort: "
 
-#: templates/app/screens/Preferences.vm:96
+#: templates/app/screens/Preferences.vm:126
 msgid "new password: "
 msgstr "Neues Passwort: "
 
-#: templates/app/screens/Preferences.vm:103
+#: templates/app/screens/Preferences.vm:133
 msgid "repeat new password: "
 msgstr "neues Passwort wiederholen: "
 
-#: templates/app/screens/Preferences.vm:112
+#: templates/app/screens/Preferences.vm:142
 msgid "Change"
 msgstr "Aendern"
 
@@ -595,11 +660,11 @@ msgstr "ID"
 msgid "Task"
 msgstr "Aufgabe"
 
-#: templates/app/macros/WfList.vm:98 templates/app/macros/WfList.vm:313
+#: templates/app/macros/WfList.vm:98 templates/app/macros/WfList.vm:314
 msgid "Assigned Users"
 msgstr "Zugeordnete Benutzer"
 
-#: templates/app/macros/WfList.vm:100 templates/app/macros/WfList.vm:315
+#: templates/app/macros/WfList.vm:100 templates/app/macros/WfList.vm:316
 msgid "Next Tasks"
 msgstr "naechste Tasks:"
 
@@ -611,63 +676,136 @@ msgstr "Status"
 msgid "Progress"
 msgstr "Fortschritt"
 
-#: templates/app/macros/WfList.vm:293 templates/app/macros/WfList.vm:360
+#: templates/app/macros/WfList.vm:294 templates/app/macros/WfList.vm:361
 msgid "Workflow-Template"
 msgstr "Workflow Vorlage"
 
-#: templates/app/macros/WfList.vm:305
+#: templates/app/macros/WfList.vm:306
 msgid "Choose Column"
 msgstr "Waehle Spalte"
 
-#: templates/app/macros/WfList.vm:306
+#: templates/app/macros/WfList.vm:307
 msgid "Workflow ID"
 msgstr "Workflow ID"
 
-#: templates/app/macros/WfList.vm:307
+#: templates/app/macros/WfList.vm:308
 msgid "Workflow name"
 msgstr "Workflow Name"
 
-#: templates/app/macros/WfList.vm:308
+#: templates/app/macros/WfList.vm:309
 msgid "Workflow description"
 msgstr "Workflow Beschreibung"
 
-#: templates/app/macros/WfList.vm:309
+#: templates/app/macros/WfList.vm:310
 msgid "Progress-bar"
 msgstr "Fortschrittsbalken"
 
-#: templates/app/macros/WfList.vm:311
+#: templates/app/macros/WfList.vm:312
 msgid "Task ID"
 msgstr "Task ID"
 
-#: templates/app/macros/WfList.vm:312
+#: templates/app/macros/WfList.vm:313
 msgid "Task Description"
 msgstr "Aufgabenbeschreibung"
 
-#: templates/app/macros/WfList.vm:316
+#: templates/app/macros/WfList.vm:317
 msgid "Workflow State"
 msgstr "Workflow Status"
 
-#: templates/app/macros/WfList.vm:317
+#: templates/app/macros/WfList.vm:318
 msgid "Icon"
 msgstr "Icon"
 
-#: templates/app/macros/WfList.vm:361
+#: templates/app/macros/WfList.vm:364
 msgid "configure columns"
 msgstr "konfiguriere Spalten"
 
-#: templates/app/macros/WfList.vm:460
+#: templates/app/macros/WfList.vm:470
 msgid "Workflow Colours:"
 msgstr "Workflow Farben:"
 
-#: templates/app/macros/WfList.vm:461
+#: templates/app/macros/WfList.vm:471
 msgid "inactive"
 msgstr "inaktiv"
 
-#: templates/app/macros/WfList.vm:473
+#: templates/app/macros/WfList.vm:483
 msgid "printable View"
 msgstr "Druckansicht"
 
-#: templates/app/macros/WfList.vm:475
+#: templates/app/macros/WfList.vm:485
 msgid "switch back to normal view"
 msgstr "zurueck zur normalen Ansicht"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/wflist_colours.vm:4
+msgid "applications are coloured:"
+msgstr "Farben der Bewerbungen:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/wflist_colours.vm:6
+msgid "older 14 days"
+msgstr "aelter als 14 Tage"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/wflist_colours.vm:7
+msgid "older 28 days"
+msgstr "aelter als 28 Tage"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:22
+msgid "Add new job"
+msgstr "Neuen Job anlegen"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:34
+msgid "Open tasks:"
+msgstr "Offene Tasks:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:48
+msgid "Job advertisements:"
+msgstr "Ausschreibungen"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/menutop.vm:68
+msgid "pending applications"
+msgstr "wartende Bewerbungen"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:26
+msgid "Welcome to the JobTracker"
+msgstr "Willkommen zum JobTracker"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:70
+msgid "Search for jobs:"
+msgstr "Suche Jobs:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:74
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:92
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:109
+msgid "with value: "
+msgstr "mit dem Wert: "
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:76
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:94
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:111
+msgid "in field: "
+msgstr "im Feld:  "
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:89
+msgid "Search for applications:"
+msgstr "Suche Bewerbungen:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:106
+msgid "Search for ratings:"
+msgstr "Suche Bewertungen:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:135
+msgid "latest Jobs:"
+msgstr "neueste Jobs:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:149
+msgid "latest Applications:"
+msgstr "neueste Bewerbungen:"
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:165
+msgid "latest Ratings:"
+msgstr "neueste Bewertungen: "
+
+#: ../../conf/workflows/JobTracker/1.0/templates/WorkflowIndex.vm:180
+msgid "Statistic"
+msgstr "Statistik"
+
 

@@ -1,4 +1,25 @@
 -------------------------------------------------------------------
+Tue Apr 14 11:44:58 CEST 2009 - tschmidt@suse.de
+
+- added spanish translations 
+
+-------------------------------------------------------------------
+Thu Nov 20 16:07:05 CET 2008 - tschmidt@suse.de
+
+Update to 1.6.2beta
+
+    - Add JobTracker to public swamp version 
+
+-------------------------------------------------------------------
+Thu Nov 13 16:06:05 CET 2008 - tschmidt@suse.de
+
+Update to 1.6.1
+    - Popups for bugids, loading data from bugzilla in the background
+    - update velocity lib, velocity-tools
+    - new datatypes for bugid lists and number lists
+    - dataedit action can include a <script> for additional verification checks
+
+-------------------------------------------------------------------
 Wed Aug 20 17:23:42 CEST 2008 - tschmidt@suse.de
 
 - update to 1.6

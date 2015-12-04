@@ -43,9 +43,9 @@ $page.setTitle($ui.tr("WebSWAMP User Preferences", $data.getUser()))
         </td>
         <td valign="middle" class="box_normal">
         <select name="taskpage">
-            <option value="results" #if ($taskpage.equals("results")) selected #end>Task results</option>
-            <option value="previous" #if ($taskpage.equals("previous")) selected #end>Previous page</option>
-            <option value="workflow" #if ($taskpage.equals("workflow")) selected #end>The workflow the task belongs to</option>
+            <option value="results" #if ($taskpage.equals("results")) selected #end>$ui.tr("Task results", $data.getUser())</option>
+            <option value="previous" #if ($taskpage.equals("previous")) selected #end>$ui.tr("Previous page", $data.getUser())</option>
+            <option value="workflow" #if ($taskpage.equals("workflow")) selected #end>$ui.tr("The workflow the task belongs to", $data.getUser())</option>
         </select>
         </td>
     </tr>

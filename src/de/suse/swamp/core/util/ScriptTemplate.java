@@ -95,6 +95,8 @@ public class ScriptTemplate {
      */
     public String evaluate() throws Exception {
         String result = "";
+        parameters.put("executor", new Executor());
+        parameters.put("bTools", new BugzillaTools());
         if (language.equals("velocity")) {
             VelocityContext context = new VelocityContext();
             for (Iterator it = parameters.keySet().iterator(); it.hasNext();) {

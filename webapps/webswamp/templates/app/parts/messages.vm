@@ -2,7 +2,7 @@ $ui.tr("Welcome to the web interface of SWAMP.", $data.getUser())<br />
 $ui.tr("The README file for SWAMP %1 can be found <a href='/webswamp/README'>here</a>.", $data.getUser(), $swampVersion) 
 <br /><br />
 
-#if ($turbineconf.getProperty("webswamp.testserver").equals("true"))
+#if (!$turbineconf.getProperty("webswamp.testserver").equals("false"))
 $ui.tr("This is a SWAMP Testsystem. ", $data.getUser())
 $ui.tr("Please be aware that you can test everything here and no mails etc will be sent out. ", $data.getUser())
 <br /><br />

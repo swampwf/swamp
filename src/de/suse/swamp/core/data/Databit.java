@@ -92,7 +92,7 @@ public abstract class Databit extends Data implements Describable {
             }
             String oldval = new String(value);
             this.value = v;
-            Logger.DEBUG("Set Databit " + this.name + " to " + v);
+            Logger.DEBUG("Set Databit " + this.name + " to: " + v + " old value: " + oldval);
             setModified(true);
             checkedValues.clear();
             DataManager.storeDataBit(this, uname);

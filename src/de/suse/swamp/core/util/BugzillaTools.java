@@ -31,6 +31,7 @@ import java.text.*;
 import java.util.*;
 
 import org.apache.commons.httpclient.*;
+import org.apache.commons.httpclient.auth.*;
 import org.apache.commons.httpclient.methods.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -102,7 +103,7 @@ public class BugzillaTools {
      */
     public Hashtable getBugData(int bugid, List excludeFields) throws Exception {
         
-        Hashtable cacheBugData = getCacheEntry(bugid, excludeFields);
+        /* Hashtable cacheBugData = getCacheEntry(bugid, excludeFields);
         if (cacheBugData != null) {
             Logger.LOG("Reading Bugzilla XML for bug #" + bugid + " from cache.", log);
             return cacheBugData;
@@ -117,17 +118,17 @@ public class BugzillaTools {
         }
         Logger.LOG("Reading Bugzilla XML for bug #" + bugid, log);
         try {
-            xmlToData(getCookies(), queryUrl);
+            xmlToData(queryUrl);
             if (bugData.get("assigned_to") == null) {
                 Logger.ERROR("Bugzilla session not valid. Trying new login...");
                 BugzillaTools.cookies = null;
-                xmlToData(getCookies(), queryUrl);
+                xmlToData(queryUrl);
             }
         } catch (Exception e) {
             if (e.getMessage().indexOf("NotPermitted") >= 0){
                 Logger.ERROR("Bugzilla session not valid. Trying new login...");
                 BugzillaTools.cookies = null;
-                xmlToData(getCookies(), queryUrl);
+                xmlToData(queryUrl);
             } else {
                 throw e;
             }
@@ -137,7 +138,10 @@ public class BugzillaTools {
         synchronized (bugzillaCache) {
             bugzillaCache.put(new Integer(bugid), bugData);
         }
-        return bugData;
+        return bugData; */
+        Hashtable h = new Hashtable();
+        h.put("foo", "bar");
+        return h;	
     }
 
     
@@ -188,14 +192,23 @@ public class BugzillaTools {
     }
 
 
-
-
-    private synchronized void xmlToData(Cookie[] cookies, String url) throws Exception {
+    private synchronized void xmlToData(String url) throws Exception {
 
         HttpState initialState = new HttpState();
-        for (int i = 0; i < cookies.length; i++) {
-            initialState.addCookie(cookies[i]);
-            Logger.DEBUG("Added Cookie: " + cookies[i].getName() + "=" + cookies[i].getValue(), log);
+
+        String authUsername  = swamp.getProperty("BUGZILLA_AUTH_USERNAME");
+        String authPassword  = swamp.getProperty("BUGZILLA_AUTH_PWD");
+
+        if (authUsername != null && authUsername.length() != 0) {
+            Credentials defaultcreds = new UsernamePasswordCredentials(authUsername, authPassword);
+            initialState.setCredentials(AuthScope.ANY, defaultcreds);
+        }
+        else {
+            Cookie[] cookies = getCookies();
+            for (int i = 0; i < cookies.length; i++) {
+                initialState.addCookie(cookies[i]);
+                Logger.DEBUG("Added Cookie: " + cookies[i].getName() + "=" + cookies[i].getValue(), log);
+            }
         }
         HttpClient httpclient = new HttpClient();
         httpclient.setState(initialState);
@@ -265,7 +278,7 @@ public class BugzillaTools {
             for (Iterator it = bugzillaCache.keySet().iterator(); it.hasNext();) {
                 Integer id = (Integer) it.next();
                 Date date = (Date) ((Hashtable) bugzillaCache.get(id)).get("date");
-                Date outDate = new Date(new Date().getTime() - 1000 * 60 * 2);
+                Date outDate = new Date(new Date().getTime() - 1000 * 60 * 20);
                 if (date == null || date.before(outDate))
                     removeIds.add(id);
             }

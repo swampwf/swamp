@@ -28,9 +28,9 @@ package de.suse.swamp.core.container;
 
 import java.util.*;
 
+import de.suse.swamp.core.util.*;
 import de.suse.swamp.core.workflow.*;
 import de.suse.swamp.util.*;
-import de.suse.swamp.core.util.*;
 
 /**
  * @author Klaas Freitag &lt;freitag@suse.de&gt;
@@ -79,19 +79,20 @@ public final class EventManager {
 		}
 		HistoryManager.create("EVENT_RECEIVE", ev.getId(), ev.getTargetWfId(), userName, null);
         if (!workflow.isRunning()) {
-            Logger.DEBUG("Skipping event for inactive workflow #" + ev.getTargetWfId());
+            Logger.DEBUG("Skipping event for inactive workflow #" + workflow.getName());
             history.addResult(ResultList.INFO, "Skipping event for inactive workflow #" + 
-                    ev.getTargetWfId());
+                    workflow.getName());
         } else {
             WorkflowTemplate wfTemp = workflow.getTemplate(); 
             if (wfTemp.getWaitingForEvents().contains(ev.getType()) ){
                 if (ev instanceof DataChangedEvent && 
                         !wfTemp.hasListenerPath(((DataChangedEvent) ev).getFieldPath())) {
                     Logger.DEBUG("Skipped event handling of " + ev.getType() + " for wf#" + 
-                            workflow.getId() + " (not listening on field " + 
+                            workflow.getName()
+                            + " (not listening on field " + 
                             ((DataChangedEvent) ev).getFieldPath() + ")");
                     history.addResult(ResultList.INFO, "Skipped event handling of " + ev.getType() + " for wf#" + 
-                            workflow.getId() + " (not listening on field " + 
+                            workflow.getName() + " (not listening on field " + 
                             ((DataChangedEvent) ev).getFieldPath() + ")");
                 } else {
                     int histSize = history.getResults().size();
@@ -100,14 +101,15 @@ public final class EventManager {
                     WorkflowStorage.storeWorkflow(workflow);
                     if (histSize == history.getResults().size()) {
                         history.addResult(ResultList.INFO, "Event " + ev.getType() + " was received by workflow #" 
-                                + workflow.getId() + " but did not change its state.");
+                                + workflow.getName() + " but did not change its state.");
                     }
                 }
             } else {
                 Logger.DEBUG("Skipped event handling of " + ev.getType() + " for wf#" + 
-                        workflow.getId() + " (not in waitingForEvents)");
+                        workflow.getName()
+                        + " (not in waitingForEvents)");
                 history.addResult(ResultList.INFO, "Skipped event handling of " + ev.getType() + " for wf#" + 
-                        workflow.getId() + " (not in waitingForEvents)");
+                        workflow.getName() + " (not in waitingForEvents)");
             }
         }
     }

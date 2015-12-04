@@ -1,6 +1,10 @@
 swamp
 =====
 
+Branching model:
+- see https://guides.github.com/introduction/flow/
+- releases are created after merge into master
+
 To compile from source without setting up the database and without installing anything:
 
 # setup torque classes + .sql files

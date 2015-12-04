@@ -72,7 +72,7 @@ public class SecureScreen extends SWAMPScreen {
 		} else {
 			// this url the user wants to see, but he has no right to.
 			HttpServletRequest req = data.getParameters().getRequest();
-			StringBuffer query = req.getRequestURL().append("?");
+			StringBuffer query = new StringBuffer();
 			for (int i = 0; i < data.getParameters().getKeys().length; i++){
 				String key = (String) data.getParameters().getKeys()[i];
 				query.append(key).append("=").
@@ -80,7 +80,7 @@ public class SecureScreen extends SWAMPScreen {
 			}
 			
 			// set a message 
-			if (data.getMessage() == null) {
+			if (data.getMessage() == null && !query.toString().equals("template=Index.vm&")) {
 				data.setMessage("You need to login for viewing the requested page.<br />"
 						+ "After login you will get redirected there.");
 			}
@@ -89,7 +89,7 @@ public class SecureScreen extends SWAMPScreen {
 			data.setScreenTemplate(Turbine.getConfiguration().getString("template.login"));
 			data.setLayoutTemplate("DefaultLayout.vm");
 
-			data.getUser().setTemp("query", query);
+			data.getUser().setTemp("query", req.getRequestURL().append("?").append(query));
 			isAuthorized = false;
 		}
         return isAuthorized;

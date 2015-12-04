@@ -12,17 +12,9 @@ Name:  swamp
 ###############################################################################
 
 %if 0%{?suse_version}
-BuildRequires: docbook-toys ant gettext update-alternatives
+BuildRequires: docbook-toys ant gettext update-alternatives java-devel
 # enable for testing in build root
 #BuildRequires: mysql 
-
-%if 0%{?opensuse_bs}
-# in buildservice
-BuildRequires: java-devel
-%else
-# autobuild macro
-BuildRequires: java2-devel-packages
-%endif
 
 # what the rpm  will require:
 Requires: mysql
@@ -53,10 +45,7 @@ BuildRequires: tomcat5
 %endif
 %endif
 
-%if 0%{?suse_version} > 1000
 Recommends: graphviz java-fonts
-%endif
-
 %if 0%{?suse_version} >= 1030
 Recommends: graphviz-gd
 %endif
@@ -97,7 +86,7 @@ BuildRequires: classpathx-jaf
 %endif
 ###############################################################################
 
-Version:      1.6.1
+Version:      1.6.2beta
 Release:      1
 License:      GPL, Other License(s), see package
 Group:        Productivity/Networking/Other
@@ -245,8 +234,8 @@ cp  build/swamp.jar \
     lib/javamail-*.jar \
     lib/Tidy.jar \
     lib/antlr-*.jar \
-    lib/commons-validator-*.jar \
-    lib/jakarta-oro-*.jar \
+    lib/xercesImpl*.jar \
+    lib/xml-apis-*.jar \
     ${RPM_BUILD_ROOT}%{catalina_common}
 
 

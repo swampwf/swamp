@@ -266,8 +266,8 @@ public class ExternalActions extends SecureAction {
 	 */
     public void doGetdata(RunData data, Context context) throws Exception {
 
-        Logger.DEBUG("External Data-read:" + data.getParameters().toString().replaceAll("\n", " "),
-				log);
+//        Logger.DEBUG("External Data-read:" + data.getParameters().toString().replaceAll("\n", " "),
+//				log);
 
 		try {
 			if (data.getParameters().containsKey("workflowid")

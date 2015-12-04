@@ -372,7 +372,7 @@ and don't need to be stored everytime -->
     <column name="notifymethod" required="false" type="VARCHAR" size="255" description="Typ, z.B. Mail, Web, Irc" />
     <column name="templatefile" required="false" type="VARCHAR" size="255" description="filename of the content-template" />
     <column name="workflowid" required="false" type="INTEGER" />
-    <column name="messageid" required="false" type="VARCHAR" size="60" />
+    <column name="messageid" required="false" type="VARCHAR" size="120" />
     <column name="taskid" required="false" type="INTEGER" />
     <column name="created" required="false" type="DATE" description="EntstehungsZeitpunkt dieser Not." />
     <column name="delivered" required="false" type="DATE" description="Zeitpunkt der Auslieferung" />

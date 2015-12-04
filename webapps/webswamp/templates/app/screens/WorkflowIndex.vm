@@ -146,7 +146,7 @@ $ui.tr("Generate %1 Workflow Graph", $data.getUser(), $wftemplate.getName())
 	<td valign="top" class="box_normal" style="border-width: 1px; border-style:solid; ">
 	
 	
-	$ui.tr("latest Workflows:", $data.getUser(), "de.suse.swamp.i18n.Suse") <br />
+	$ui.tr("latest Workflows:", $data.getUser()) <br />
 	#foreach ($job in $latestwf)
 	&middot; <a href="$link.setPage("DisplayWorkflow.vm").addPathInfo("workflowid", $job.getId())">$job.getReplacedDescription().trim()</a> 
 	#set ($hist = $job.getStartNode().getHistoryEntries($job.getId(), "NODE_ENTER"))

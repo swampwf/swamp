@@ -402,65 +402,48 @@ public class SwampUIManager extends UIManager implements ApplicationTool,
     /**
      * Load the specified skin on top of the "common" skin.
      */
-    private void loadSkin()
-    {
+    private void loadSkin() {
         resourceProperties = new Properties();
 
-        try
-        {
-        	FileInputStream is = new FileInputStream(
-                    skinsDirectory + "/common/" + RESOURCES_PROPS_FILE);
-        	resourceProperties.load(is);
-            for (Iterator it = resourceProperties.keySet().iterator(); it.hasNext(); ){
-            	String key = (String) it.next();
-            	resourceProperties.put(key, "common/images/" + resourceProperties.get(key));
+        try {
+            FileInputStream is = new FileInputStream(skinsDirectory + "/common/" + RESOURCES_PROPS_FILE);
+            resourceProperties.load(is);
+            for (Iterator it = resourceProperties.keySet().iterator(); it.hasNext();) {
+                String key = (String) it.next();
+                resourceProperties.put(key, "common/images/" + resourceProperties.get(key));
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Logger.ERROR("Cannot load resources for skin: common! " + e.getMessage());
         }
 
-        try
-        {
-        	FileInputStream is = new FileInputStream(
-                    skinsDirectory + "/" + getSkin() + "/" + RESOURCES_PROPS_FILE);
-        	Properties resourceProperties2 = new Properties();
-        	resourceProperties2.load(is);
-            for (Iterator it = resourceProperties2.keySet().iterator(); it.hasNext(); ){
-            	String key = (String) it.next();
-            	resourceProperties2.put(key, getSkin() + "/images/" + resourceProperties2.get(key));
+        try {
+            FileInputStream is = new FileInputStream(skinsDirectory + "/" + getSkin() + "/" + RESOURCES_PROPS_FILE);
+            Properties resourceProperties2 = new Properties();
+            resourceProperties2.load(is);
+            for (Iterator it = resourceProperties2.keySet().iterator(); it.hasNext();) {
+                String key = (String) it.next();
+                resourceProperties2.put(key, getSkin() + "/images/" + resourceProperties2.get(key));
             }
             resourceProperties.putAll(resourceProperties2);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Logger.ERROR("Cannot load resources for skin: " + super.getSkin());
         }
 
         skinProperties = new Properties();
 
-        try
-        {
-            FileInputStream is = new FileInputStream(
-                    skinsDirectory + "/common/" + SKIN_PROPS_FILE);
+        try {
+            FileInputStream is = new FileInputStream(skinsDirectory + "/common/" + SKIN_PROPS_FILE);
             skinProperties.load(is);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Logger.ERROR("Cannot load common skin props: " + super.getSkin());
         }
 
-        try
-        {
-        	FileInputStream is = new FileInputStream(
-                    skinsDirectory + "/" + getSkin() + "/" + SKIN_PROPS_FILE);
-        	Properties skinProperties2 = new Properties();
-        	skinProperties2.load(is);
-        	skinProperties.putAll(skinProperties2);
-        }
-        catch (Exception e)
-        {
+        try {
+            FileInputStream is = new FileInputStream(skinsDirectory + "/" + getSkin() + "/" + SKIN_PROPS_FILE);
+            Properties skinProperties2 = new Properties();
+            skinProperties2.load(is);
+            skinProperties.putAll(skinProperties2);
+        } catch (Exception e) {
             Logger.ERROR("Cannot load skin props for: " + super.getSkin());
         }
     }

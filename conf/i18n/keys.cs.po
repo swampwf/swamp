@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: keys.cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-18 11:58+0200\n"
+"POT-Creation-Date: 2008-11-20 14:41+0100\n"
 "PO-Revision-Date: 2006-10-13 15:31+0200\n"
 "Last-Translator: tom <tschmidt æŧ suse.de>\n"
 "Language-Team: Deutsch <swamp@suse.de>\n"
@@ -36,21 +36,21 @@ msgstr "musí obsahovat číslo!"
 msgid " must contain a date in the format: "
 msgstr "datum musí být zadán ve formátu:"
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:81
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:86
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:72
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:77
 msgid "Unable to fetch data from: "
 msgstr "Nelze získat data z:"
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:83
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
 msgid "Parsing error in line "
 msgstr "Chyba v řádce"
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:83
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:74
 msgid ", column "
 msgstr ", sloupec"
 
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:84
-#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:88
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:75
+#: src/de/suse/swamp/core/data/datatypes/bugzillaDatabit.java:79
 msgid "Reason: "
 msgstr "Důvod: "
 
@@ -60,7 +60,6 @@ msgid "Assignment to Field "
 msgstr "Přiřazení k poli"
 
 #: src/de/suse/swamp/core/data/datatypes/multienumDatabit.java:77
-#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
 msgid " must be in Enumeration-Array!"
 msgstr " musí obsahovat pole!"
 
@@ -76,14 +75,21 @@ msgstr ""
 msgid " must contain a datetime in the format: "
 msgstr "čas musí být zadán ve formátu"
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:84
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:75
 msgid "Unknown User: "
 msgstr "Neznámý uživatel: "
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:85
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:76
 msgid " in field "
 msgstr "v poli"
 
-#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:96
-msgid "is not a valid E-Mail adress."
+#: src/de/suse/swamp/core/data/datatypes/personDatabit.java:86
+#, fuzzy
+msgid " is not a valid E-Mail address."
 msgstr "není platná emailová adresa."
+
+#: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
+#, fuzzy
+msgid " must be in Enumeration-Array! "
+msgstr " musí obsahovat pole!"
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE workflow SYSTEM "../../../../../swamp/swamp/conf/dtds/workflow.dtd">
+<workflow name="rating" 
+          version="1.0" 
+          leastSWAMPVersion="1.6" 
+          parentwf="application" 
+          parentwfversion="1.0">
+
+    <metadata>
+      <templatedescription>
+      	Workflow to track a rating of a Job-Application
+      </templatedescription>
+      <description>Rating from $wf.getDatabitValue("bewertungsdata.bewerterdata.name"): 
+      	#if (!$wf.getDatabitValue("bewertungsdata.bewerterdata.result").equals(""))
+      	($wf.getDatabitValue("bewertungsdata.bewerterdata.result"))
+      	#elseif($wf.getNode("theend").isActive())
+      	(canceled)
+      	#else 
+      	(to be rated)
+      	#end
+      	#if (${wf.getDatabitValue("bewertungsdata.bewerterdata.comment").length()} > 60)
+      		${wf.getDatabitValue("bewertungsdata.bewerterdata.comment").substring(0,60)}...
+      	#else 
+      		${wf.getDatabitValue("bewertungsdata.bewerterdata.comment")}
+      	#end
+      </description>
+      <creator>tschmidt</creator>
+      
+      	<history>
+        <change who="tschmidt" when="2005-06-20">Version 0.1</change>
+        </history>
+      
+		<roles>
+			<role name="admin" restricted="true" type="reference">
+				<description>JobTracker admins</description>
+				<rolevalue>parent.admin</rolevalue>
+			</role>
+
+			<role name="starter" restricted="true" type="reference">
+				<rolevalue>parent.user</rolevalue>
+			</role>
+			<role name="user" restricted="true" type="reference">
+				<rolevalue>parent.user</rolevalue>
+			</role>
+			<role name="owner" restricted="true" type="databit">
+				<rolevalue>bewertungsdata.roles.owner</rolevalue>
+			</role>
+			<role name="bewerter" restricted="true" type="databit">
+				<rolevalue>bewertungsdata.bewerterdata.name</rolevalue>
+			</role>
+		</roles>
+    </metadata>
+
+
+
+   <node type="start" name="bewertung_start">
+    	<description>Start Rating</description>
+
+	<dataedit role="bewerter" name="rate" eventtype="RATED" 
+		notificationtemplate="notifications/please_rate" restricted="true">
+		<description>Please rate the application of 
+			$wf.getDatabitValue("bewerbungsdata.bewerberdata.name")</description>	
+		<longdesc>
+		#set ($htmlout = "true")
+		#showdata ($wf "bewerbungsdata.bewerberdata.name")
+		#showdata ($wf "ausschreibungsdata.stelle")
+		#showdata ($wf "bewerbungsdata.bewerberdata.eingang_am")
+		#showdata ($wf "bewerbungsdata.bewerterdata.request_comment")
+		
+		#if (!$wf.getDatabitValue("bewerbungsdata.files.file1").equals("") || !$wf.getDatabitValue("bewerbungsdata.files.file2").equals("") || !$wf.getDatabitValue("bewerbungsdata.files.file3").equals("") || !$wf.getDatabitValue("bewerbungsdata.files.file4").equals(""))	
+		Files: \n
+		#showdata ($wf "bewerbungsdata.files.file1")
+		#showdata ($wf "bewerbungsdata.files.file2")
+		#showdata ($wf "bewerbungsdata.files.file3")
+		#showdata ($wf "bewerbungsdata.files.file4")
+		#end
+		</longdesc>
+		<field mandatory="true" path="bewertungsdata.bewerterdata.result"></field>
+		<field mandatory="true" path="bewertungsdata.bewerterdata.comment"></field>
+	</dataedit>
+	
+   <edge to="announce_finish" event="RATED" />
+   <edge to="announce_finish">
+		<data check="regexp" field="bewertungsdata.bewerterdata.result" value=".+" /> 
+   </edge>
+   <edge to="theend" event="BEWERBUNG_FINISHED" />
+   <edge to="theend" event="PARENTWORKFLOW_FINISHED" />
+   </node>
+   
+		
+		
+	<node name="announce_finish">
+		<description>
+		Announcing Rating finished
+		</description>
+		<notification name="announce_finish_mail" msgtemplate="notifications/announce_finish">
+			<recipient dbit="ausschreibungsdata.roles.abtleiter"/>
+		</notification>
+		
+		<scriptaction name="set_rater">
+			<description>Check if user was the supposed rater</description>
+			<script>
+				$wf.getDatabit("bewertungsdata.bewerterdata.name").setValue($uname)
+			</script>
+		</scriptaction>
+		
+		<edge to="theend" event="none"/>
+	</node>
+		
+		
+	<!-- ############## End Nodes ################## -->		
+			
+    <node type="end" name="theend">
+      <description>Rating finished</description>
+      <longdesc>
+      #if (!$wf.getDatabitValue("bewertungsdata.bewerterdata.result").equals(""))
+      Rating of $wf.getDatabitValue("bewertungsdata.bewerterdata.name"):  
+      $wf.getDatabitValue("bewertungsdata.bewerterdata.result") \n
+      Comment: \n
+      $wf.getDatabitValue("bewertungsdata.bewerterdata.comment")
+      #end
+      </longdesc>
+    </node>
+
+    
+	<!-- ##################  Datapack starts here #################### -->
+    
+    <dataset name="bewertungsdata" description="Data for this Rating">
+
+    <!-- Values will be copied in from the Bewerbungs Workflow -->
+    <dataset description="Evaluator-Data" name="bewerterdata" state="read-write">
+    
+		 <databit name="name" description="Name of the Evaluator (Login)" type="person"/>
+		 
+		 <databit name="request_comment" description="comment from requester" type="text" state="read-only"/>
+		 
+		 <databit name="result" description="Result of the Rating" type="enum">
+			<defaultvalue></defaultvalue>
+			<value type="string"></value>
+			<value type="string">not rated</value>
+			<value type="string">--</value>
+			<value type="string">-</value>
+			<value type="string">o</value>
+			<value type="string">+</value>
+			<value type="string">++</value>
+		 </databit>
+		 <databit type="text" name="comment" description="additional comment" state="read-write">
+		 	<dbedit type="text" xsize="65" ysize="7"/>
+		 </databit>
+	</dataset>
+	
+	<dataset description="Roles" name="roles" state="hidden">
+		 <databit name="owner" description="Owner" type="person" state="hidden"/>
+	</dataset>
+	
+    </dataset>
+</workflow>
