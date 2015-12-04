@@ -1,1 +1,20 @@
 .DS_Store
+=======
+build
+
+# generated during ant local-init:
+bin/*.sh
+bin/*.bat
+build.properties
+conf/*.properties
+conf/defaults
+conf/schema/*.xml
+conf/schema/*.sql
+
+# generated during ant torque-schema-sql:
+torque
+velocity.log
+
+# generated during webswamp build
+webapps/webswamp/conf/*.properties
+

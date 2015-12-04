@@ -362,7 +362,6 @@ msgstr ""
 msgid "optional tasks:"
 msgstr "otevřít úlohy:"
 
-#: templates/app/screens/DisplayWorkflow.vm:128
 msgid "active time triggers:"
 msgstr ""
 

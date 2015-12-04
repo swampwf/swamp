@@ -287,7 +287,7 @@ public class Workflow extends Persistant {
         }
         return found;
     }
-
+    
     /**
      * Central event handling routine. The method queries all nodes and their
      * edges and provides the incoming Event to every edge with help of method

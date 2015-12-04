@@ -28,3 +28,4 @@ INSERT INTO `TURBINE_SCHEDULED_JOB`
  (`SECOND` , `MINUTE` , `HOUR` , `WEEK_DAY` , `DAY_OF_MONTH` , `TASK` , `EMAIL` , `PROPERTY` )
 VALUES 
 ('0', '45', '24', '-1', '-1', 'JobTrackerAgeCalculator', '', '');   
+

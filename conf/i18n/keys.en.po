@@ -89,3 +89,4 @@ msgstr ""
 #: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
 msgid " must be in Enumeration-Array! "
 msgstr ""
+

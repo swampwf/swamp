@@ -1,5 +1,4 @@
-# translation of keys.de.po to
-# translation of keys.po to
+# translation of keys.po to Deutsch
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
@@ -91,4 +90,5 @@ msgstr " ist keine gültige Email Adresse."
 #: src/de/suse/swamp/core/data/datatypes/enumDatabit.java:65
 msgid " must be in Enumeration-Array! "
 msgstr " muss in der Auswahl-Liste verfügbar sein!"
+
 

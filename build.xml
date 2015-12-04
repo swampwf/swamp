@@ -483,4 +483,5 @@
     <target name="fix-generated-sql">
       <replace dir="torque/sql" token="Type=MyISAM" value="Engine=MyISAM" />
     </target>
+	
 </project>

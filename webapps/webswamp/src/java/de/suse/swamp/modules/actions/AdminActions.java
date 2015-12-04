@@ -173,6 +173,4 @@ public class AdminActions extends SecureAction {
         context.put("statusclass", "success");
         context.put("icon", "ok");
     }
-    
-    
 }

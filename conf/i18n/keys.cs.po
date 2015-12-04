@@ -92,3 +92,4 @@ msgstr "není platná emailová adresa."
 #, fuzzy
 msgid " must be in Enumeration-Array! "
 msgstr " musí obsahovat pole!"
+
