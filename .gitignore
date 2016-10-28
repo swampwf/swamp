@@ -18,3 +18,5 @@ velocity.log
 # generated during webswamp build
 webapps/webswamp/conf/*.properties
 
+jmimemagic.log
+WebContent
