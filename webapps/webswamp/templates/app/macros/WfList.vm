@@ -244,9 +244,11 @@
                         #if ($!{workflow.containsDatabit($column)})
                             #set ($content = $!{workflow.getDatabit($column).getValue()})
                             #if (!$content.equals(""))
-                                #set ($content = $ui.htmlEncode($content).replaceAll(",", ", ").replaceAll("\n", "<br />"))
-                                #set ($path = $column)
                                 #set ($type = $!{workflow.getDatabit($column).getType()})
+                                #if (!$type.equals("url"))
+                                	#set ($content = $ui.htmlEncode($content).replaceAll(",", ", ").replaceAll("\n", "<br />"))
+                                #end
+                                #set ($path = $column)
                                 #set ($rendertype = "wflist")
                                 #parse( "datatypes/${type}.vm" )
                             #end

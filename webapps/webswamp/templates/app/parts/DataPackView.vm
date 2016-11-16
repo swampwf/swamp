@@ -28,8 +28,11 @@
 	
 			#if (!$field.getState().equals($datastates.HIDDEN))
 			
+				#set ($type = $field.getDatatype())
 				#set ($content = $field.getInitValue() )
-	  			#set ($content = $ui.htmlEncode($content).replaceAll(",", ", ").replaceAll("\n", "<br />"))
+				#if (!$type.equals("url"))
+	  				#set ($content = $ui.htmlEncode($content).replaceAll(",", ", ").replaceAll("\n", "<br />"))
+  				#end
 	  				
 				<tr class="box_normal">
 				#set($label = $field.getLabel().replaceAll("\\n", "<br />"))
@@ -45,7 +48,6 @@
 				</td>
 				<td valign="top" width="50%">
 				#set ($path = $field.getPath())
-				#set ($type = $field.getDatatype())
 				#set ($rendertype = "workflow")
 				#parse( "datatypes/${type}.vm" )
 

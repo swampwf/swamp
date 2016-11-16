@@ -1,18 +1,12 @@
 #if ($rendertype.equals("wflist")) 
-    #if ($content.length() > 60)
-    <a href="$content">${content.substring(0,60)}...</a>
-    #else 
-    <a href="$content">$content</a>
-    #end
+    #set ($sanitized = $content.replaceAll("(http.*)\n*", "<a href=\"$1\">$1</a><br />"))
+    $sanitized
 #elseif ($rendertype.equals("workflow"))
     #if ($content.equals(""))
         <i>no value</i>
-    #else 
-        #if ($content.length() > 60)
-        <a href="$content">${content.substring(0,60)}...</a>
-        #else 
-        <a href="$content">$content</a>
-        #end
+    #else
+        #set ($sanitized = $content.replaceAll("(http.*)\n*", "<a href=\"$1\">$1</a><br />"))
+        $sanitized
     #end
     
 #elseif ($rendertype.equals("edit")) 
