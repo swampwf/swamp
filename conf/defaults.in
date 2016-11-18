@@ -23,6 +23,9 @@ BUGZILLA_POSTURL=https://bugzilla.novell.com/process_bug.cgi?ctype=xml
 BUGZILLA_USER=
 BUGZILLA_PASSWORD=
 
+JIRA_BROWSERURL=https://jira.example.com/issues/?jql=
+
+
 # The Graph is generated to the Webapp dir
 GRAPH_DIR=$SWAMP_HOME/../var/graphs
 
