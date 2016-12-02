@@ -13,6 +13,7 @@ Changes
   New features in 1.6.3:
     - Improved URL handling (urls in multiline textareas possible)
     - Added JIRA URL generation from comma separated list of issues
+    - Added OTRS URL support
 
   New features in 1.6.2:
   

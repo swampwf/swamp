@@ -1,0 +1,25 @@
+#if ($rendertype.equals("wflist"))
+     <a href="${otrs_url}${content}">$content</a></nobr>
+#elseif ($rendertype.equals("workflow"))
+    #if ($content.equals(""))
+        <i>no value</i>
+    #else
+        <a href="${otrs_url}${content}">$content</a></nobr>
+    #end
+
+#elseif ($rendertype.equals("edit"))
+
+    <input name="field_$field.getPath()" value="$!initval" type="text" size ="80" />
+
+    #if (!$field.getInitValue().equals("") && !$field.getState().equals($datastates.ERROR))
+        <br />
+        #foreach ($value in $field.getEnumvalues())
+            <a href="${otrs_url}${value}">Link</a> to this Bug.
+        #end
+    #end
+
+#elseif ($rendertype.equals("flags"))
+    #if ($field.isMandatory()) * #end
+#else
+    ERROR
+#end

@@ -146,6 +146,7 @@ public class NotificationTools {
         context.put("wftemplate", wf.getTemplate());
         context.put("bugzilla_url", SWAMP.getInstance().getProperty("BUGZILLA_BROWSERURL"));
         context.put("jira_url", SWAMP.getInstance().getProperty("JIRA_BROWSERURL"));
+        context.put("otrs_url", SWAMP.getInstance().getProperty("OTRS_BROWSERURL"));
         context = addLinksToContext(context);
         String ident = "WorkflowReplace";
         StringWriter w = new StringWriter();

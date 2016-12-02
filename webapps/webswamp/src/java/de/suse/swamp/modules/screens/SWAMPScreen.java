@@ -62,6 +62,8 @@ public class SWAMPScreen extends VelocitySecureScreen {
         context.put("bugzilla_url", swampapi.doGetProperty("BUGZILLA_BROWSERURL", uname));
         // Jira URL
         context.put("jira_url", swampapi.doGetProperty("JIRA_BROWSERURL", uname));
+        // OTRS URL
+        context.put("otrs_url", swampapi.doGetProperty("OTRS_BROWSERURL", uname));
         // provide Session id:
         context.put("sessionid", data.getRequest().getRequestedSessionId());
         // pointer to Turbine configuration
